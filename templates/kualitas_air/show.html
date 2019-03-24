@@ -1,0 +1,25 @@
+$def with (ctx)
+$ datas = ctx.get('data', [])
+$ pos = ctx.get('pos')
+$var p_kualitas_air: active
+<div class="container">
+    <h2><a href="/kualitasair"><span class="glyphicon glyphicon-chevron-left"></span></a> Pos Kualitas Air ${pos[1]}</h2>
+    <table class="table table-bordered boldtable">
+        <!--
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>POS Kualitas Air</th>
+            </tr>
+        </thead>
+        -->
+        <tbody>
+        $for d in datas:
+            <tr>
+            $for i in d:
+                <td>$i</td>
+            </tr>
+
+        </tbody>
+    </table>
+</div><!-- container -->

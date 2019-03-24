@@ -1,0 +1,145 @@
+$def with(pos, meta)
+$var title: $pos.AgentName &rarr;&nbsp;
+$var p_bendungan: active
+$var extra_header:
+    <link rel="stylesheet" href="/static/css/datepicker3.css">
+$var js_foot: 
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript"> 
+        \$(document).ready(function(){ \$('#datepicker').datepicker({ format: 'yyyy-mm-dd',
+                startView: "years",
+                minViewMode: "years",
+                autoclose: true});
+        \$('#datepicker').on('changeDate', function() { window.location = '/bendungan/$pos.AgentId/operasi?periode=' + \$(this).data('datepicker').getFormattedDate('yyyy/mm/dd'); });
+        var cat = [$:{', '.join([d[0].strftime('\'%d-%m-%Y\'') for d in meta.get('rst')])}];
+        var siaga4 = "$pos.siaga4" ;
+        var sedimen = '$pos.sedimen';
+        var arrA =[${', '.join(['%s' % (0 if d[4]==0 else d[4] or 'null') for d in meta.get('rst')])}];
+        var maksA = Math.max.apply(Math,arrA);
+        var arrB =[${', '.join(['%s' % (0 if d[10]==0 else d[10] or 'null') for d in meta.get('rst')])}];
+        var maksB = Math.max.apply(Math,arrB);
+        var maksimal1 = Math.max(maksA, maksB);
+        var arrC =[${', '.join(['%s' % (0 if d[2]==0 else d[2] or 'null') for d in meta.get('rst')])}];
+        var maksC = Math.max.apply(Math,arrA);
+        var arrD =[${', '.join(['%s' % (0 if d[8]==0 else d[8] or 'null') for d in meta.get('rst')])}];
+        var maksD = Math.max.apply(Math,arrB);
+        var maksimal2 = Math.max(maksC, maksD);
+        if (isNaN(parseFloat(sedimen))) {batas = siaga4;} else {batas = sedimen;};
+        var chart1 = new Highcharts.Chart({chart: { renderTo: 'container' , marginBottom:100}, title: {text: 'TMA RTOW dan Realisasi Tahun ' + ${meta.get('tanggal').strftime('%Y')}, style: { fontSize: '30px', fontWeight: 'bold'}}, tooltip:{style:{fontWeight:'bold', fontSize:'18px'}, valuePrefix: '+ ', valueSuffix: ' m'}, xAxis: { categories: cat, lineWidth: 4, lineColor: '#000000'}, plotOptions: { series: { connectNulls: true }}, yAxis: [{ lineWidth: 4, min: batas - 2, lineColor: '#000000', labels:{format: '{value:.2f}'}, title: { text: 'TMA (M)' }, tickInterval:2, plotLines: [{ value: sedimen, color: 'blue', dashStyle: 'shortdash', width: 2, label: {text: 'Sedimen: '+parseFloat(sedimen), align: 'right', y:10}}, { value: siaga4 , color: 'brown', dashStyle: 'longdashdot', width:2, label:{text:'Elevasi Minimum: '+parseFloat(siaga4), align: 'center'}}]}],
+                series: [{yAxis: 0, type: 'spline', name : 'RTOW TMA', data: [${', '.join(['%s' % (d[1] or 'null') for d in meta.get('rst')])}], visible: false },
+                         {yAxis: 0, type: 'spline', name : 'Realisai TMA', data: [${', '.join(['{y: %s, vol: %s}' % (d[6] or 'null', d[7]  or 'null') for d in meta.get('rst')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>TMA Realisasi <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Elevasi: {point.y} <br> Volume: {point.vol} m3'}
+      },
+                         {yAxis: 0, type: 'spline', name : 'Batas Atas', data: [${', '.join(['%s' % (d[12] or 'null') for d in meta.get('rst')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>RTOW<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Batas Atas: {point.y}'}
+      },
+                         {yAxis: 0, type: 'spline',name : 'Batas Bawah',data: [${', '.join(['{y: %s, vol: %s}' % (d[13] or 'null', d[15]  or 'null') for d in meta.get('rst')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>RTOW <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Batas Bawah: {point.y} <br> Volume: {point.vol} m3'}
+      }
+                ]
+                });
+
+            var chart2 = new Highcharts.Chart({
+              chart: { renderTo: 'container2' , marginBottom:100},
+              title: {text: 'Outflow Intake Pola dan Realisasi Tahun ' + ${meta.get('tanggal').strftime('%Y')}, style: {
+                fontSize: '30px',
+                fontWeight: 'bold'}}, tooltip:{style:{fontWeight:'bold', fontSize:'18px'}, valueSuffix: ' m3'},
+              xAxis: { categories: cat,lineWidth: 4, lineColor: '#000000'},
+              plotOptions: {  series: { connectNulls: true }},
+              yAxis: [
+                  {
+                      startOnTick: false,
+                      minPadding:0.2,
+                      min: -1,
+                      max: maksimal1 + 2,
+                      lineWidth: 4,
+                      lineColor: '#000000',
+                      title: { text: 'Debit (M3/detik)' },
+                      tickInterval:1,
+                      labels:{format: '{value:.2f}'}
+                      }
+              ],
+                series: [{
+                    yAxis: 0,
+                    type: 'spline',
+                    name: 'RTOW Outflow',
+                    data: [${', '.join(['%s' % (0 if d[4]==0 else d[4] or 'null') for d in meta.get('rst')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>RTOW <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Outflow: {point.y}'}
+                },
+                {
+                    yAxis: 0,
+                    type: 'spline',
+                    name: 'Realisasi Outflow',
+                    data: [${', '.join(['%s' % (0 if d[10]==0 else d[10] or 'null') for d in meta.get('rst')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>Realisasi <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Outflow: {point.y}'}
+                }
+                ]
+                });
+
+                var chart3 = new Highcharts.Chart({
+                  chart: { renderTo: 'container3' , marginBottom:100},
+                  title: {text: 'Inflow Pola dan Realisasi Tahun ' + ${meta.get('tanggal').strftime('%Y')}, style: {
+                fontSize: '30px',
+                fontWeight: 'bold'}}, tooltip:{style:{fontWeight:'bold', fontSize:'18px'}, valueSuffix: ' m3'},
+                  xAxis: { categories: cat,lineWidth: 4, lineColor: '#000000'},
+                  plotOptions: { series: { connectNulls: true }},
+                  yAxis: [
+                    {
+                        startOnTick: false,
+                        minPadding:0.2,
+                        min: -1,
+                        max: maksimal2 + 2,
+                        lineWidth: 4,
+                        lineColor: '#000000',
+                        title: { text: 'Debit (M3/detik)' },
+                        tickInterval:1,
+                        labels:{format: '{value:.2f}'}
+                    }
+                  ],
+                    series: [{
+                        yAxis: 0,
+                        type: 'spline',
+                        name: 'RTOW Inflow',
+                        data: [${', '.join(['%s' % (0 if d[2]==0 else d[2] or 'null') for d in meta.get('rst')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>RTOW <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Inflow: {point.y}'}
+                    },
+                    {
+                        yAxis: 0,
+                        type: 'spline',
+                        name: 'Realisasi Inflow',
+                        data: [${', '.join(['%s' % (0 if d[8]==0 else d[8] or 'null') for d in meta.get('rst')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>Realisasi <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Inflow: {point.y}'}
+                    }
+                    ]
+                    }); });
+                </script>
+<div class="container">
+    <div class="row">
+            <div class="btn-group" role="group" style="float: right">
+                <a href="/bendungan/$pos.AgentId" class="btn btn-primary">TMA</a>
+                <a href="#" class="btn btn-default">RTOW</a>
+                <!--<a href="/bendungan/$pos.AgentId/keamanan" class="btn btn-primary">Keamanan</a>-->
+                <a href="/bendungan/$pos.AgentId/vnotchh" class="btn btn-primary">VNOTCH</a>
+                <a href="/bendungan/$pos.AgentId/piezometerr" class="btn btn-primary">PIEZOMETER</a>
+                
+            </div>
+ 
+            $code:
+                airbak = "-"
+            $if pos.AgentId == '102':
+                $code:
+                    airbak = "0.038" 
+            $if pos.AgentId == '112':
+                $code:
+                    airbak = "0.010" 
+            $if pos.AgentId == '90':
+                $code:
+                    airbak = "0.039" 
+
+    <h2><a href="/bendungan" style="text-decoration: none;">&larr;</a> $pos.cname | Volume: ${'%.2f' % (float(pos.volume) / 1000000.0)} M<sup>3 </h2>
+    <h2>&nbsp &nbsp&nbsp Irigasi: $commify('%d' % pos.lbi) Ha | Air Baku: $airbak M<sup>3</sup>/det</h2>
+<div class="text-center"> Periode: <span id="datepicker">${meta.get('tanggal').strftime('%Y')} </span> <span>( $meta['rst'][0][0].strftime('%b %Y') &#8212; $meta['rst'][-1][0].strftime('%b %Y'))</span> </div>
+</div><!-- row -->
+<div class="row">
+	<div class="col-md-2">&nbsp;</div>
+    <div class="col-md-2">&nbsp;</div>
+</div>
+<div id="container" style="min-width: 400px; height: 600px; margin: 0 auto"> </div>
+
+$pos.cname<div id="container2" style="min-width: 400px; height: 600px; margin: 20px auto"> </div>
+
+$pos.cname<div id="container3" style="min-width: 400px; height: 600px; margin: 20px auto"> </div>

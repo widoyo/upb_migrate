@@ -1,0 +1,128 @@
+$def with (ctx)
+$ pos = ctx.get('bd')
+$ periodic = ctx.get('periodic')
+$ tg = ctx.get('tanggal')
+$ msg = ctx.get('msg')
+$code:
+    haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
+    bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
+    hars = [h.title() for h in "senin_selasa_rabu_kamis_jum'at_sabtu_minggu".split('_')]
+$var extra_header:
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/> 
+    <style type="text/css">
+       .datepicker {z-index: 1002;}
+    </style>
+
+$var js_foot:
+
+
+    <script type="text/javascript" src="/static/js/moment.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/transition.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/collapse.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-datetimepicker.min.css" />
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.floatThead.min.js"></script>
+
+    <script type="text/javascript">
+        \$(document).ready(function () {
+            var \$table = \$('.table');
+            \$table.floatThead({
+                top: 60,
+                responsiveContainer: function (\$table) {
+                    return \$table.closest('.table-responsive');
+                }
+            });
+            var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
+            var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
+            \$('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+             }); 
+            \$('.editable').editable({
+                url: '/adm/bendungan/$pos.table_name/FormBlangko/formB2_1/update'
+            });
+
+          \$('.datepicker').on('changeDate', function() {
+              //window.location = '/adm/bendungan/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
+              var dated = \$(this).datepicker('getDate');
+              var wd = dated.getDay() - 1;
+              if (wd === -1) { wd = 6; }
+              \$(this).html(hars[wd] + ", " +dated.getDate() +' '+ buls[dated.getMonth()] +' '+ dated.getFullYear());
+              var form = \$(this).parents('form:first');
+              \$('input[name=waktu]', form).val(dated.getFullYear()+'/'+(dated.getMonth()+1) +'/'+dated.getDate());
+              });
+
+           \$('.gotodate').datepicker({
+               format: 'yyyy-mm-dd',
+               startView: "months",
+               minViewMode: "months",
+               autoclose: true,
+               zIndexOffset: 1040
+             }); 
+          \$('.gotodate').on('changeDate', function() {
+              window.location = '/adm/bendungan/$pos.table_name/FormBlangko/formB2_1?sampling=' + \$(this).datepicker('getFormattedDate');
+          });
+
+
+        });
+    </script>
+
+
+<h3>FORM-B2_1 </h3>
+<h4>LAPORAN PEMERIKSAAN BENDUNGAN </h4>
+<h4>$pos.cname <span class="gotodate" style="color: #18bc9c">${tg.strftime('%B %Y')}</h4>
+$if session.get('is_admin') == 3 and not session.get('table_name'):
+    <h4><a href="$pos.table_name?csv=1&sampling=${tg.strftime('%Y/%m/%d')}">Download CSV</a></h4>
+<h4 class="text-right"> <a href="/adm/bendungan/$pos.table_name"> Ke Menu Utama  </a> </h4>
+
+<br>
+<br>
+<table class="table table-bordered table-stripped">
+  <thead>
+    <tr>
+      <th colspan="8">FORM-B2_1 <br> LAPORAN PEMERIKSAAN BENDUNGAN</th>
+    </tr>
+    <tr>
+      <th colspan="2">Bendungan: $pos.cname</th>
+      <th colspan="6">Pengukuran Rembesan</th>
+    </tr>
+    <tr>
+      <th colspan="2">Bulan: ${tg.strftime('%B')}</th>
+      <th colspan="6">Jenis : V-Notch</th>
+    </tr>
+    <tr>
+      <th rowspan="2">Tanggal</th>
+      <th rowspan="2">Elevasi Muka Air</th>
+      <th colspan="2">Vnotch 1</th>
+      <th colspan="2">Vnotch 2</th>
+      <th colspan="2">Vnotch 3</th>
+    </tr>
+    <tr>
+      <th>Dalam Debit</th>
+      <th>Debit</th>
+      <th>Dalam Debit</th>
+      <th>Debit</th>
+      <th>Dalam Debit</th>
+      <th>Debit</th>
+    </tr>
+   </thead>
+    <tbody>
+    $for r in periodic:
+     <tr>
+       <td>${hars[r.waktu.weekday()]}, $r.waktu.day</td>
+       <td>$r.tma6</td>
+       <td>$r.vnotch_tin1</td>
+       <td>$r.vnotch_q1</td>
+       <td>$r.vnotch_tin2</td>
+       <td>$r.vnotch_q2</td>
+       <td>$r.vnotch_tin3</td>
+       <td>$r.vnotch_q3</td>
+    </tr>
+       
+
+    </tbody>
+</table>

@@ -1,0 +1,50 @@
+$def with()
+$var p_curahhujan: active
+$var js_foot:
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function(){
+            var opts = {
+                chart: {type: 'column'},
+                series: [{
+                    data: [
+                        ['Bendung Colo', 2.3],
+                        ['Slahung', 3.2],
+                        ['Bojonegoro', 5.4]
+                    ]
+                }]
+            };
+            var opt1 = jQuery.extend(true, {}, opts);
+            opt1.chart.renderTo = 'column_chart1';
+            var opt2 = jQuery.extend(true, {}, opts);
+            opt2.chart.renderTo = 'column_chart2';
+            var opt3 = jQuery.extend(true, {}, opts);
+            opt3.chart.renderTo = 'column_chart3';
+            var chart1 = new Highcharts.Chart(opt1);
+            var chart2 = new Highcharts.Chart(opt2);
+            var chart3 = new Highcharts.Chart(opt3);
+            
+        });
+    </script>
+<!-- // enf of js_foot --> 
+<div class="container">
+    <h1>Hujan Rerata Tahunan Wilayah</h1>
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Hulu</h2>
+            <div id="column_chart1" style="width: 100%; height: 400px"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Madiun</h2>
+            <div id="column_chart2" style="width: 100%; height: 400px"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Hilir</h2>
+            <div id="column_chart3" style="width: 100%; height: 400px"></div>
+        </div>
+    </div>
+</div>

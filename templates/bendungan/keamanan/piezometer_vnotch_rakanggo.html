@@ -1,0 +1,116 @@
+$def with(pos, meta)
+$var title: $pos.AgentName &rarr;&nbsp;
+$var p_bendungan: active
+$var js_foot: 
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript"> 
+        var cat1 = [$:{', '.join([d[0].strftime('\'%d-%m-%Y\'') for d in meta.get('rst1')])}];
+        var siaga4 = "$pos.siaga4" ;
+        var sedimen = '$pos.sedimen';
+        var chart1 = new Highcharts.Chart({chart: { renderTo: 'container' , marginBottom:30}, title: {text: 'PIEZOMETER & VNOTCH', style: { fontSize: '30px', fontWeight: 'bold'}}, tooltip:{style:{fontWeight:'bold', fontSize:'18px'}, valuePrefix: '+ ', valueSuffix: ' m'}, xAxis: { opposite: true, categories: cat1, lineWidth: 4, lineColor: '#000000'}, plotOptions: { series: { connectNulls: true }}, yAxis: [{ opposite: true, lineWidth: 4, min: siaga4 - 5, lineColor: '#000000', labels:{format: '{value:.2f}'}, title: { text: 'TMA (M)', style: { fontSize: '16px', fontWeight: 'bold'} }, tickInterval:2, offset: 0, plotLines: [{ value: sedimen, color: 'blue', dashStyle: 'shortdash', width: 2, label: {text: 'Sedimen: '+parseInt(sedimen), align: 'center'}}, { value: siaga4 , color: 'brown', dashStyle: 'longdashdot', width:2, label:{text:'Elevasi Minimum: '+parseInt(siaga4), align: 'center'}}]}],
+                series: [{
+                    showInLegend: false,
+                    yAxis: 0,
+                    type: 'spline',
+                    name : 'RTOW TMA',
+                    data: [${', '.join(['%s' % (d[1] or 'null') for d in meta.get('rst1')])}], visible: false
+                },
+                {
+                    showInLegend: false,
+                    yAxis: 0,
+                    type: 'spline',
+                    name : 'Realisai TMA',
+                    data: [${', '.join(['{y: %s, vol: %s}' % (d[6] or 'null', d[7]  or 'null') for d in meta.get('rst1')])}],
+                    tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>TMA Realisasi <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Elevasi: {point.y} <br> Volume: {point.vol} m3'}
+                },
+                {
+                    showInLegend: false,
+                    yAxis: 0,
+                    type: 'spline',
+                    name : 'Batas Atas',
+                    data: [${', '.join(['%s' % (d[12] or 'null') for d in meta.get('rst1')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>RTOW<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Batas Atas: {point.y}'}
+                },
+                {
+                    showInLegend: false,
+                    yAxis: 0,
+                    type: 'spline',
+                    name : 'Batas Bawah',
+                    data: [${', '.join(['{y: %s, vol: %s}' % (d[13] or 'null', d[15]  or 'null') for d in meta.get('rst1')])}],
+                    tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>RTOW <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Batas Bawah: {point.y} <br> Volume: {point.vol} m3'}
+                }
+                ]
+                });
+                </script>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script src="/static/js/exporting.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function(){
+            Highcharts.wrap(Highcharts.Series.prototype, 'render', function(proceed){
+            if (!this.clipBox && this.animate && this.animate.toString().indexOf('sharedClip') !== -1){
+              this.clipBox = Highcharts.merge(this.chart.clipBox);
+              this.clipBox.widht = this.xAxis.len;
+              this.clipBox.height = this.yAxis.len;
+            } else if (this.chart[this.sharedClipkey]){
+              HighchartsAdapter.stop(this.chart[this.sharedClipKey]);
+              this.chart[this.sharedClipKey].attr({
+                widht: this.xAxis.len,
+                height: this.yAxis.len
+              });
+            }
+            proceed.call(this);
+          });
+          var cat2 = [$:{', '.join([d[0].strftime('\'%d-%m-%Y\'') for d in meta.get('rst2')])}];
+          var chart1 = new Highcharts.Chart({
+              chart: { renderTo: 'container1'},
+              title: {text: ''},
+              tooltip:{style:{fontWeight:'bold', fontSize:'18px'}, valuePrefix: '', valueSuffix: ''},
+              xAxis: { categories: cat2, lineWidth: 4, lineColor: '#000000' },
+              plotOptions: { series: { connectNulls: true }},
+              yAxis: [
+                  { lineWidth: 4, lineColor: '#000000', labels:{format: '{value:.2f} '}, title: { text: 'PIEZOMETER (M/H2O)', style: { fontSize: '20px', fontWeight: 'bold'}  },
+                    tickInterval:2, top:8, height:200, opposite:true },
+                  { // gridLineWidth:0,
+                    tickInterval: 2, lineWidth: 4, lineColor: '#000000', title: { text: 'VNOTCH (Lt/Dt)', style: { fontSize: '20px', fontWeight: 'bold'} }, labels:{format: '{value:.2f} '}, offset: 0, top: 250, height: 140, opposite:true }
+              ],
+                series: [{ yAxis: 0, type: 'spline', name: 'Piezometer 1A', data: [${', '.join(['%s' % (x[1] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 1<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>1A: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 1B', data: [${', '.join(['%s' % (x[2] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 1<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>1B: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 1C', data: [${', '.join(['%s' % (x[3] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 1<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>1C: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 2A', data: [${', '.join(['%s' % (x[4] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 2<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>2A: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 2B', data: [${', '.join(['%s' % (x[5] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 2<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>2B: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 2C', data: [${', '.join(['%s' % (x[6] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 2<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>2C: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 3A', data: [${', '.join(['%s' % (x[7] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 3<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>3A: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 3B', data: [${', '.join(['%s' % (x[8] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 3<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>3B: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 3C', data: [${', '.join(['%s' % (x[9] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 3<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>3C: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 4A', data: [${', '.join(['%s' % (x[10] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 4<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>4A: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 4B', data: [${', '.join(['%s' % (x[11] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 4<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>4B: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 4C', data: [${', '.join(['%s' % (x[12] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 4<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>4C: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 5A', data: [${', '.join(['%s' % (x[13] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 5<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>5A: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 5B', data: [${', '.join(['%s' % (x[14] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 5<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>5B: {point.y} M/H2O'}},
+                        { yAxis: 0, type: 'spline', name: 'Piezometer 5C', data: [${', '.join(['%s' % (x[15] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>PIEZOMETER 5<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>5C: {point.y} M/H2O'}},
+                        { yAxis: 1, type: 'spline', name: 'Vnotch1', data: [${', '.join(['%s' % (x[16] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>VNOTCH 1<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Vnotch 1: {point.y} Lt/Dt'}},
+                        { yAxis: 1, type: 'spline', name: 'Vnotch2', data: [${', '.join(['%s' % (x[17] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>VNOTCH 2<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Vnotch 2: {point.y} Lt/Dt'}},
+                        { yAxis: 1, type: 'spline', name: 'Vnotch3', data: [${', '.join(['%s' % (x[18] or 'null') for x in meta.get('rst2')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>VNOTCH 3<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Vnotch 3: {point.y} Lt/Dt'}}
+
+                ]
+                }); // Highcharts
+            });
+
+    </script>
+<div class="container">
+    <div class="row">
+            <div class="btn-group" role="group" style="float: right">
+                <a href="/bendungan/$pos.AgentId" class="btn btn-primary">TMA</a>
+                <a href="/bendungan/$pos.AgentId/operasi" class="btn btn-primary">RTOW</a>
+                <!--<a href="/bendungan/$pos.AgentId/keamanan" class="btn btn-primary">Keamanan</a>-->
+                <a href="/bendungan/$pos.AgentId/piezometer_vnotch" class="btn btn-default">PIEZOMETER & VNOTCH</a>
+                
+            </div>
+    <h2><a href="/bendungan" style="text-decoration: none;">&larr;</a> $pos.cname | Volume: ${'%.2f' % (float(pos.volume) / 1000000.0)} M3 </h2>
+</div><!-- row -->
+<div class="row">
+	<div class="col-md-2">&nbsp;</div>
+</div>
+<div id="container" style="min-width: 400px; height: 600px; margin: 0 auto"> </div>
+<div id="container1" style="min-width: 400px; height: 570px; margin: 0 auto"> </div>
+

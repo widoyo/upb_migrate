@@ -1,0 +1,13 @@
+$def with(ctx)
+$var p_bendungan: active
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h2><a href="/bendungan/t" title="Daftar Pos Bendungan" style="text-decoration: none;"><span class="glyphicon glyphicon-chevron-left"></a>${ctx.get('bd')}</h2>
+            $if ctx.get('no_vnotch'):
+                <p>Bendung TIDAK ADA VNotch</p>
+            $if ctx.get('fail_vnotch'):
+                <p>VNotch TIDAK FUNGSI</p>
+        </div>
+    </div>
+</div>

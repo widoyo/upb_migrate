@@ -1,0 +1,334 @@
+$def with (ctx)
+$ pos = ctx.get('bd')
+$ periodic = ctx.get('periodic')
+$ periodic_wd = ctx.get('periodic_wd')
+$ tg = ctx.get('tanggal')
+$ msg = ctx.get('msg')
+$code:
+    haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
+    bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
+    hars = [h.title() for h in "senin_selasa_rabu_kamis_jum'at_sabtu_minggu".split('_')]
+$var extra_header:
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/> 
+    <style type="text/css">
+       .datepicker {z-index: 1002;}
+    </style>
+
+$var js_foot:
+
+
+    <script type="text/javascript" src="/static/js/moment.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/transition.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/collapse.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-datetimepicker.min.css" />
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.floatThead.min.js"></script>
+
+    <script type="text/javascript">
+        \$(document).ready(function () {
+            var \$table = \$('.table');
+            \$table.floatThead({
+                top: 60,
+                responsiveContainer: function (\$table) {
+                    return \$table.closest('.table-responsive');
+                }
+            });
+            var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
+            var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
+            \$('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+             }); 
+            \$('.editable').editable({
+                url: '/adm/bendungan/$pos.table_name/FormBlangko/formB1_1/update'
+            });
+
+          \$('.datepicker').on('changeDate', function() {
+              //window.location = '/adm/bendungan/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
+              var dated = \$(this).datepicker('getDate');
+              var wd = dated.getDay() - 1;
+              if (wd === -1) { wd = 6; }
+              \$(this).html(hars[wd] + ", " +dated.getDate() +' '+ buls[dated.getMonth()] +' '+ dated.getFullYear());
+              var form = \$(this).parents('form:first');
+              \$('input[name=waktu]', form).val(dated.getFullYear()+'/'+(dated.getMonth()+1) +'/'+dated.getDate());
+              });
+
+           \$('.gotodate').datepicker({
+               format: 'yyyy-mm-dd',
+               autoclose: true,
+               zIndexOffset: 1040
+             }); 
+          \$('.gotodate').on('changeDate', function() {
+              window.location = '/adm/bendungan/$pos.table_name/FormBlangko/formB1_1?sampling=' + \$(this).datepicker('getFormattedDate');
+          });
+
+
+        });
+    </script>
+
+
+<h3>FORM-B1_1 </h3>
+<h4>PEMERIKSAAN VISUAL </h4>
+<h4>$pos.cname <span class="gotodate" style="color: #18bc9c">${tg.strftime('%d %b %Y')}</h4>
+$if session.get('is_admin') == 3 and not session.get('table_name'):
+    <h4><a href="$pos.table_name?csv=1&sampling=${tg.strftime('%Y/%m/%d')}">Download CSV</a></h4>
+<h4 class="text-right"> <a href="/adm/bendungan/$pos.table_name"> Ke Menu Utama  </a> </h4>
+<form method="POST" action="/adm/bendungan/$pos.table_name/FormBlangko/formB1_1">
+<input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+<h4>Buat Form ${hars[tg.weekday()]}, &nbsp ${tg.strftime('%d %B %Y')}</h4> 
+<button type="submit" class="btn btn-success">Buat Form</button>
+</form>
+
+<br>
+<br>
+<table class="table table-bordered table-stripped">
+  <thead>
+    <tr>
+      <th colspan="2">FORM-B1_1 <br> CATATAN PEMERIKSAAN BENDUNGAN</th>
+    </tr>
+   </thead>
+    <tr>
+      <td>Bendungan</td>
+      <td>$pos.cname</td>
+    </tr>
+    <tr>
+      <td>Tanggal</td>
+      <input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+      <td>${hars[tg.weekday()]}, &nbsp ${tg.strftime('%d %B %Y')}</td>
+    </tr>
+    <tr>
+      <td>Kondisi cuaca</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="kondisi_cuaca">$r.kondisi_cuaca</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Elevasi Muka Air</td>
+      $for rr in periodic_wd:
+        <td>$rr.tma6</td>
+      $if not len(periodic_wd):
+        <td>tidak ada data ${tg.strftime('%d %b %Y')} <a href="/adm/bendungan/$pos.table_name#form-pagi" style="color: #FF0000"> Isi lewat Form Data Pagi </a> </td>
+    </tr>
+    <tr>
+      <td>Tinggi Tubuh Bendungan</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tinggi">$r.tinggi</a>&nbsp m</td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Panjang Tubuh Bendungan</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="panjang">$r.panjang</a>&nbsp m</td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Kondisi jalan diatas <b> mercu. </b>Retak dan lain-lain?</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="kond_jln_atas_mercu">$r.kond_jln_atas_mercu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tanda penurunan <b> mercu. </b> Ya/Tidak? Dimana?</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tanda_penurunan_mercu">$r.tanda_penurunan_mercu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tanda pergerakan <b> mercu. </b> Ya/Tidak? Hulu/Hilir?</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tanda_pergerakan_mercu">$r.tanda_pergerakan_mercu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Kondisi pembuang (drainase) pada <b> mercu</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="kond_pembuang_mercu">$r.kond_pembuang_mercu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Kondisi pagar pengaman/guard rail (kelurusan) pada <b> mercu</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="kond_pagar_mercu">$r.kond_pagar_mercu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tanda gerakan pada <b>lereng Hulu</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tanda_gerakan_lerenghulu">$r.tanda_gerakan_lerenghulu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tonjolan? Lubang benam? Retakan? pada <b>lereng Hulu</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tonjolan_lubangbenam_retakan_lerenghulu">$r.tonjolan_lubangbenam_retakan_lerenghulu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Erosi? Penurunan? pada <b>lereng Hulu</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="erosi_penurunan_lerenghulu">$r.erosi_penurunan_lerenghulu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Dimana? Kedalaman? Lebar&Panjang retak? pada <b>lereng Hulu</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="dimana_kedalaman_lebarpanjangretakan_lerenghulu">$r.dimana_kedalaman_lebarpanjangretakan_lerenghulu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tumbuhan? Sarang binatang? pada <b>lereng Hulu</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tumbuhan_sarangbinatang_lerenghulu">$r.tumbuhan_sarangbinatang_lerenghulu</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tanda retak pada <b>plat beton</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tanda_retak_platbeton">$r.tanda_retak_platbeton</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Dimana? Kedalaman? Lebar&Panjang retak? pada <b>plat beton</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="dimana_kedalaman_lebarpanjangretakan_platbeton">$r.dimana_kedalaman_lebarpanjangretakan_platbeton</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Pembukaan parimeter joint pada <b>plat beton</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="parimeter_joint_platbeton">$r.parimeter_joint_platbeton</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Kondisi beton pada <b>plat beton</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="kond_beton_platbeton">$r.kond_beton_platbeton</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Aus/Erosi pada <b>plat beton</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="erosi_platbeton">$r.erosi_platbeton</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tanda gerakan pada <b>batu rip-rap</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tanda_gerakan_riprap">$r.tanda_gerakan_riprap</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Kerusakan karena cuaca pada <b>batu rip-rap</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="rusak_krn_cuaca_riprap">$r.rusak_krn_cuaca_riprap</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Pelapukan pada <b>batu rip-rap</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="pelapukan_riprap">$r.pelapukan_riprap</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Erosi pada <b>batu rip-rap</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="erosi_riprap">$r.erosi_riprap</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Slip dibawah muka air tinggi pada <b>batu rip-rap</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="slip_dbwhair_riprap">$r.slip_dbwhair_riprap</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tanda gerakan pada <b>permukaan lereng hilir</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tanda_gerakan_lerenghilir">$r.tanda_gerakan_lerenghilir</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tonjolan? Lubang benam? Retak? pada <b>permukaan lereng hilir</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tonjolan_lubangbenam_retak_lerenghilir">$r.tonjolan_lubangbenam_retak_lerenghilir</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Erosi? Penurunan? Longsoran tanah lamban? pada <b>permukaan lereng hilir</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="erosi_penurunan_longsorantanah_lerenghilir">$r.erosi_penurunan_longsorantanah_lerenghilir</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Dimana? Kedalaman? Lebar&Panjang retakan? pada <b>permukaan lereng hilir</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="dimana_kedalaman_lebarpanjangretakan_lerenghilir">$r.dimana_kedalaman_lebarpanjangretakan_lerenghilir</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Slip dibawah muka air disaluran bawah pada <b>permukaan lereng hilir</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="slip_dbwhair_lerenghilir">$r.slip_dbwhair_lerenghilir</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Tanda rembesan</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tanda_rembesan">$r.tanda_rembesan</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Dimana? Kuantitas? Warna? <b>rembesan</b></td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="dimana_kuantitas_warna_rembesan">$r.dimana_kuantitas_warna_rembesan</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Kondisi Tumbuh-tumbuhan</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="kondtumbuhan">$r.kondtumbuhan</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+    <tr>
+      <td>Jenis pelindung lereng</td>
+      $for r in periodic:
+        <td> <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="jns_plindung_lereng">$r.jns_plindung_lereng</a></td>
+      $if not len(periodic):
+        <td style="color: #f39c12">tidak ada data ${tg.strftime('%d %b %Y')}</td>
+    </tr>
+</table>

@@ -1,0 +1,26 @@
+$def with(agents, tgl)
+$var p_tma: active
+$var js_foot:
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+        \$('#sampling_id').datepicker({format: 'yyyy-mm-dd', autoclose: true, todayHighlight: true});
+    </script>
+<div class="container">
+    <h1>Add</h1>
+    <p><i>Jika telah ada record dengan data POS, Tanggal, dan Jam yang sama, nilai TMA akan ditimpa dengan yang baru</i></p>
+    <form method="POST" action="/tma/add">
+        <div class="form-group"><label>POS <select name="pos" class="form-control">
+            $for a in agents:
+              <option value="$a.table_name">$a.cname ($a.DPL)</option>
+            </select></label></div>
+  <div class="form-group"><label>Tanggal <input id="sampling_id" type="text" name="samplingdate" value="$tgl" class="form-control"></div>
+          <div class="form-group"><label>Jam <select name="samplingtime" class="form-control">
+            <option>06</option>
+            <option>12</option>
+            <option>18</option>
+            <option>00</option>
+</select></label></div>
+<div class="form-group"><label>Nilai TMA Lokal (cm) <input type="text" name="wlevel" class="r form-control"></label></div>
+        <div class="form-group"><input type="submit" class="btn btn-primary"></div>
+    </form>
+</div>

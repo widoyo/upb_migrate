@@ -1,0 +1,51 @@
+$def with(ctx)
+$ pos = ctx.get('pos')
+$ bulan = ctx.get('bulan')
+$ wds = ctx.get('wds')
+$var p_bendungan: active
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+        <h1><a href="/bendungan" title="Daftar Pos Bendungan" style="text-decoration: none;"><span class="glyphicon glyphicon-chevron-left"></a> Pos $pos.cname
+        </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Instrumentasi Piezometer</h2>
+            <h3>${bulan.strftime('%B %Y')}</h3>
+            <table class="table table-responsive table-bordered table-striped boldTable">
+                <thead>
+                    <tr>
+                        <th>Nomor Piezometer</th>
+                        <th>Profil</th>
+                        <th>Elev. Dasar Pipa (m)</th>
+                        <th>Panjang Pipa (m)</th>
+                        <th>Batas Max (m)</th>
+                        <th>Bacaan (m)</th>
+                        <th>Tekanan Pori (mH2O)</th>
+                        <th>Elevasi Piezometer</th>
+                        <th>RU (%)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                $for wd in wds:
+                    <tr>
+                        <td class=""></td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+

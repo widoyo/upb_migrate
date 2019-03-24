@@ -1,0 +1,89 @@
+$def with(pos, meta)
+$var title: $pos.AgentName &rarr;&nbsp;
+$var map: tmb
+$var p_bendungan: active
+$var js_foot:
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript">
+        var cat = [${', '.join([d.waktu.strftime('%d') for d in meta.get('daily')])}]
+
+        \$(document).ready(function(){
+            var chart1 = new Highcharts.Chart({
+                chart: { type: 'column', renderTo: 'chart_1' },
+                xAxis: {
+                    categories: cat
+                },
+                yAxis: [
+                    {
+                        title: { text: 'TMA/Elevasi (M)' },
+                        },
+                        {
+                        title: { text: 'Volume (M3)' },
+                        opposite: true
+                        }
+                ],
+                series: [{
+                    yAxis: 0,
+                    type: 'line',
+                    name : 'Rembesan',
+                    data: [${', '.join(['%s' % (d.rembesan) for d in meta.get('daily')])}]
+                },
+                {
+                    yAxis: 1,
+                    name: 'Inflow',
+                    data: [${', '.join(['%s' % (d.inflow) for d in meta.get('daily')])}]
+                },
+                {
+                    yAxis: 1,
+                    name: 'Outflow',
+                    data: [${', '.join(['%s' % (d.outflow) for d in meta.get('daily')])}]
+                }
+                
+                ]
+                }); // Highcharts
+            var chart2 = new Highcharts.Chart({
+                chart: { type: 'column', renderTo: 'chart_2' },
+                xAxis: {
+                    categories: cat
+                },
+                yAxis: [
+                    {
+                        title: { text: 'TMA/Elevasi (M)' },
+                        },
+                        {
+                        title: { text: 'Volume (M3)' },
+                        opposite: true
+                        }
+                ],
+                series: [{
+                    yAxis: 0,
+                    type: 'line',
+                    name : 'Rembesan',
+                    data: [${', '.join(['%s' % (d.rembesan) for d in meta.get('daily')])}]
+                },
+                {
+                    yAxis: 1,
+                    name: 'Inflow',
+                    data: [${', '.join(['%s' % (d.inflow) for d in meta.get('daily')])}]
+                },
+                {
+                    yAxis: 1,
+                    name: 'Outflow',
+                    data: [${', '.join(['%s' % (d.outflow) for d in meta.get('daily')])}]
+                }
+                
+                ]
+                }); // Highcharts
+            });
+    </script>
+<div class="grid_12"><h1><a href="/bendungan" style="text-decoration: none;">&larr;</a> Pemantauan $pos.cname</h1></div>
+<div class="clear"></div>
+<div class="grid_12">
+    <h2 class="c">Rembesan, TMA, CH dan Tekanan Pori</h2>
+	<div class="grid_2 alpha">&nbsp;<!--<a href="" style="font-size: 24pt;text-decoration: none;">&larr;</a>--></div>
+        <div class="grid_8 c"><span style="font-size: x-large;width: 140px;">$meta['dari'] - $meta['hingga']</span></div>
+	<div class="grid_2 omega r">&nbsp;<!--<a href="" style="font-size: 24pt;text-decoration: none;">&#8594;</a>--></div>
+	<div class="clear"></div>
+    <div id="chart_1" style="border: solid black 1px;width: 100%; height: 350px; margin-bottom: 20px;">Chart TMA, Tekanan Pori</div>
+    <div id="chart_2" style="border: solid black 1px;width: 100%; height: 350px; margin-bottom: 20px;">Tekanan Pori dan Curah Hujan</div>
+</div>

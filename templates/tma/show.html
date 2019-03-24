@@ -1,0 +1,106 @@
+$def with(ctx)
+$ pos = ctx.get('pos')
+$ data = ctx.get('data')
+$ dari = ctx.get('dari')
+$ hingga = ctx.get('hingga')
+$var p_tma: active
+$var extra_header:
+    <style type="text/css">
+        body { overflow-y: scroll;}
+    </style>
+$var js_foot:
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function(){
+            \$('.tanggal').datepicker({format: 'yyyy/mm/dd'});
+            var chart = new Highcharts.Chart({
+                colors: ['#2da0b5', '#f05117', '#0000ff', '#aa0000', '#00aa00', '#0000aa', '#880000', '#008800', '#000088', '#660000'],
+                chart: { type: 'column', renderTo: 'column_chart' },
+                title: { text: 'Grafik Hubungan Hujan ${data[1].get('nama')[2:]} dan TMA $pos.cname' },
+                tooltip: {
+                    valueDecimals: 2,
+                    headerFormat: '<span style="font-size:20px;color: #000000">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:4px">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y} </b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                xAxis: {
+                    categories: $:data[0].get('categories'),
+                    type: 'datetime', 
+                    crosshair: true,
+                    labels: {
+                        style: {
+                            fontSize: '15px'
+                        }
+                    },
+                },
+                yAxis: [{
+                    title: {text: 'TMA (m)', style:{fontSize: '1.5em'}}, opposite: true,
+                    max: $pos.sm,
+                    min: ${pos.DPL},
+                    plotBands: [{color: 'rgba(0,255,0,0.6)', from: $pos.sh, to: $pos.sk},
+                    {color: 'rgba(255,255,0,0.6)', from: $pos.sk, to: $pos.sm},
+                    {color: 'rgba(255,0,0,0.6)', from: $pos.sm, to: ${pos.sm+2}}],
+                    labels: {
+                        style: {
+                            fontSize: '15px'
+                        }
+                    },
+                    marker: {enabled: false},
+                       },{
+                    min: 0,
+                    max: 80,
+                    title: { text: 'Curah Hujan (mm)', style:{fontSize: '1.5em'} },
+                    reversed: true,
+                    labels: {
+                        style: {
+                            fontSize: '15px'
+                        }
+                    },
+                       }
+                    ],
+                plotOptions: {
+                  series: {
+                    cursor: 'pointer',
+                    events: {
+                      click: function() {
+                        console.log(this);
+                        //console.log('chart:', chart);
+                        console.log('this.name, columnIndex', this.name, this.index);
+                      }
+                    }
+                  }
+                },
+                series: series
+            });
+        });
+        var series = [
+            {name: '$data[0].get('nama')', type: 'spline', yAxis: 0, color: 'black', lineWidth: 2,
+            data: $:data[0].get('series')},
+            {name: '$data[1].get('nama')', yAxis: 1, data: $data[1].get('series')}]
+    </script>
+<!-- -->
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+        <h1><a href="/tma" title="Daftar Pos Tinggi Muka Air" style="text-decoration: none;"><span class="glyphicon glyphicon-chevron-left"></a> Pos $pos.cname</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+    <form action="/tma/$pos.AgentId" method="GET" class="text-center"> Dari <input type="text" name="dari" size="10" id="dari" class="tanggal" value="$dari.strftime('%Y/%m/%d')" /> - Hingga <input type="text" name="hingga" size="10" id="hingga" class="tanggal" value="$hingga.strftime('%Y/%m/%d')" /> <input type="submit" class="btn btn-primary" name="submit" value="Submit" /></form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12"><div id="column_chart" style="width: 100%; height: 500px"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4"><img src="" style="border: solid 1px #ccc" alt=""></div>
+        <div class="col-lg-4"><img src="" style="border: solid 1px #ccc" alt=""></div>
+        <div class="col-lg-4"><img src="" style="border: solid 1px #ccc" alt=""></div>
+    </div>
+</div><!-- container-->

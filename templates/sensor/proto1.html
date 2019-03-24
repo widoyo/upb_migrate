@@ -1,0 +1,91 @@
+$def with(ctx)
+$ device = ctx.get('device')
+$ latest_sensor = ctx.get('sensor')
+$var extra_header:
+    <style>
+        .title { font-size: 16px; font-weight: bold; color: black; }
+    </style>
+$var js_foot:
+    <script src="/static/js/moment.min.js"></script>
+    <script>
+        var logger = $:device;
+        var ws = new WebSocket("ws://mqtt.bbws-bsolo.net:22286");
+        var disconnect = 'Disconnected!';
+        var connect = 'Connected!';
+        ws.onopen = function () {};
+        ws.onmessage = function (event) {
+            var data = JSON.parse(event.data);
+            if (data.connected) { \$('#connected-info').text(connect).removeClass("text-danger").addClass("text-info")}
+            if (data.device && data.device.split('/')[1] == logger[0]) {
+                var st = moment(data.sampling * 1000);
+                var ut = moment(data.up_since * 1000);
+                var li = "<tr><td></td>"
+                    + "<td></td>"
+                    + "<td></td>"
+                    + "<td>" + st.format('DD-MMM-YYYY') + "</td>" 
+                    + "<td>" + st.format('HH') + "</td>" 
+                    + "<td>" + st.format('mm') + "</td>" 
+                    + "<td class='text-right'>" + data.tick * 0.5 + "</td>"
+                    + "<td class='text-right text-muted'>" + data.temperature + "</td>"
+                    + "<td class='text-right text-muted'>" + data.humidity + "</td>"
+                    + "<td class='text-right text-muted'>" + data.pressure + "</td>"
+                    + "<td class='text-right text-muted'>" + data.battery + "</td>"
+                    + "<td class='text-right text-muted'>" + data.signal_quality + "</td>"
+                    +" </tr>";
+                \$('#logger-live').append(li);
+            }
+            console.log(data);
+        };
+        function title(str) {
+            return str.replace(/\b\S/g, function(t) { return t.toUpperCase()});
+        };
+    </script>
+<!-- js_foot -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+        <h2 id="connected-info" class="text-danger">Disconnected!</h2>
+        <table class="table table-bordered boldtable" id="logger-live">
+            <thead>
+                <tr>
+                    <th rowspan="2">No</th>
+                    <th rowspan="2" style="width: 100px;">Nama</th>
+                    <th rowspan="2">Lokasi</th>
+                    <th rowspan="2">Tanggal</th>
+                    <th colspan="2">Waktu</th>
+                    <th rowspan="2">Nilai Hujan</th>
+                    <th rowspan="2">Suhu</th>
+                    <th rowspan="2">Kelembaban</th>
+                    <th rowspan="2">Tek. Atmosfir</th>
+                    <th rowspan="2">Battery</th>
+                    <th rowspan="2">GSM Signal</th>
+                </tr>
+                <tr>
+                    <th>Jam</th>
+                    <th>Menit</th>
+                </tr>
+            </thead>
+        $for s in latest_sensor:
+            <tr>
+                <td>1.</td>
+                <td style="width: 100px;">$s.get('device').split('/')[1]</td>
+                <td>Pabelan</td>
+                <td>$s.get('sampling')</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        </div>
+        <div class="col-sm-6">
+        </div>
+    </div>
+    </div>
+
+    </div>
+</div>

@@ -1,0 +1,36 @@
+$def with (ctx)
+$ poses = ctx.get('poses')
+$ dates = ctx.get('dates')
+$var p_curahhujan = 'active'
+<div class="container">
+    <div class="row">
+        <div class="column col-sm-12"><h1>Telemetri vs Manual ${len(dates)} Hari Lalu</div>
+            <table class="table table-stripped table-bordered">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Pos</th>
+                    $for d in dates:
+                        <th colspan="4" class="text-center">$d</th>
+                       <th rowspan="2">Delta</th>
+                    </tr>
+                    <tr>
+                    $for i in range(len(dates)):
+                        <th class="bg-warning">#</th>
+                        <th>Te</th>
+                        <th>Ma</th>
+                        <th class="bg-info">De</th>
+                    </tr>
+                </thead>
+            $for tname, data in poses.items():
+                <tr>
+                    <td>$tname</td>
+                    $for d in data.get('data_hujan'):
+                        <td class="bg-warning text-right">$d.get('num_t')</td>
+                        <td class="text-right">$d.get('total')</td>
+                        <td class="text-right">$d.get('manual')</td>
+                        <td class="bg-info delta text-right">${d.get('manual') or 0 - d.get('total') or 0}</td>
+                    <td class="text-right sum_delta"></td>
+                </tr>
+            </table>
+    </div>
+</div>

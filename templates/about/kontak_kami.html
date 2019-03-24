@@ -1,0 +1,37 @@
+$var js_foot:
+    <script type="text/javascript">
+    function initMap() {
+        var myLatLng = {lat: -7.5607292, lng: 110.7688502};
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: myLatLng
+        });
+
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map
+        });
+    }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmnJGdC-ZhVd98H3mwMRv2GU2dlv1D7IA&callback=initMap" async defer></script>
+
+<!-- -->
+    <div class="container">
+                        <h3 class="uppercase">kontak kami</h3>
+                <div class="maps">
+                    <div id="map"></div>
+                </div>
+                    <p>Alamat kantor :</p>
+
+<p>Jl. Solo &ndash; Kartosuro Km. 7 PO. Box.<br />
+267. Telp/Fax(0271) 716428 Pabelan, Kartosuro,<br />
+Sukoharjo 57152</p>
+
+<p><br />
+Alamat email : hidrologi.bbwsbs@gmail.com<br />
+Nomor hp : 08112757475</p>
+
+                    </div>
+

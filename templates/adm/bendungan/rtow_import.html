@@ -1,0 +1,21 @@
+$def with(ctx)
+$var title: Import RTOW
+<h1>Import RTOW</h1>
+<h2> ${ctx.get('table_name')}</h2>
+<form action="/adm/bendungan/${ctx.get('table_name')}/rtow/import" method="POST" enctype="multipart/form-data">
+    <p>File berformat TAB separated value. Contoh file data <strong>${ctx.get('table_name')}</strong> dapat diambil <a href="/adm/bendungan/${ctx.get('table_name')}/rtow/export">di sini</a>.</p>
+    <p>Ketentuan file:</p>
+    <ol>
+        <li>Teks file</li>
+        <li>Baris pertama nama unik bendungan</li>
+        <li>Baris kedua nama-nama kolom</li>
+        <li>Baris ketiga hingga 24 baris berikutnya berisi data</li>
+    </ol>
+<div class="custom-file">
+      <input type="file" name="rtow_file" class="custom-file-input" id="customFile">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+        <input type="submit">
+</div>
+</form>
+
+

@@ -1,0 +1,100 @@
+$def with(pos, meta)
+$var title: $pos.AgentName &rarr;&nbsp;
+$var p_bendungan: active
+$var extra_header:
+    <link rel="stylesheet" href="/static/css/datepicker3.css">
+$var js_foot: 
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript"> 
+        \$(document).ready(function(){ \$('#datepicker1').datepicker({ format: 'yyyy-mm-dd',
+                startView: "years",
+                minViewMode: "years",
+                autoclose: true});
+        \$('#datepicker1').on('changeDate', function() { window.location = '/bendungan/$pos.AgentId/vnotchh?periode=' + \$(this).data('datepicker').getFormattedDate('yyyy/mm/dd'); });
+        var cat = [$:{', '.join([d[0].strftime('\'%d-%m-%Y\'') for d in meta.get('rst1')])}];
+        var cat2 = [$:{', '.join([x[0][0].strftime('\'%d-%m-%Y\'') for x in meta.get('rst2')])}];
+        var batas_vn = "$pos.vn_q1_limit";
+        if (isNaN(parseFloat('$pos.vn_q1_limit'))) {
+            batas_vn = -2;
+            } else {
+            batas_vn = '$pos.vn_q1_limit';
+            }
+        var siaga4 = "$pos.siaga4" ;
+        var sedimen = '$pos.sedimen';
+        var arrA =[${', '.join(['%s' % (0 if d[4]==0 else d[4] or 'null') for d in meta.get('rst1')])}];
+        var maksA = Math.max.apply(Math,arrA);
+        var arrB =[${', '.join(['%s' % (0 if d[10]==0 else d[10] or 'null') for d in meta.get('rst1')])}];
+        var maksB = Math.max.apply(Math,arrB);
+        var maksimal1 = Math.max(maksA, maksB);
+        var arrC =[${', '.join(['%s' % (0 if d[2]==0 else d[2] or 'null') for d in meta.get('rst1')])}];
+        var maksC = Math.max.apply(Math,arrA);
+        var arrD =[${', '.join(['%s' % (0 if d[8]==0 else d[8] or 'null') for d in meta.get('rst1')])}];
+        var maksD = Math.max.apply(Math,arrB);
+        var maksimal2 = Math.max(maksC, maksD);
+        if (isNaN(parseFloat(sedimen))) {batas = siaga4;} else {batas = sedimen;};
+        var chart1 = new Highcharts.Chart({chart: { renderTo: 'container' , marginBottom:100}, title: {text: 'TMA RTOW dan Realisasi Tahun ' + ${meta.get('tanggal').strftime('%Y')}, style: { fontSize: '30px', fontWeight: 'bold'}}, tooltip:{style:{fontWeight:'bold', fontSize:'18px'}, valuePrefix: '+ ', valueSuffix: ' m'}, xAxis: { categories: cat, lineWidth: 4, lineColor: '#000000'}, plotOptions: { series: { connectNulls: true }}, yAxis: [{ lineWidth: 4, min: batas - 2, lineColor: '#000000', labels:{format: '{value:.2f}'}, title: { text: 'TMA (M)' }, tickInterval:2, plotLines: [{ value: sedimen, color: 'blue', dashStyle: 'shortdash', width: 2, label: {text: 'Sedimen: '+parseFloat(sedimen), align: 'right', y:10}}, { value: siaga4 , color: 'brown', dashStyle: 'longdashdot', width:2, label:{text:'Elevasi Minimum: '+parseFloat(siaga4), align: 'center'}}]}],
+                series: [{yAxis: 0, type: 'spline', name : 'RTOW TMA', data: [${', '.join(['%s' % (d[1] or 'null') for d in meta.get('rst1')])}], visible: false },
+                         {yAxis: 0, type: 'spline', name : 'Realisai TMA', data: [${', '.join(['{y: %s, vol: %s}' % (d[6] or 'null', d[7]  or 'null') for d in meta.get('rst1')])}], tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>TMA Realisasi <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Elevasi: {point.y} <br> Volume: {point.vol} m3'}
+      },
+                         {yAxis: 0, type: 'spline', name : 'Batas Atas', data: [${', '.join(['%s' % (d[12] or 'null') for d in meta.get('rst1')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>RTOW<br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Batas Atas: {point.y}'}
+      },
+                         {yAxis: 0, type: 'spline',name : 'Batas Bawah',data: [${', '.join(['{y: %s, vol: %s}' % (d[13] or 'null', d[15]  or 'null') for d in meta.get('rst1')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>RTOW <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Batas Bawah: {point.y} <br> Volume: {point.vol} m3'}
+      }
+                ]
+                });
+
+
+
+        \$(document).ready(function(){
+            Highcharts.wrap(Highcharts.Series.prototype, 'render', function(proceed){
+            if (!this.clipBox && this.animate && this.animate.toString().indexOf('sharedClip') !== -1){
+              this.clipBox = Highcharts.merge(this.chart.clipBox);
+              this.clipBox.widht = this.xAxis.len;
+              this.clipBox.height = this.yAxis.len;
+            } else if (this.chart[this.sharedClipkey]){
+              HighchartsAdapter.stop(this.chart[this.sharedClipKey]);
+              this.chart[this.sharedClipKey].attr({
+                widht: this.xAxis.len,
+                height: this.yAxis.len
+              });
+            }
+            proceed.call(this);
+          });
+            var chart2 = new Highcharts.Chart({
+              chart: { renderTo: 'container2' , marginBottom:100},
+              title: {text:''},
+              subtitle: {text: 'Grafik Rembesan dan Curah Hujan', align: "left", style: { fontSize: '20px', fontWeight: 'bold'}}, tooltip:{style:{fontWeight:'bold', fontSize:'18px'}, valueSuffix: ''},
+              xAxis: { categories: cat2,lineWidth: 4, lineColor: '#000000'},
+              plotOptions: {  series: { connectNulls: true }},
+              yAxis: [ { startOnTick: false, minPadding:0.2, min: -1, lineWidth: 4, lineColor: '#000000',title: { text: 'Curah Hujan', style: { fontSize: '16px', fontWeight: 'bold'}}, labels:{format: '{value:.2f}'},top:50,height:120,opposite: true }, { startOnTick: false, minPadding:0.2, min: -1, max: batas_vn+ 3, lineWidth: 4, lineColor: '#000000', title: { text: 'Rembesan (L/Det)', style: { fontSize: '16px', fontWeight: 'bold'}}, tickInterval:2, labels:{format: '{value:.2f}'}, plotLines: [{ value: batas_vn, color: 'red', dashStyle: 'shortdash', width: 2, label: {text: 'batas rembesan: '+parseFloat(batas_vn) + ' L/Detik', align: 'center'}}], top: 200, height: 150}],
+              series: [{ yAxis: 1, type: 'spline', name: 'Vn. 1',
+              data: [${', '.join(['%s' % (0 if x[0][16]==0 else x[0][16] or 'null') for x in meta.get('rst2')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>Vnotch 1 <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Vnotch 1: {point.y} l/det'}},
+                      { yAxis: 1, type: 'spline', name: 'Vn. 2',
+              data: [${', '.join(['%s' % (0 if x[0][17]==0 else x[0][17] or 'null') for x in meta.get('rst2')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>Vnotch 2 <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Vnotch 2: {point.y} l/det'}},
+                      { yAxis: 1, type: 'spline', name: 'Vn. 3',
+              data: [${', '.join(['%s' % (0 if x[0][18]==0 else x[0][18] or 'null') for x in meta.get('rst2')])}],tooltip: {useHTML: true, headerFormat:'<p style="font-size:20px"><big><strong>Vnotch 3 <br>Tgl: {point.key}</strong></big></p>', pointFormat:'<br>Vnotch 3: {point.y} l/det'}},
+                      { yAxis: 0, type: 'spline', name: 'Curah Hujan',
+              data: [${', '.join(['%s' % (0 if x[1]==0 else x[1] or 'null') for x in meta.get('rst2')])}] } ]
+                }); });
+            });
+    </script>
+<div class="container">
+    <div class="row">
+            <div class="btn-group" role="group" style="float: right">
+                <a href="/bendungan/$pos.AgentId" class="btn btn-primary">TMA</a>
+                <a href="/bendungan/$pos.AgentId/operasi" class="btn btn-primary">RTOW</a>
+                <!--<a href="/bendungan/$pos.AgentId/keamanan" class="btn btn-primary">Keamanan</a>-->
+                <a href="#" class="btn btn-default">VNOTCH</a>
+                <a href="/bendungan/$pos.AgentId/piezometerr" class="btn btn-primary">PIEZOMETER</a>
+                
+            </div>
+    <h2><a href="/bendungan" style="text-decoration: none;">&larr;</a> $pos.cname | Volume: ${'%.2f' % (float(pos.volume) / 1000000.0)} M3 </h2>
+<div class="text-center"> Periode: <span id="datepicker1">${meta.get('tanggal').strftime('%Y')} </span> <span>( $meta['rst1'][0][0].strftime('%b %Y') &#8212; $meta['rst1'][-1][0].strftime('%b %Y'))</span> </div>
+</div><!-- row -->
+<div class="row">
+	<div class="col-md-2">&nbsp;</div>
+</div>
+<div id="container" style="min-width: 400px; height: 600px; margin: 0 auto"> </div>
+<div id="container2" style="min-width: 400px; height: 450px; margin: 0 auto"> </div>
+

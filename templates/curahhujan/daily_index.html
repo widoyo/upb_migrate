@@ -1,0 +1,22 @@
+$def with(data)
+$ periode = data.get('periode')
+$ year = data.get('year')
+$var p_curahhujan: active
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Curah Hujan Harian $periode $year</h2>
+            <div id="chart_1">
+            </div>
+        </div>
+    </div>
+</div>
+$var js_foot:
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function() {
+            var chart_option = {
+                chart: {type: 'column', renderTo: 'chart_1'}
+            };        
+        });
+    </script>

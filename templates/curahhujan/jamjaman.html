@@ -1,0 +1,85 @@
+$def with(ctx)
+$ pos = ctx.get('pos')
+$ data = ctx.get('data')
+$ tanggal = ctx.get('tanggal')
+$ sebelum = ctx.get('sebelum')
+$ sesudah = ctx.get('sesudah')
+$var p_curahhujan: active
+$var js_foot:
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+      \$('#datepicker').datepicker({
+        todayHighlight: true, 
+        format: 'yyyy/mm/dd',
+        autoclose: true});
+        \$('#datepicker').on('changeDate', function() {
+              window.location = '/curahhujan/$pos.AgentId?d=' + \$('#datepicker').datepicker('getFormattedDate');
+              });
+            var chart = new Highcharts.Chart({
+                chart: { type: 'column', renderTo: 'column_chart' },
+                title: { text: 'Curah Hujan Jam-jaman' },
+                tooltip: {
+                    valueDecimals: 0,
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:4px">' +
+                        '{series.name}</td>' +
+                        '<td style="padding:0"><b>{point.y} mm</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                xAxis: {
+                    categories: $data.get('categories'),
+                    title: { text: 'Jam', style: {fontSize: '18px'}},
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    max: 50,
+                    title: { text: 'Curah Hujan (mm)',
+                        style: {
+                            fontSize: '18px'
+                        }
+                    }
+                },
+                series: series
+            });
+    </script>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <h2><a href="/curahhujan" title="Daftar Pos Hujan" style="text-decoration: none;"><span class="glyphicon glyphicon-chevron-left"></span></a> Pos $pos.cname</h2>
+        </div>
+        <div class="col-sm-3" style="padding-top: 20px;">
+            <a href="?d=${sebelum.strftime('%Y/%m/%d')}">${sebelum.strftime('%d')} &larr;</a> | <span id="datepicker" data-date="${tanggal.strftime('%Y/%m/%d')}" style="font-weight: bold;font-size: 18px;">${tanggal.strftime('%d %b %Y')}</span> | 
+            $if sesudah:
+                <a href="?d=${sesudah.strftime('%Y/%m/%d')}">&rarr; ${sesudah.strftime('%d')}</a>
+            $else:
+                &rarr;
+        </div>
+        <div class="col-sm-5" style="padding-top: 20px;">
+            <div class="btn-group" role="group" style="float: right">
+                <a href="#" class="btn btn-default">Jam-jaman</a>
+                <a href="/curahhujan/$pos.AgentId/${now.strftime('%Y/%m')}" class="btn btn-primary">Harian</a>
+                <a href="/curahhujan/$pos.AgentId/daily" class="btn btn-primary">10 Harian</a>
+                <a href="/curahhujan/$pos.AgentId/bulanan" class="btn btn-primary">Bulanan</a>
+                <a href="/curahhujan/$pos.AgentId/tertinggi" class="btn btn-primary">Maksimum</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="column_chart" style="width: 100%; height: 400px;"></div>
+        </div>
+    </div>
+</div>
+<script>
+var series = [
+  {
+      name: 'Curah Hujan',
+      data: $:data.get('series')
+  }
+
+];
+</script>

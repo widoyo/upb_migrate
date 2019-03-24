@@ -1,0 +1,126 @@
+$def with (bendungan, meta, wilayah, js)
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.3.0/paper.css">
+<style>
+    @page { size: A4 }
+    table { page-break-inside: avoid; }
+    html { font-family: helvetica;}
+    .logo { float: left; padding: 0px; }
+    .header { padding: 0px;margin-top: 0px; }
+    .header p { margin-top: 0;margin-bottom: 0; text-transform: uppercase; text-align: center; }
+    p.bbws { font-weight: bold; font-size: 18px; }
+    p.tiny { font-size: 9px;}
+    h3 { line-height: 90%; text-align: center; }
+    .table-bordered { border: solid 2px black; border-collapse: collapse; border-spacing: 0; }
+    .table-bordered th { padding: 4px; border: solid 1px black; }
+    th, td { margin: 0; padding: 4px; border: solid 1px black;}
+    td { font-size: 12px; }
+    .text-right { text-align: right; }
+    .jam { font-size: 10px;}
+    td.mab { background-color: red; color: white; }
+    td.man { background-color: green; color: white; }
+    td.mamin { background-color: yellow; }
+    .text-center { text-align: center; }
+    .mengetahui { width: 33%; float: left; font-size: 12px;}
+</style>
+</head>
+<body class="A4">
+<section class="sheet padding-10mm">
+<div class="container">
+    <div class="logo">
+    <img src="/static/images/logo_pu.png" height=80 width=80 alt="Logo PUPR">
+</div>
+<div class="header">
+    <p>Kementerian Pekerjaan Umum dan Perumahan Rakyat</p>
+    <p>Direktorat Jenderal Sumber Daya Air</p>
+    <p class="bbws">Balai Besar Wilayah Sungai Bengawan Solo</p>
+    <p class="tiny">Jl. Solo - Kartasura Km. 7 PO BOX 267 Telp/Fax (0271) 716071, Pabelan, Kartasura, Sukoharjo 57162</p>
+</div>
+<h3 class="c">MONITORING BENDUNGAN<br>
+    WILAYAH SUNGAI BENGAWAN SOLO<br>
+    Status: $:meta.get('now')</h3>
+	$code:
+	    wil = "0"
+	$for c in bendungan:
+        $if c.pos.wilayah != wil:
+            $if wil != "0":
+                </tbody>
+                </table>
+                &nbsp;
+                $if wil != 2:
+                    </section>
+                    <section class="sheet padding-10mm">
+            $code:
+                wil = c.pos.wilayah
+            <table class="table table-bordered boldtable">
+            <thead>
+            <tr>
+                <th style="background-color: #d2d2d2" colspan="13">Bendungan Wilayah $wilayah[c.pos.wilayah]</th>
+            </tr>
+              <tr>
+                <th rowspan="3">No</th>
+                <th rowspan="3">Nama Pos</th>
+                <th rowspan="3">Kabupaten</th>
+                <th colspan="3">Data Teknis</th>
+                <th colspan="3">TMA</th>
+                <th colspan="3">Outflow</th>
+                <th colspan="3">Keamanan</th>
+              </tr>
+              <tr>
+                <td class="jam">Muka Air Minimum</td>
+                <td class="jam">Muka Air Normal</td>
+                <td class="jam">Muka Air Banjir</td>
+                <td class="jam">06:00</td>
+                <td class="jam">12:00</td>
+                <td class="jam">18:00</td>
+                <td class="jam">Intake</td>
+                <td class="jam">Limpasan Spillway</td>
+                <td class="jam">V-Notch</td>
+                <td class="jam">Piezometer</td>
+              </tr>
+              <tr>
+                <td class="jam">(m)</td>
+                <td class="jam">(m)</td>
+                <td class="jam">(m)</td>
+                <td class="jam">(m)</td>
+                <td class="jam">(m)</td>
+                <td class="jam">(m)</td>
+                <td class="jam">(m3/dt)</td>
+                <td class="jam">(m3/dt)</td>
+                <td class="jam">(L/dt)</td>
+                <td class="jam">(m)</td>
+            </thead>
+        <tr>
+            <td>$loop.index</td>
+            <td>$c.pos.cname</td>
+            <td>
+            $if c.pos.kab:
+                $c.pos.kab
+            </td>
+            <td class="text-right mab">$c.pos.siaga4</td>
+            <td class="text-right man">$c.pos.siaga1</td>
+            <td class="text-right mamin">$c.pos.siaga3</td>
+            <td class="text-right">$c.tma.pagi.manual</td>
+            <td class="text-right">$c.tma.siang.manual</td>
+            <td class="text-right">$c.tma.sore.manual</td>
+            <td class="text-right">$c.tma.outflow_intake_q</td>
+            <td class="text-right">$c.tma.outflow_spillway_q</td>
+            <td class="text-right">$c.tma.vnotch</td>
+            <td class="text-right">$c.tma.p1</td>
+        </tr>
+    <!-- -->
+             </tbody>
+         </table>
+         <p style="font-size: 11px;">Data lengkap dapat dilihat melalui website kami:<br>
+         http://hidrologi.bbws-bsolo.net/bendungan</p>
+         <div class="text-center">
+         <div class="mengetahui kiri">&nbsp;</div>
+         <div class="mengetahui tengah">&nbsp;</div>
+         <div class="mengetahui kanan">a.n. Kepala Satker O & P SDA<br>
+             PPK O & P SDA 1<br><br><br><br>ttd<br><br><span style="text-decoration: underline;">Antonius Suryono Amd.T, SH, MMT</span><br>
+         NIP. 19691222 199703 1 005</div>
+    </div>
+    </section>
+    </body>
+    </html>

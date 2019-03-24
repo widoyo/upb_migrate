@@ -1,0 +1,109 @@
+$def with (content)
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Sistem Informasi Hidrologi dan Kualitas Air</title>
+    <link rel="shortcut icon" href="/static/images/favicon.ico" />
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Style SVC -->
+    $:content.get('extra_header', '')
+
+</head>
+<body>
+<div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="/static/images/logo_bbws_bs.png" alt="" height="100%" class="main-logo">
+                    <img src="/static/images/bbws_bs.png" alt="" height="100%">
+                </a>
+
+                <ul class="nav navbar-nav navbar-right" style="margin-top:15px;">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user"></i> <b>PROFIL</b> <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/about/wilayah-kerja">Wilayah Kerja</a></li>
+                            <li><a href="/about/struktur-organisasi">Struktur Organisasi</a></li>
+                            <li><a href="/about/profil-tim">Profil Tim</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/about/kontak-kami"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li>
+                    <li><a>
+                        <div class="search" style="margin-top: -8px;">
+                            <form id="demo-2" class="cari">
+                                <div class="ui-widget">
+                                    <input id="tags" type="search" placeholder="Search">
+                                </div>
+                            </form>
+                        </div>
+                    </a></li>
+                </ul>
+</div>
+<div class="container-fluid">
+
+    <p style="color:#fff;">SISTEM INFORMASI HIDROLOGI DAN KUALITAS AIR</p>
+</div>
+<nav id="mainNav" class="navbar navbar-default navbar-fixed-top" data-spy="affix" data-offset-top="5">
+    <div class="navbar-bottom">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+        </div><!-- /.container -->
+    </div>
+    <div class="navbar-footer">
+        <div class="list-group">
+    <a href="/curahhujan" class="list-group-item $:content.get('p_curahhujan', '')" role="button"><img src="/static/images/icons/icon-curah-hujan.png" alt="">&emsp; CURAH HUJAN</a>
+    <a href="/tma" class="list-group-item $:content.get('p_tma', '')" role="button"><img src="/static/images/icons/icon-muka-air.png" alt="">&emsp; TINGGI MUKA AIR</a>
+    <a href="/kekeringan" class="list-group-item $:content.get('p_kekeringan', '')" role="button"><img src="/static/images/icons/icon-kekeringan.png" alt="">&emsp; KEKERINGAN</a>
+    <a href="/kualitasair" class="list-group-item $:content.get('p_kualitas_air', '')" role="button"><img src="/static/images/icons/icon-kualitas-air.png" alt="">&emsp;&emsp; KUALITAS AIR</a>
+    <a href="/bendungan" class="list-group-item $:content.get('p_bendungan', '')" role="button"><img src="/static/images/icons/icon-bendungan.png" alt="">&emsp; BENDUNGAN</a>
+</div>    </div>
+</nav>
+    <div class="pt-45 container-fluid">
+        <div class="content">
+            $:content
+            </div>
+        </div>
+        <div class="row">
+            <div class="histats">
+                <div id="histats_counter"></div>
+            </div>
+            <div class="footer">
+                <p>Copyright &copy; 2016</p>
+            </div>
+        </div><!-- row -->
+    </div><!-- pt-45 -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Histats.com  START  (aync)-->
+    <script type="text/javascript">var _Hasync= _Hasync|| [];
+        _Hasync.push(['Histats.start', '1,3803507,4,3,170,30,00011111']);
+        _Hasync.push(['Histats.fasi', '1']);
+        _Hasync.push(['Histats.track_hits', '']);
+        (function() {
+            var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+            hs.src = ('//s10.histats.com/js15_as.js');
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+        })();</script>
+    <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?3803507&101" alt="cool hit counter" border="0"></a></noscript>
+    <!-- Histats.com  END  -->
+    $:content.get('js_foot', '')
+
+</body>
+</html>

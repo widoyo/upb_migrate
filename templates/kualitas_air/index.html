@@ -1,0 +1,48 @@
+$def with (ctx)
+$ poses = ctx.get('poses', [])
+$ data = ctx.get('data', [])
+$ waktu = ctx.get('waktu')
+$var p_kualitas_air: active
+$code:
+    bulan = 'Jan_Feb_Mar_Apr_Mei_Jun_Jul_Ags_Sep_Okt_Nop_Des'.split('_')
+$var extra_header:
+    <style>
+      .table-legenda { border: solid 1px #ccc; }
+      .table-legenda th, .table-legenda td { padding: 10px; border: solid 1px #ddd; }
+    </style>
+$var js_foot:
+    <script type="text/javascript">
+        var uri = 'kualitasair';
+    </script>
+<!-- -->
+<!-- Chart: DO, BOD, COD, TSS, Nitrat, Nitrit, Minyak&Lemak, Total Detergen, Total Coliform -->
+<div class="container">
+    <h2>Index Pencemaran Tahun ${waktu.strftime('%Y')}</h2>
+    <table class="table table-bordered boldtable">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>POS Kualitas Air</th>
+            $for i in range(0, 12):
+                <th>${bulan[i]}</th>
+            </tr>
+        </thead>
+        <tbody>
+$for k in data:
+    <tr>
+        <td>$loop.index</td>
+        <td><a href="/kualitasair/${k[0]}">${k[1]}</a></td>
+        $for i, j in k[2].items():
+            <td class="text-right">${j}</td>
+
+    </tr>
+  </tbody>
+</table> 
+<p>Evaluasi terhadap Nilai Index Pencemaran</p>
+<table class="table-legenda">
+    <tr><th>0 <= PIj <= 1.0</th><td>Memenuhi Baku Mutu</td></tr>
+    <tr><th>1.0 < PIj < 5.0</th><td>Cemar Ringan</td></tr>
+    <tr><th>5.0 < PIj < 10</th><td>Cemar Sedang</td></tr>
+    <tr><th>PIj > 10</th><td>Cemar Berat</td></tr>
+</table>
+</div><!-- container -->

@@ -1,0 +1,140 @@
+$def with(pos, meta)
+$var title: $pos.AgentName &rarr;&nbsp;
+$var p_bendungan: active
+$var js_foot:
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function(){
+            var chart1 = new Highcharts.Chart({
+                chart: { type: 'column', renderTo: 'chart_1' },
+                title: {text: 'Tekanan Pori Profil A'},
+                legend: {enabled: false},
+		        xAxis: { 
+                	categories: ['P1', 'P2','P3'],
+                  labels: {
+                  	style: {fontSize: '16px'}
+                  }
+                },
+                plotOptions: {
+                    series: {
+                    		stacking: 'normal',
+                        pointWidth: 10
+                    },
+                    column: { grouping: false},
+
+                },
+                series: [{
+                    data: [3, 4, 3]
+                }, {
+                		dataLabels: {
+                    	enabled: true,
+                      verticalAlign: 'top'
+                    },
+                    data: [7, 3, 2]
+                }, {
+                	stack: 0,
+                  color: '#bf0b23',
+                  dataLabels: {
+                  	enabled: true,
+                    verticalAlign:'top',
+                    style: {
+                    	fontSize: '14px'
+                    },
+                  },
+                	data: [6, 2, 1]
+                }],
+
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f})<br/>'
+                }
+            }, function(chart){
+                chart.renderer.image('/static/images/tg_landai.png', 10, 100, 950, 150).add();
+            });
+            var chart2 = new Highcharts.Chart({
+                chart: { type: 'column', renderTo: 'chart_2' },
+                title: {text: 'Tekanan Pori Profil B'},
+                legend: {enabled: false},
+		            xAxis: { 
+                	categories: ['P1', 'P2','P3'],
+                  labels: {
+                  	style: {fontSize: '16px'}
+                  }
+                },
+                plotOptions: {
+                    series: {
+                    		stacking: 'normal',
+                        pointWidth: 40
+                    },
+                    column: { grouping: false},
+
+                },
+                series: [{
+                    data: [3, 4, 3]
+                }, {
+                		dataLabels: {
+                    	enabled: true,
+                      verticalAlign: 'top'
+                    },
+                    data: [7, 3, 2]
+                }, {
+                	stack: 0,
+                  color: '#bf0b23',
+                  dataLabels: {
+                  	enabled: true,
+                    verticalAlign:'top',
+                    style: {
+                    	fontSize: '14px'
+                    },
+                  },
+                	data: [6, 2, 1]
+                }],
+
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f})<br/>'
+                }
+                });
+            var chart3 = new Highcharts.Chart({
+                chart: { type: 'column', renderTo: 'chart_3' },
+                title: {text: 'Tekanan Pori Profil C'},
+                legend: {enabled: false},
+		            xAxis: { 
+                	categories: ['P1', 'P2','P3'],
+                  labels: {
+                  	style: {fontSize: '16px'}
+                  }
+                },
+                plotOptions: {
+                    series: {
+                    		stacking: 'normal',
+                        pointWidth: 40
+                    },
+                    column: { grouping: false},
+
+                },
+                series: [{
+                    data: [7, 5, 3]
+                }, {data:[2, 3, 4]}, {data: [0, 0, 0]}]
+                });
+              });
+                
+    </script>
+<div class="container">
+    <div class="row">
+            <div class="btn-group" role="group" style="float: right">
+                <a href="/bendungan/$pos.AgentId" class="btn btn-primary">Elevasi</a>
+                <a href="/bendungan/$pos.AgentId/operasi" class="btn btn-primary">Operasi</a>
+                <a href="#" class="btn btn-default">Keamanan</a>
+            </div>
+    <h1><a href="/bendungan" style="text-decoration: none;">&larr;</a> $pos.cname</h1>
+    </div>
+<div class="row">
+    <div id="chart_1" style="height: 350px; margin-bottom: 20px;">Tekanan Pori</div>
+</div>
+<div class="row">
+    <div id="chart_2" style="height: 350px; margin-bottom: 20px;">Tekanan Pori</div>
+</div>
+<div class="clear">
+    <div id="chart_3" style="height: 350px; margin-bottom: 20px;">Tekanan Pori</div>
+</div>
+</div><!-- container -->
+

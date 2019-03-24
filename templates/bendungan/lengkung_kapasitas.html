@@ -1,0 +1,108 @@
+$def with(pos, meta)
+$var title: $pos.AgentName &rarr;&nbsp;
+$var map: tmb
+$var p_bendungan: active
+$var extra_header:
+    <style type="text/css">
+    body {
+       overflow-y: scroll;
+    }
+    .content .single {
+       height: auto;
+       border-radius: 0;
+       background-color: #ffffff;
+       border: none;
+       overflow-y: hidden !important;
+    }
+    </style>
+$var js_foot:
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function(){
+                var chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: "my_chart",
+                        type: 'spline'
+                    },
+                    title: { text: ""},
+                    plotOptions: {
+                        series: {
+                            marker: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    yAxis: { max: 12, 
+                            title: { text: "Elevasi (M)", 
+                                    style: {"color": "#000000"}},
+                                    type: 'logarithmic', labels: { style: {"color": "#000000"}, formatter: function () { return '+' + Highcharts.numberFormat(this.value, 1, ',', '.');}},
+                    plotLines: [{ value: 10, width: 2, color: '#cc0000', dashStyle: 'dash', label: { text: '+' + $pos.siaga3 + ' MA Banjir', align: 'center' }},
+                            $:meta.get('plotlines')
+                            { value: $pos.siaga1, width: 2, color: '#009900', dashStyle: 'longdash', label: { text: '+' + $pos.siaga1 + ' MA Normal', align: 'center' }},
+                            { value: 1, width: 2, color: '#000099', dashStyle: 'longdash', label: { text: '+' + $pos.siaga4 + ' MA Minimum', align: 'center'}}],
+                            gridLineWidth: 0, lineWidth: 1},
+                    xAxis: { labels: {enabled: false},
+                                lineColor: '#ffffff', lineWidth: 0, 
+                                tickWidth: 2, offset: 0, 
+                    },
+                    series: [
+                            { type: 'area', showInLegend: true,
+                              marker: {
+                                          enabled: false
+                                      },
+                              lineColor: '#cc0000',
+                              name: "Elevasi Sekarang", 
+                              data: $:meta.get('elev_series'),
+                              fillColor: {
+                                linearGradient: {
+                                    x1: 0, y1: 0, x2: 0, y2: 1
+                                },
+                                stops: [ [0.0, 'rgba(36, 143, 143, 0.5)'], [0.7, 'rgba(112, 219, 219, 0.5)'], [1.0, 'rgba(235, 250, 250, 0.5)'] ]
+                              },
+                            },
+                            {showInLegend: false, 
+                              lineColor: '#145252', 
+                              name: "Elevasi +",
+                              data: $:meta.get('series')},
+                            ] 
+                }, function(chart){ 
+                    chart.renderer.image('/static/images/tg.png', 16, 40, 450, 250).add();
+                });
+        });
+    </script>
+<!-- -->
+<div class="grid_10">
+    <h1><a href="/bendungan" style="text-decoration: none;">&larr;</a> $pos.cname
+    <div class="grid_2" style="float: right">
+        <a href="/bendungan/$pos.AgentId/operasi" class="btn btn-default">Operasi</a>
+        <a href="/bendungan/$pos.AgentId/keamanan" class="btn btn-default">Keamanan</a>
+    </div></h1>
+</div>
+
+    <form method="GET" style="font-size:24pt;" class="text-center">Status TMA&nbsp;&nbsp;<br><input type="text" style="border: none; font-size: x-large;width: 140px;" class="tanggal show-current-date" name="d" value="$meta['now']"></form>
+	&nbsp;<!--<a href="" style="font-size: 24pt;text-decoration: none;">&#8594;</a>-->
+    <div id="my_chart" style="width: 100%; height: 350px; margin-bottom: 200px;"></div>
+    <h3>Table Kapasitas Tampungan</h3>
+    <table class="table-striped">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 70px">Elevasi (M)</th><th class="text-center" style="width: 100px">Volume (M<sup>3</sup>)</th>
+            </tr>
+        </thead>
+    $for k,v in meta.get('tma').get('kapasitas_series'):
+        <tr>
+            <td class="number text-right">${commify(k)}</td><td class="number text-right">${commify(v)}</td>
+        </tr>
+    </table>
+    <h3>Elevasi Sekarang</h3>
+    <pre>    Data dari Petugas (e): $meta.get('tma').get('elevasi')
+    p1(y1, x1) = $meta.get('tma').get('p1')
+    p2(y2, x2) = $meta.get('tma').get('p2')
+    
+    Hasil hitung komputer : $meta.get('tma').get('vol')
+    ===================
+
+    RUMUS : 
+    
+    kapasitas = x1 + (e - y1) / (y2 - y1) * (x2 - x1) </pre>
+</div>

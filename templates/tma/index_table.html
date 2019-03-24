@@ -1,0 +1,58 @@
+$def with (tma, wilayah, meta)
+                        <table class="table table-bordered mt-50">
+                            <thead>
+                            <tr>
+                                <th rowspan="3">No</th>
+                                <th rowspan="3">POS TMA</th>
+                                <th rowspan="3" colspan="3">LEVEL (TTG)</th>
+                                <th><a data-pjax href="?d=$:meta.get('before')"><span class="glyphicon glyphicon-arrow-left"></span></a></th>
+                                <th colspan="5">$meta['now']</th>
+                                <th><a data-pjax href="?d=$:meta.get('after')"><span class="glyphicon glyphicon-arrow-right"></span></a></th>
+                            </tr>
+                            <tr>
+                                <th colspan="7">WAKTU (WIB)</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4">TELEMETRI</th>
+                                <th colspan="3">MANUAL</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                    $code:
+                        wil = "0"
+                    $for t in tma:
+                        $if t.pos.wilayah != wil:
+                            $code:
+                                wil = t.pos.wilayah
+
+                            <tr>
+                                <td colspan="2" class="active">Wilayah $wilayah[t.pos.wilayah]</td>
+                                <td class="active">SH</td>
+                                <td class="active">SK</td>
+                                <td class="active">SM</td>
+                                <td class="active">06.00</td>
+                                <td class="active">12.00</td>
+                                <td class="active">18.00</td>
+                                <td class="active">00.00</td>
+                                <td class="active">06.00</td>
+                                <td class="active">12.00</td>
+                                <td class="active">18.00</td>
+                            </tr>
+                        <!-- end if -->
+                        <tr>
+                            <td>$loop.index</td>
+                            <td title="$t.pos.AgentId"><a href="/tma/$t.pos.AgentId">$t.pos.cname</a> <span class="r" style="float:right;"></td>
+                            <td class="text-right r col-s1"><span>$t.pos.sh</span></td>
+                            <td class="text-right r col-s2"><span>$t.pos.sk</span></td>
+                            <td class="text-right r col-s3"><span>$t.pos.sm</span></td>
+                            <td class="text-right r pagi telemetri" data-ttime-pagi="$t.tma.pagi.ttime"><abbr title="$t.tma.pagi.ttime">$t.tma.pagi.ttg</abbr></td>
+                            <td class="text-right r siang telemetri" data-ttime-sore="$t.tma.siang.ttime"><abbr title="$t.tma.siang.ttime">$t.tma.siang.ttg</abbr></td>
+                            <td class="text-right r sore ttg" data-ttime-sore="$t.tma.sore.ttime"><abbr title="$t.tma.sore.ttime">$t.tma.sore.ttg</abbr></td>
+                            <td class="text-right r tmalam telemetri" data-ttime-tmalam="$t.tma.sore.ttime"><abbr title="$t.tma.tmalam.ttime">$t.tma.tmalam.ttg</abbr></td>
+                            <td class="text-right r pagi manual status-$t.tma.pagi.mstatus" data-mtime-pagi="$t.tma.pagi.mtime">$t.tma.pagi.manual</td>
+                            <td class="text-right r siang manual status-$t.tma.siang.mstatus" data-mtime-siang="$t.tma.siang.mtime">$t.tma.siang.manual</td>
+                            <td class="text-right r sore manual status-$t.tma.sore.mstatus" data-mtime-sore="$t.tma.sore.mtime">$t.tma.sore.manual</td>
+                        </tr>
+                        </tbody>
+                    </table>
+

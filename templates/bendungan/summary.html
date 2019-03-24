@@ -1,0 +1,94 @@
+$def with (ctx)
+$var p_bendungan: active
+$ num = ctx.get('nums')
+$ today = ctx.get('today')
+$var extra_header:
+    <script src="/static/js/underscore-min.js"></script>
+    <style>
+    table { margin-bottom: 0px !important; }
+    #sidebar, #slide {
+        color: white;
+        text-shadow: 0px 0px 4px white;
+    }
+    .s-box { color: #222; background: rgba(255,255,255,0.8); padding: 4px; margin-bottom: 10px; border: solid 2px white;border-radius: 4px }
+    .huge { font-size: 2em; }
+    .label { margin-left: -10px; color: #444; font-size: 1.2em; text-shadow: 0px 0px 3px white; }
+    .satuan { font-size: 1em; display: block; }
+    </style>
+<!-- -->
+<div class="container-fluid" style="height: 100vh; background-image: url(/static/images/bendungan/bd_cengklik_1.jpg);">
+    <div class="row">
+        <div class="col-xs-12" style="background-color: rgba(255,255,255,0.5);">
+            <h1><a href="/bendungan"><span style="color: white; text-shadow: 2px 2px 5px #666;">Ringkasan 33 Bendungan<br/>Status: ${today.strftime('%d %b %Y')} Pola: Batas Bawah</span></a></h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="s-box col-md-5">
+                <table>
+                    <tr>
+                        <td rowspan="3" class="vol-title huge" style="vhigh: max; padding-right: 20px;">Volume<br/>Tampungan</td>
+                        <td style="border-bottom: solid 1px #888"><span style="z-index: -99; float: left;vertical-align: middle;" class="">Potensi</span><span class="huge" style="float: right;">${ctx.get('t_vol')} M<sup>3</sup></span></td>
+                    </tr>
+                    <tr>
+                        <td style="border-bottom: solid 1px #888"><span style="z-index: -99; float: left;vertical-align: middle;" class="">Realisasi</span><span class="huge" style="float: right;">${ctx.get('r_vol')} M<sup>3</sup></span></td>
+                    </tr>
+                    <tr>
+                        <td><span style="z-index: -99; float: left;vertical-align: middle;" class="">RTOW</span><span class="huge" style="float: right;"> ${ctx.get('rotw_vol', 1)} M<sup>3</sup></span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-7">&nbsp;</div>
+        </div><!-- row-->
+        <div class="row">
+            <div class="s-box col-md-5">
+                <table style="width: 100%" class="table table-bordered">
+                    <tr>
+                        <th colspan="2" style="text-align: center; border-bottom: solid 1px #999;"><span class="huge">Total Outflow</span></th>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="width: 50%;border-right: solid 1px black;"><span style="z-index: -99; float: left;vertical-align: middle;" class="">RTOW</span><span class="huge"> ${commify('%.2f' % ((ctx.get('po_outflow_q') or 0)))}</span> (M<sup>3</sup>/detik)</td>
+                        <td class="text-center" style="width: 50%"><span style="z-index: -99; float: left;vertical-align: middle;" class="">Realisasi</span><span class="huge">${commify('%.2f' % ((ctx.get('outflow_q') or 0)))}</span> (M<sup>3</sup>/detik)</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-7">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="s-box col-md-5">
+                <table style="width: 100%" class="table table-bordered">
+                    <tr>
+                        <th colspan="2" style="text-align: center; border-bottom: solid 1px #999;"><span class="huge">Total Inflow</span></th>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="width: 50%;border-right: solid 1px black;"><span style="z-index: -99; float: left;vertical-align: middle;" class="">RTOW</span><span class="huge">${ctx.get('po_inflow_q')}</span> (M<sup>3</sup>/detik)</td>
+                        <td class="text-center" style="width: 50%"><span style="z-index: -99; float: left;vertical-align: middle;" class="">Realisasi</span><span class="huge">${ctx.get('inflow_q')}</span> (M<sup>3</sup>/detik)</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-7">&nbsp;</div>
+        </div>
+        </div><!-- container -->
+        </div>
+        <div id="sidebar" class="col-xs-12 col-md-3 col-md-offset-6">
+            <!--
+            <div class="s-box">
+                <span>Irigasi (M<sup>3</sup>/detik)</span>
+                <div class="huge">1234567789</div>
+            </div>
+            <div class="s-box">
+                <span>Air Baku (M<sup>3</sup>/detik)</span>
+                <div class="huge">1234567789</div>
+            </div>
+            <div class="s-box">
+                <span>PLTA</span>
+                <span>1234567789 M<sup>3</sup>/detik</span>
+            </div>
+            <div>
+                <span class="">Total Kapasitas Volume</span>
+                <div>${ctx.get('t_vol')}</div>
+            </div>
+            -->
+        </div>
+    </div>
+</div>

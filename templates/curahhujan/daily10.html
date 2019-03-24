@@ -1,0 +1,90 @@
+$def with(ctx)
+$ pos = ctx.get('pos')
+$ tahun = ctx.get('year')
+$ series = ctx.get('series')
+$var p_curahhujan: active
+$var js_foot:
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function(){
+            var chart = new Highcharts.Chart({
+                chart: { type: 'column', renderTo: 'column_chart' },
+                title: { text: 'Grafik Curah Hujan 10 Harian Tahun $tahun' },
+                legend: { itemStyle: {
+                    fontSize: 16
+                }},
+                tooltip: {
+                    valueDecimals: 1,
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:4px">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y} mm</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                xAxis: {
+                    categories: 'Jan_Feb_Mar_Apr_Mei_Jun_Jul_Ags_Sep_Okt_Nop_Des'.split('_'),
+                    crosshair: true,
+                    labels: {
+                        style: {
+                            fontSize: '18px'
+                        }
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: { text: 'Curah Hujan (mm)',
+                        style: {
+                            fontSize: '18px'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            fontSize: '18px'
+                        }
+                    }
+                },
+                plotOptions: {
+                  series: {
+                    cursor: 'pointer',
+                    events: {
+                      click: function() {
+                        console.log(this);
+                        //console.log('chart:', chart);
+                      }
+                    }
+                  }
+                },
+                series: series
+            });
+        });
+    </script>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1><a href="/curahhujan" title="Daftar Pos Hujan" style="text-decoration: none;"><span class="glyphicon glyphicon-chevron-left"></span></a> Pos $pos.cname</h1>
+        </div>
+        <div class="col-sm-6" style="padding-top: 20px;">
+            <div class="btn-group" role="group" style="float: right">
+                <a href="/curahhujan/$pos.AgentId" class="btn btn-primary">Jam-jaman</a>
+                <a href="/curahhujan/$pos.AgentId/${now.strftime('%Y/%m')}" class="btn btn-primary">Harian</a>
+                <a href="#" class="btn btn-default">10 Harian</a>
+                <a href="/curahhujan/$pos.AgentId/bulanan" class="btn btn-primary">Bulanan</a>
+                <a href="/curahhujan/$pos.AgentId/tertinggi" class="btn btn-primary">Maksimum</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="column_chart" style="width: 100%; height: 400px"></div>
+        </div>
+    </div>
+</div><!-- container -->
+<script>
+var series = [
+{data: $:series[0], name: '1-10'},
+{data: $:series[1], name: '11-20'},
+{data: $:series[2], name: '21-30'
+    }
+];
+</script>

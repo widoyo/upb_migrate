@@ -1,0 +1,66 @@
+$def with (curah_hujan, meta, wilayah)
+$var p_curahhujan: active
+$var js_foot:
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script>
+      \$('#datepicker').datepicker({
+        todayHighlight: true, 
+        format: 'yyyy/mm/dd',
+        autoclose: true});
+        \$('#datepicker').on('changeDate', function() {
+              window.location = '/curahhujan?d=' + \$('#datepicker').datepicker('getFormattedDate');
+              });
+    </script>
+<div class="container">
+    <table class="table table-bordered boldtable">
+        <tbody>
+	$code:
+	    wil = "0"
+	$for c in curah_hujan:
+        $if c['pos'].wilayah != wil:
+            $code:
+                wil = c['pos'].wilayah
+            <tr>
+                <td colspan="8" class="text-center col-wilayah">Wilayah $wilayah[c['pos'].wilayah]</td>
+            </tr>
+            <thead>
+              <tr>
+                <th rowspan="3">No</th>
+                <th rowspan="3">Pos Hujan</th>
+                <th><a href="?d=$:meta.get('before').strftime('%Y/%m/%d')"><span class="glyphicon glyphicon-arrow-left"></span></a></th>
+                <th colspan="2"><span id="datepicker" data-date="$:meta.get('now').strftime('%Y/%m/%d')">$:meta.get('now').strftime('%d - %B - %Y')</span></th>
+                <th><a href="?d=$:meta.get('after').strftime('%Y/%m/%d')"><span class="glyphicon glyphicon-arrow-right"></span></a></th>
+                <th rowspan="3">Total Telemetri</th>
+                <th rowspan="3">Manual Harian (24 jam)</th>
+              </tr>
+              <tr>
+                <th colspan="4">Waktu (WIB)</th>
+              </tr>
+              <tr>
+                <th>07.01 - 13.00</th>
+                <th>13.01 - 19.00</th>
+                <th>19.01 - 01.00</th>
+                <th>01.01 - 07.00</th>
+              </tr>
+            </thead>
+        <tr>
+            <td>$loop.index</td>
+            <td><a href="/curahhujan/$c['pos'].AgentId">$c['pos'].cname</a>
+            $if c['pos'].prima_id and '-' in c['pos'].prima_id:
+                <span title="$c['pos'].prima_id">*)</span>
+            $if c['pos'].kab:
+                ($c['pos'].kab)
+            </td>
+            <td class="text-right ch pagi">${'%.1f' % c['ch']['pagi']}</td>
+            <td class="text-right ch sore">${'%.1f' % c['ch']['sore']}</td>
+            <td class="text-right ch malam">${'%.1f' % c['ch']['malam']}</td>
+            <td class="text-right ch tmalam">${'%.1f' % c['ch']['tmalam']}</td>
+            <td class="text-right ch total">${'%.1f' % c['ch']['total']}</td>
+            <td class="text-right ch manual" data-mtime="$c['ch'].get('mtime_manual')" title="Diterima: $c['ch'].get('mtime_manual'), HP: $c['ch'].get('origin_manual')">$c['ch'].get('manual')</td>
+        </tr>
+    <!-- -->
+             </tbody>
+         </table>
+         *) = PrimaBot
+    </div>
+

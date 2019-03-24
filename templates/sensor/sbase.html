@@ -1,0 +1,34 @@
+$def with (content)
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Widoyo">
+        <meta name="description" content="Bengawan Solo Sensor Monitoring">
+		<title>Bengawan Solo Sensor</title>
+        <link rel="icon" href="">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+		<link rel="stylesheet" href="/static/css/milligram.min.css">
+        $:content.get('extra_head')
+        <link rel="stylesheet" href="/static/css/sensor.css">
+	</head>
+	<body>
+
+		<main class="wrapper">
+
+			<nav class="navigation">
+			</nav>
+$:content
+
+			<footer class="footer">
+				<section class="container">
+                    <p>&copy; 2017 BBWS Bengawan Solo</p>
+				</section>
+			</footer>
+
+		</main>
+    $:content.get('extra_foot', '')
+	</body>
+</html>

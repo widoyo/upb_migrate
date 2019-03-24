@@ -1,0 +1,115 @@
+$def with (ctx)
+$var title: Bendungan
+$ poses = ctx.get('poses')
+$ tgl = ctx.get('tanggal')
+$code:
+$var js_foot:
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.floatThead.min.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function () {
+            var \$table = \$('.table');
+            \$table.floatThead({
+                top: 60,
+                responsiveContainer: function (\$table) {
+                    return \$table.closest('.table-responsive');
+                }
+            });
+            \$('#datepicker').datepicker({
+                format: 'yyyy/mm/dd',
+                autoclose: true
+             }); 
+            \$('#datepicker').on('changeDate', function() {
+                window.location = '/adm/bendungan?sampling=' + \$(this).datepicker('getFormattedDate');
+             });
+        });
+    </script>
+
+<h1>Bendungan</h1>
+<h3 id="datepicker"><span class="glyphicon glyphicon-calendar" style="margin-right: 10px;"></span> ${tgl.strftime('%d %b %Y')}</h3>
+<table class="table table-responsive table-bordered table-striped">
+  <thead>
+    <tr>
+      <th rowspan="2">No</th>
+      <th rowspan="2">Nama</th>
+      <th rowspan="2">CH</th>
+      <th colspan="2">Pagi</th>
+      <th colspan="2">Siang</th>
+      <th colspan="2">Sore</th>
+      <th rowspan="2">Q Inflow</th>
+      <th colspan="2">Q Outflow</th>
+      <th colspan="2">V-Notch</th>
+      <th colspan="15">Piezometer</th>
+    </tr>
+    <tr>
+      <th>TMA</th>
+      <th>Vol</th>
+      <th>TMA</th>
+      <th>Vol</th>
+      <th>TMA</th>
+      <th>Vol</th>
+      <th>Intake</th>
+      <th>Spillway</th>
+      <th>Tinggi</th>
+      <th>Debit</th>
+      <th>1A</th>
+      <th>1B</th>
+      <th>1C</th>
+      <th>2A</th>
+      <th>2B</th>
+      <th>2C</th>
+      <th>3A</th>
+      <th>3B</th>
+      <th>3C</th>
+      <th>4A</th>
+      <th>4B</th>
+      <th>4C</th>
+      <th>5A</th>
+      <th>5B</th>
+      <th>5C</th>
+    </tr>
+  </thead>
+  <tbody>
+$code:
+    wil = 0
+    wils = 'Hulu_Madiun_Hilir'.split('_')
+$for pos, data in poses:
+    $if wil != pos.wilayah:
+        $code:
+            wil = pos.wilayah
+        <tr>
+            <th colspan="29" class="text-center">${wils[pos.wilayah - 1]}</th>
+        </tr>
+    <tr>
+      <td>$loop.index</td>
+      <td><a href="/adm/bendungan/$pos.table_name">$pos.cname</a></td>
+      $if data:
+          <td class="text-right">$data.curahhujan</td>
+          <td class="text-right">$data.tma6</td><td>$data.vol6</td>
+          <td class="text-right">$data.tma12</td><td>$data.vol12</td>
+          <td class="text-right">$data.tma18</td><td>$data.vol18</td>
+          <td class="text-right"><abbr title="Vol: $data.inflow_v">$data.inflow_q</abbr></td>
+          <td class="text-right"><abbr title="Vol: $data.intake_v">$data.intake_q</abbr></td>
+          <td class="text-right"><abbr title="Vol: $data.spillway_v">$data.spillway_q</abbr></td>
+          <td class="text-right">$data.vnotch_tin1<br/>$data.vnotch_tin2<br/>$data.vnotch_tin3</td>
+          <td class="text-right">$data.vnotch_q1<br/>$data.vnotch_q2<br/>$data.vnotch_q3</td>
+          <td class="text-right">$data.a1</td>
+          <td class="text-right">$data.b1</td>
+          <td class="text-right">$data.c1</td>
+          <td class="text-right">$data.a2</td>
+          <td class="text-right">$data.b2</td>
+          <td class="text-right">$data.c2</td>
+          <td class="text-right">$data.a3</td>
+          <td class="text-right">$data.b3</td>
+          <td class="text-right">$data.c3</td>
+          <td class="text-right">$data.a4</td>
+          <td class="text-right">$data.b4</td>
+          <td class="text-right">$data.c4</td>
+          <td class="text-right">$data.a5</td>
+          <td class="text-right">$data.b5</td>
+          <td class="text-right">$data.c5</td>
+      $else:
+          <td colspan="27">Tidak ada data</td>
+    </tr>
+  </tbody>
+</table>

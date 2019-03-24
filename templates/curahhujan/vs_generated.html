@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Sistem Informasi Hidrologi dan Kualitas Air</title>
+    <link rel="shortcut icon" href="/static/images/favicon.ico"/>
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <!-- <link rel="stylesheet" href="/static/css/custom/font.css"> -->
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="/static/css/custom/style-megamenu.css"> 
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/fontawesome/font-awesome.css">
+
+    <!-- Loading Css -->
+    <!-- <link rel="stylesheet" href="/static/css/custom/loading.css"> -->
+    
+    <style>
+        /* CONTENT*/
+        /*Enable .first-content on First content (below navbar) to reduce margin from navbar, recommended is -4em*/
+        @media screen (min-width: 769px) {
+            .first-content {
+                margin-top: -4em;
+            }
+        }
+        .first-content {
+            /*margin-top: -1em;*/
+        }
+        .navbar {
+            border-radius: 0px;
+        }
+
+        @media (max-width: 767px) {
+/*          .affix {
+                position: static;
+            }*/
+        }
+        .affix {
+            top: 0;
+            width: 100%;
+            border-radius: 0;
+            box-shadow: 0px 0px 30px black;
+        }
+        .affix-top {
+            box-shadow: 0px 2px 5px #777;
+        }
+    </style>
+</head>
+<body>
+    <!-- DESKTOP NAVBAR -->
+    <div class="hidden-xs">
+        <!-- START NAVIGATION -->
+        <nav class="navbar navbar-default white" style="margin-bottom: 0; z-index: 1400;">
+            <div class="navbar-bottom">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">
+                            <div class="visible-xs">BBWS SOLO</div>
+                            <div class="row hidden-xs">
+                                <div class="col-sm-8">
+                                    <img alt="Brand" src="/static/images/logo_bbws_bs.png" class="img-responsive" style="height: 2.5em">
+                                </div>
+                                <br class="visible-xs">
+                                <div class="col-sm-4">
+                                    <img alt="Brand" src="/static/images/bbws_bs.png" class="img-responsive" style="height: 2.5em">
+                                </div>
+                            </div>
+                        </a>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <!-- Responsive Menu -->
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav navbar-right" style="margin-top:15px;">
+                                <li class="dropdown">
+                                    <a href="#" class="bluelink dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-user"></i> <b>PROFIL</b> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="bluelink" href="/about/wilayah-kerja">Wilayah Kerja</a></li>
+                                        <li><a class="bluelink" href="/about/struktur-organisasi">Struktur Organisasi</a></li>
+                                    </ul>
+                                </li>
+                                <li><a class="bluelink" href="/about/kontak-kami"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li>
+                        </ul>
+                    </div> <!-- collapse -->
+                </div><!-- /.container -->
+            </div>
+        </nav>
+        <!-- END NAVIGATION -->
+        <div class="container-fluid hidden-xs" style="background-color: #0277BD;">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <h3 align="center" style="margin:5px; color:#fff; ">SISTEM INFORMASI HIDROLOGI DAN KUALITAS AIR</h3>
+        </div>
+        <!-- 2nd Navigation -->
+        <div class="navbar navbar-default white desktop" data-spy="affix" data-offset-top="60" style="z-index: 1300; margin-bottom:20px;">
+          <div class="container-fluid" style="padding-left: 0; padding-right: 0;">
+            <div class="container-fluid navbar-collapse">              
+                <ul class="nav navbar-nav nav-tabs" style="font-size: 16px;">
+                    <li class="active"><a href="/curahhujan" class="bluelink"><img src="/static/images/icons/icon-curah-hujan.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; CURAH HUJAN</a></li>
+                    <li class=""><a href="/klimatologi" class="bluelink"><img src="/static/images/icons/climatology.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; KLIMATOLOGI</a></li>
+                    <li class=""><a href="/tma" class="bluelink"><img src="/static/images/icons/icon-muka-air.png" height="90" width="88" class="img-responsive" style="height: 20px">&nbsp; TINGGI MUKA AIR</a></li>
+                    <li class=""><a href="/kekeringan" class="bluelink"><img src="/static/images/icons/icon-kekeringan.png" height="88" width="88" class="img-responsive" style="height: 20px;">&nbsp; KEKERINGAN</a></li>
+                    <li class=""><a href="/kualitasair" class="bluelink"><img src="/static/images/icons/icon-curah-hujan.png" height="80" width="84" class="img-responsive" style="height: 20px">&nbsp; KUALITAS AIR</a></li>
+                    <li class=""><a href="/bendungan" class="bluelink"><img src="/static/images/icons/icon-bendungan.png" height="96" width="96" class="img-responsive" style="height: 20px">&nbsp; BENDUNGAN</a></li><!-- dropdown bendungan -->
+                </ul>
+            </div>
+          </div>
+        </div>
+        <!-- End 2nd Navigation -->
+    </div>
+    <!-- END DESKTOP NAVBAR -->
+
+    <!-- MOBILE NAVBAR -->
+    <div class="hidden-lg hidden-md hidden-sm">
+        <!-- START NAVIGATION -->
+        <nav class="navbar white yamm navbar-default" style="margin-bottom: 0; z-index: 1400;">
+            <div class="navbar-bottom">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-left navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="/">
+                            <div class="visible-xs" style="font-size: 10pt;font-weight: bold;">SISFO HKA BBWS&nbsp;Bengawan&nbsp;Solo</div>
+                            <div class="row hidden-xs">
+                                <div class="col-sm-8">
+                                    <img alt="Brand" src="/static/images/logo_bbws_bs.png" class="img-responsive" style="height: 2.5em">
+                                </div>
+                                <br class="visible-xs">
+                                <div class="col-sm-4">
+                                    <img alt="Brand" src="/static/images/bbws_bs.png" class="img-responsive" style="height: 2.5em">
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Responsive Menu -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <!-- MAIN MENU -->
+                        <ul class="nav navbar-nav" style="font-size: 16px;">
+                            <li><a class="bluelink" href="/curahhujan"><img src="/static/images/icons/icon-curah-hujan.png" class="img-responsive" style="height: 20px"> <span>CURAH HUJAN</span></a></li>
+                            <li><a class="bluelink" href="/klimatologi"><img src="/static/images/icons/climatology.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; KLIMATOLOGI</a></li>
+                            <li><a class="bluelink" href="/tma"><img src="/static/images/icons/icon-muka-air.png" height="90" width="88" class="img-responsive" style="height: 20px">&nbsp; TINGGI MUKA AIR</a></li>
+                            <li><a class="bluelink" href="/kekeringan"><img src="/static/images/icons/icon-kekeringan.png" height="88" width="88" class="img-responsive" style="height: 20px;">&nbsp; KEKERINGAN</a></li>
+                            <li><a class="bluelink" href="/kualitasair"><img src="/static/images/icons/icon-curah-hujan.png" height="80" width="84" class="img-responsive" style="height: 20px">&nbsp; KUALITAS AIR</a></li>
+                            <li class="dropdown"><a href="/bendungan" class="bluelink"><img src="/static/images/icons/icon-bendungan.png" height="96" width="96" class="img-responsive" style="height: 20px">&nbsp; BENDUNGAN</a></li>
+                        </ul>                        
+                        <!-- END MAIN MENU -->
+                        <!-- SECONDARY MENU -->
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="bluelink dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-user"></i> <b>PROFIL</b> <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="bluelink" href="/about/wilayah-kerja">Wilayah Kerja</a></li>
+                                    <li><a class="bluelink" href="/about/struktur-organisasi">Struktur Organisasi</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="bluelink" href="/about/kontak-kami"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li>
+                        </ul>
+                        <!-- END SECONDARY MENU -->
+
+                    </div> <!-- collapse -->
+                </div><!-- /.container -->
+            </div>
+        </nav>
+        <!-- End 2nd Navigation -->
+    </div>
+    <!-- END MOBILE NAVBAR -->
+
+    <!-- CONTENT START -->
+    <!-- Enable .first-content on First content (below navbar) to reduce margin from navbar, recommended is -4em -->
+    <!-- // halaman yang di include disini inc-content-* -->
+    <div class="container">
+    <div class="row">
+        <div class="column col-sm-12"><h1>Telemetri vs Manual 7 Hari Lalu</h1>
+            <table class="table table-stripped table-bordered">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Pos</th>
+                    <th colspan="4" class="text-center">2017-11-08</th>
+                    <th colspan="4" class="text-center">2017-11-09</th>
+                    <th colspan="4" class="text-center">2017-11-10</th>
+                    <th colspan="4" class="text-center">2017-11-11</th>
+                    <th colspan="4" class="text-center">2017-11-12</th>
+                    <th colspan="4" class="text-center">2017-11-13</th>
+                    <th colspan="4" class="text-center">2017-11-14</th>
+                       <th rowspan="2">Delta</th>
+                    </tr>
+                    <tr>
+                    <th class="bg-warning">#</th>
+                    <th>Te</th>
+                    <th>Ma</th>
+                    <th class="bg-info">De</th>
+                    <th class="bg-warning">#</th>
+                    <th>Te</th>
+                    <th>Ma</th>
+                    <th class="bg-info">De</th>
+                    <th class="bg-warning">#</th>
+                    <th>Te</th>
+                    <th>Ma</th>
+                    <th class="bg-info">De</th>
+                    <th class="bg-warning">#</th>
+                    <th>Te</th>
+                    <th>Ma</th>
+                    <th class="bg-info">De</th>
+                    <th class="bg-warning">#</th>
+                    <th>Te</th>
+                    <th>Ma</th>
+                    <th class="bg-info">De</th>
+                    <th class="bg-warning">#</th>
+                    <th>Te</th>
+                    <th>Ma</th>
+                    <th class="bg-info">De</th>
+                    <th class="bg-warning">#</th>
+                    <th>Te</th>
+                    <th>Ma</th>
+                    <th class="bg-info">De</th>
+                    </tr>
+                </thead>
+            <tr>
+                <td>Tritis</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">22.0</td>
+                <td class="text-right">17.0</td>
+                <td class="bg-info delta text-right">17.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">18.0</td>
+                <td class="text-right">14.0</td>
+                <td class="bg-info delta text-right">14.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">12.5</td>
+                <td class="text-right">18.5</td>
+                <td class="bg-info delta text-right">18.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">54.0</td>
+                <td class="text-right">41.0</td>
+                <td class="bg-info delta text-right">41.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Waduk_Gondang</td>
+                <td class="bg-warning text-right">222</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">12.0</td>
+                <td class="bg-info delta text-right">12.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">5.0</td>
+                <td class="bg-info delta text-right">5.0</td>
+                <td class="bg-warning text-right">278</td>
+                <td class="text-right">2.5</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">270</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">64</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">182</td>
+                <td class="text-right">4.5</td>
+                <td class="text-right">7.0</td>
+                <td class="bg-info delta text-right">7.0</td>
+                <td class="bg-warning text-right">232</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Jatirogo</td>
+                <td class="bg-warning text-right">79</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="bg-warning text-right">262</td>
+                <td class="text-right">8.5</td>
+                <td class="text-right">16.3</td>
+                <td class="bg-info delta text-right">16.3</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">278</td>
+                <td class="text-right">3.0</td>
+                <td class="text-right">7.3</td>
+                <td class="bg-info delta text-right">7.3</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">8.0</td>
+                <td class="text-right">7.3</td>
+                <td class="bg-info delta text-right">7.3</td>
+                <td class="bg-warning text-right">280</td>
+                <td class="text-right">25.0</td>
+                <td class="text-right">34.5</td>
+                <td class="bg-info delta text-right">34.5</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">3.4</td>
+                <td class="bg-info delta text-right">3.4</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Giriwoyo</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">5.3</td>
+                <td class="bg-info delta text-right">5.3</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">282</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">259</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Balongpanggang - Gresik</td>
+                <td class="bg-warning text-right">220</td>
+                <td class="text-right">5.5</td>
+                <td class="text-right">5.0</td>
+                <td class="bg-info delta text-right">5.0</td>
+                <td class="bg-warning text-right">146</td>
+                <td class="text-right">37.5</td>
+                <td class="text-right">32.0</td>
+                <td class="bg-info delta text-right">32.0</td>
+                <td class="bg-warning text-right">267</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">254</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-1.0</td>
+                <td class="bg-warning text-right">272</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">246</td>
+                <td class="text-right">81.5</td>
+                <td class="text-right">75.0</td>
+                <td class="bg-info delta text-right">75.0</td>
+                <td class="bg-warning text-right">268</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Gunungan</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">26.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-26.0</td>
+                <td class="bg-warning text-right">278</td>
+                <td class="text-right">50.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-50.0</td>
+                <td class="bg-warning text-right">87</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-1.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">6</td>
+                <td class="text-right">7.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-7.0</td>
+                <td class="bg-warning text-right">179</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Cepu</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">3.2</td>
+                <td class="text-right">3.2</td>
+                <td class="bg-info delta text-right">3.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">5.6</td>
+                <td class="text-right">5.5</td>
+                <td class="bg-info delta text-right">5.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">6.2</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-6.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">2.2</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-2.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">4.0</td>
+                <td class="text-right">4.0</td>
+                <td class="bg-info delta text-right">4.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">49.4</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-49.4</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">16.8</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-16.8</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Waduk Kedung Brubus</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">16.0</td>
+                <td class="text-right">14.3</td>
+                <td class="bg-info delta text-right">14.3</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">133</td>
+                <td class="text-right">0</td>
+                <td class="text-right">7.8</td>
+                <td class="bg-info delta text-right">7.8</td>
+                <td class="bg-warning text-right">262</td>
+                <td class="text-right">40.5</td>
+                <td class="text-right">39.7</td>
+                <td class="bg-info delta text-right">39.7</td>
+                <td class="bg-warning text-right">251</td>
+                <td class="text-right">25.0</td>
+                <td class="text-right">20.5</td>
+                <td class="bg-info delta text-right">20.5</td>
+                <td class="bg-warning text-right">252</td>
+                <td class="text-right">40.5</td>
+                <td class="text-right">39.8</td>
+                <td class="bg-info delta text-right">39.8</td>
+                <td class="bg-warning text-right">263</td>
+                <td class="text-right">16.5</td>
+                <td class="text-right">16.5</td>
+                <td class="bg-info delta text-right">16.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Batuwarno</td>
+                <td class="bg-warning text-right">283</td>
+                <td class="text-right">23.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-23.5</td>
+                <td class="bg-warning text-right">185</td>
+                <td class="text-right">60.5</td>
+                <td class="text-right">11.5</td>
+                <td class="bg-info delta text-right">11.5</td>
+                <td class="bg-warning text-right">32</td>
+                <td class="text-right">7.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-7.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Jatipuro</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">6.5</td>
+                <td class="text-right">3.5</td>
+                <td class="bg-info delta text-right">3.5</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">2.5</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">259</td>
+                <td class="text-right">2.5</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">1.5</td>
+                <td class="bg-info delta text-right">1.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Slahung</td>
+                <td class="bg-warning text-right">268</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">17.5</td>
+                <td class="text-right">17.0</td>
+                <td class="bg-info delta text-right">17.0</td>
+                <td class="bg-warning text-right">37</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">8.5</td>
+                <td class="bg-info delta text-right">8.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Pacal Dam</td>
+                <td class="bg-warning text-right">271</td>
+                <td class="text-right">32.0</td>
+                <td class="text-right">60.9</td>
+                <td class="bg-info delta text-right">60.9</td>
+                <td class="bg-warning text-right">261</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">279</td>
+                <td class="text-right">2.5</td>
+                <td class="text-right">1.9</td>
+                <td class="bg-info delta text-right">1.9</td>
+                <td class="bg-warning text-right">266</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">8.0</td>
+                <td class="text-right">10.1</td>
+                <td class="bg-info delta text-right">10.1</td>
+                <td class="bg-warning text-right">260</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-1.5</td>
+                <td class="bg-warning text-right">275</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Jatisrono</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">14.5</td>
+                <td class="bg-info delta text-right">14.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">4.5</td>
+                <td class="bg-info delta text-right">4.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">8.5</td>
+                <td class="bg-info delta text-right">8.5</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.5</td>
+                <td class="bg-info delta text-right">2.5</td>
+                <td class="bg-warning text-right">259</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Nawangan - Grindulu</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">31.5</td>
+                <td class="text-right">37.0</td>
+                <td class="bg-info delta text-right">37.0</td>
+                <td class="bg-warning text-right">252</td>
+                <td class="text-right">14.5</td>
+                <td class="text-right">17.0</td>
+                <td class="bg-info delta text-right">17.0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">48.0</td>
+                <td class="text-right">57.0</td>
+                <td class="bg-info delta text-right">57.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">2.0</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Jurug</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.4</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-0.4</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">13.0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-13.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.6</td>
+                <td class="text-right">0.6</td>
+                <td class="bg-info delta text-right">0.6</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.2</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.2</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">11.4</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-11.4</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Waduk Delingan</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">18.0</td>
+                <td class="text-right">19.0</td>
+                <td class="bg-info delta text-right">19.0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">4.0</td>
+                <td class="bg-info delta text-right">4.0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">3.5</td>
+                <td class="bg-info delta text-right">3.5</td>
+                <td class="bg-warning text-right">258</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Jejeruk</td>
+                <td class="bg-warning text-right">275</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">252</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">240</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">61.0</td>
+                <td class="bg-info delta text-right">61.0</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">2.0</td>
+                <td class="text-right">10.0</td>
+                <td class="bg-info delta text-right">10.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Kalijambe</td>
+                <td class="bg-warning text-right">36</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">25</td>
+                <td class="text-right">6.5</td>
+                <td class="text-right">16.5</td>
+                <td class="bg-info delta text-right">16.5</td>
+                <td class="bg-warning text-right">84</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">24</td>
+                <td class="text-right">0</td>
+                <td class="text-right">30.0</td>
+                <td class="bg-info delta text-right">30.0</td>
+                <td class="bg-warning text-right">84</td>
+                <td class="text-right">6.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-6.0</td>
+                <td class="bg-warning text-right">48</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="bg-warning text-right">131</td>
+                <td class="text-right">41.5</td>
+                <td class="text-right">56.0</td>
+                <td class="bg-info delta text-right">56.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Bojonegoro</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">89.0</td>
+                <td class="bg-info delta text-right">89.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Karangpandan</td>
+                <td class="bg-warning text-right">283</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">6.0</td>
+                <td class="text-right">5.0</td>
+                <td class="bg-info delta text-right">5.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">40.5</td>
+                <td class="text-right">36.0</td>
+                <td class="bg-info delta text-right">36.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">7.5</td>
+                <td class="text-right">6.2</td>
+                <td class="bg-info delta text-right">6.2</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">7.0</td>
+                <td class="text-right">5.5</td>
+                <td class="bg-info delta text-right">5.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">2.5</td>
+                <td class="text-right">1.8</td>
+                <td class="bg-info delta text-right">1.8</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">1.2</td>
+                <td class="bg-info delta text-right">1.2</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Waduk Pondok</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">5.0</td>
+                <td class="text-right">5.5</td>
+                <td class="bg-info delta text-right">5.5</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">5.5</td>
+                <td class="text-right">6.5</td>
+                <td class="bg-info delta text-right">6.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">31.0</td>
+                <td class="text-right">36.0</td>
+                <td class="bg-info delta text-right">36.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">10</td>
+                <td class="text-right">0</td>
+                <td class="text-right">4.0</td>
+                <td class="bg-info delta text-right">4.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">15.0</td>
+                <td class="text-right">16.0</td>
+                <td class="bg-info delta text-right">16.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">2.0</td>
+                <td class="text-right">1.5</td>
+                <td class="bg-info delta text-right">1.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Sembung</td>
+                <td class="bg-warning text-right">137</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right">11.0</td>
+                <td class="bg-info delta text-right">11.0</td>
+                <td class="bg-warning text-right">137</td>
+                <td class="text-right">0</td>
+                <td class="text-right">7.0</td>
+                <td class="bg-info delta text-right">7.0</td>
+                <td class="bg-warning text-right">122</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">27.0</td>
+                <td class="bg-info delta text-right">27.0</td>
+                <td class="bg-warning text-right">144</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="bg-warning text-right">137</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">8.0</td>
+                <td class="bg-info delta text-right">8.0</td>
+                <td class="bg-warning text-right">77</td>
+                <td class="text-right">0</td>
+                <td class="text-right">14.0</td>
+                <td class="bg-info delta text-right">14.0</td>
+                <td class="bg-warning text-right">136</td>
+                <td class="text-right">0</td>
+                <td class="text-right">28.0</td>
+                <td class="bg-info delta text-right">28.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Kenteng</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">11.0</td>
+                <td class="bg-info delta text-right">11.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">44.5</td>
+                <td class="bg-info delta text-right">44.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Sooko</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">10.0</td>
+                <td class="bg-info delta text-right">10.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">34.0</td>
+                <td class="bg-info delta text-right">34.0</td>
+                <td class="bg-warning text-right">146</td>
+                <td class="text-right">8.0</td>
+                <td class="text-right">22.0</td>
+                <td class="bg-info delta text-right">22.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>TelagaNgebel</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">11.0</td>
+                <td class="bg-info delta text-right">11.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">62.0</td>
+                <td class="bg-info delta text-right">62.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">16.0</td>
+                <td class="bg-info delta text-right">16.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">36.0</td>
+                <td class="bg-info delta text-right">36.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">62.0</td>
+                <td class="bg-info delta text-right">62.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">12.0</td>
+                <td class="bg-info delta text-right">12.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Padangan</td>
+                <td class="bg-warning text-right">12</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">4.0</td>
+                <td class="text-right">4.0</td>
+                <td class="bg-info delta text-right">4.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">64.5</td>
+                <td class="text-right">67.0</td>
+                <td class="bg-info delta text-right">67.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">29.0</td>
+                <td class="text-right">29.0</td>
+                <td class="bg-info delta text-right">29.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Klaten</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">2.5</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">252</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">12.0</td>
+                <td class="text-right">11.5</td>
+                <td class="bg-info delta text-right">11.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">4.0</td>
+                <td class="bg-info delta text-right">4.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">31.5</td>
+                <td class="text-right">29.0</td>
+                <td class="bg-info delta text-right">29.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Karangbinangun - Lamongan</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Nepen</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Lamongan</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">33.5</td>
+                <td class="text-right">35.0</td>
+                <td class="bg-info delta text-right">35.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">9.0</td>
+                <td class="text-right">8.0</td>
+                <td class="bg-info delta text-right">8.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">60.5</td>
+                <td class="text-right">52.0</td>
+                <td class="bg-info delta text-right">52.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Jururejo</td>
+                <td class="bg-warning text-right">280</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">279</td>
+                <td class="text-right">0</td>
+                <td class="text-right">26.0</td>
+                <td class="bg-info delta text-right">26.0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">12.0</td>
+                <td class="bg-info delta text-right">12.0</td>
+                <td class="bg-warning text-right">279</td>
+                <td class="text-right">0</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">8.5</td>
+                <td class="bg-info delta text-right">8.5</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">32.0</td>
+                <td class="bg-info delta text-right">32.0</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Ngawi</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">37.5</td>
+                <td class="text-right">29.0</td>
+                <td class="bg-info delta text-right">29.0</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">43.5</td>
+                <td class="text-right">39.0</td>
+                <td class="bg-info delta text-right">39.0</td>
+                <td class="bg-warning text-right">252</td>
+                <td class="text-right">78.0</td>
+                <td class="text-right">89.0</td>
+                <td class="bg-info delta text-right">89.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">5.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-5.5</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">19.0</td>
+                <td class="text-right">17.0</td>
+                <td class="bg-info delta text-right">17.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">36.5</td>
+                <td class="text-right">30.0</td>
+                <td class="bg-info delta text-right">30.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-1.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Bojonegoro - Kali Kethek</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">4.4</td>
+                <td class="text-right">4.4</td>
+                <td class="bg-info delta text-right">4.4</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">4.2</td>
+                <td class="text-right">4.2</td>
+                <td class="bg-info delta text-right">4.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">4.2</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-4.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.8</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-1.8</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">2.2</td>
+                <td class="text-right">2.2</td>
+                <td class="bg-info delta text-right">2.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">49.6</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-49.6</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">3.0</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Pajeng</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Parangjoho</td>
+                <td class="bg-warning text-right">181</td>
+                <td class="text-right">38.5</td>
+                <td class="text-right">37.0</td>
+                <td class="bg-info delta text-right">37.0</td>
+                <td class="bg-warning text-right">174</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right">19.9</td>
+                <td class="bg-info delta text-right">19.9</td>
+                <td class="bg-warning text-right">243</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">106</td>
+                <td class="text-right">2.0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-2.0</td>
+                <td class="bg-warning text-right">20</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">146</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">174</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Waduk Sangiran</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">8.0</td>
+                <td class="text-right">8.6</td>
+                <td class="bg-info delta text-right">8.6</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">5.0</td>
+                <td class="text-right">5.0</td>
+                <td class="bg-info delta text-right">5.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">48.0</td>
+                <td class="text-right">51.8</td>
+                <td class="bg-info delta text-right">51.8</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">10.0</td>
+                <td class="text-right">9.8</td>
+                <td class="bg-info delta text-right">9.8</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">2.5</td>
+                <td class="text-right">2.5</td>
+                <td class="bg-info delta text-right">2.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">25.0</td>
+                <td class="text-right">24.8</td>
+                <td class="bg-info delta text-right">24.8</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">37.0</td>
+                <td class="text-right">38.0</td>
+                <td class="bg-info delta text-right">38.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Turi</td>
+                <td class="bg-warning text-right">274</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">269</td>
+                <td class="text-right">25.5</td>
+                <td class="text-right">48.0</td>
+                <td class="bg-info delta text-right">48.0</td>
+                <td class="bg-warning text-right">279</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.8</td>
+                <td class="bg-info delta text-right">0.8</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">283</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.8</td>
+                <td class="bg-info delta text-right">0.8</td>
+                <td class="bg-warning text-right">278</td>
+                <td class="text-right">27.5</td>
+                <td class="text-right">47.4</td>
+                <td class="bg-info delta text-right">47.4</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Peren</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">5.6</td>
+                <td class="text-right">5.6</td>
+                <td class="bg-info delta text-right">5.6</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">14.8</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-14.8</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.2</td>
+                <td class="text-right">0.2</td>
+                <td class="bg-info delta text-right">0.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.2</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-0.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.2</td>
+                <td class="text-right">0.2</td>
+                <td class="bg-info delta text-right">0.2</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Bendung Colo</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right">0.9</td>
+                <td class="bg-info delta text-right">0.9</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">268</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Pracimantoro</td>
+                <td class="bg-warning text-right">155</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-1.5</td>
+                <td class="bg-warning text-right">144</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">158</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">282</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">2.5</td>
+                <td class="text-right">2.5</td>
+                <td class="bg-info delta text-right">2.5</td>
+                <td class="bg-warning text-right">122</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.4</td>
+                <td class="bg-info delta text-right">2.4</td>
+                <td class="bg-warning text-right">204</td>
+                <td class="text-right">5.0</td>
+                <td class="text-right">5.5</td>
+                <td class="bg-info delta text-right">5.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Doplang - Blora</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">270</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">9.0</td>
+                <td class="text-right">6.5</td>
+                <td class="bg-info delta text-right">6.5</td>
+                <td class="bg-warning text-right">257</td>
+                <td class="text-right">26.0</td>
+                <td class="text-right">19.5</td>
+                <td class="bg-info delta text-right">19.5</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Ngrambe</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">241</td>
+                <td class="text-right">8.0</td>
+                <td class="text-right">8.0</td>
+                <td class="bg-info delta text-right">8.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">31.0</td>
+                <td class="text-right">25.0</td>
+                <td class="bg-info delta text-right">25.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">10.5</td>
+                <td class="text-right">14.0</td>
+                <td class="bg-info delta text-right">14.0</td>
+                <td class="bg-warning text-right">252</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">33.0</td>
+                <td class="bg-info delta text-right">33.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-1.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Purwantoro</td>
+                <td class="bg-warning text-right">255</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.5</td>
+                <td class="bg-warning text-right">235</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">246</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">252</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">268</td>
+                <td class="text-right">13.0</td>
+                <td class="text-right">11.5</td>
+                <td class="bg-info delta text-right">11.5</td>
+                <td class="bg-warning text-right">273</td>
+                <td class="text-right">4.5</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-4.5</td>
+                <td class="bg-warning text-right">97</td>
+                <td class="text-right">39.0</td>
+                <td class="text-right">39.0</td>
+                <td class="bg-info delta text-right">39.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Nglirip - Tuban</td>
+                <td class="bg-warning text-right">243</td>
+                <td class="text-right">17.5</td>
+                <td class="text-right">25.0</td>
+                <td class="bg-info delta text-right">25.0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">7.5</td>
+                <td class="text-right">7.5</td>
+                <td class="bg-info delta text-right">7.5</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">5.0</td>
+                <td class="text-right">4.0</td>
+                <td class="bg-info delta text-right">4.0</td>
+                <td class="bg-warning text-right">257</td>
+                <td class="text-right">97.0</td>
+                <td class="text-right">105.0</td>
+                <td class="bg-info delta text-right">105.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Menganti</td>
+                <td class="bg-warning text-right">237</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">55.0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-55.0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">180</td>
+                <td class="text-right">121.0</td>
+                <td class="text-right">60.0</td>
+                <td class="bg-info delta text-right">60.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">5.5</td>
+                <td class="bg-info delta text-right">5.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Kebonagung</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">6.0</td>
+                <td class="bg-info delta text-right">6.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">17.0</td>
+                <td class="bg-info delta text-right">17.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Rejoso</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">1.5</td>
+                <td class="bg-info delta text-right">1.5</td>
+                <td class="bg-warning text-right">282</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">2.0</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="bg-warning text-right">285</td>
+                <td class="text-right">5.0</td>
+                <td class="text-right">8.5</td>
+                <td class="bg-info delta text-right">8.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Pabelan</td>
+                <td class="bg-warning text-right">24</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">22</td>
+                <td class="text-right">44.31</td>
+                <td class="text-right">40.0</td>
+                <td class="bg-info delta text-right">40.0</td>
+                <td class="bg-warning text-right">24</td>
+                <td class="text-right">3.78</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">24</td>
+                <td class="text-right">36.33</td>
+                <td class="text-right">71.5</td>
+                <td class="bg-info delta text-right">71.5</td>
+                <td class="bg-warning text-right">23</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">260</td>
+                <td class="text-right">0.21</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-0.21</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">2.10</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Wonogiri</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">16.5</td>
+                <td class="text-right">13.5</td>
+                <td class="bg-info delta text-right">13.5</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">23.0</td>
+                <td class="text-right">20.0</td>
+                <td class="bg-info delta text-right">20.0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">47.5</td>
+                <td class="text-right">40.5</td>
+                <td class="bg-info delta text-right">40.5</td>
+                <td class="bg-warning text-right">281</td>
+                <td class="text-right">29.5</td>
+                <td class="text-right">26.0</td>
+                <td class="bg-info delta text-right">26.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.5</td>
+                <td class="bg-info delta text-right">0.5</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Bangunsari</td>
+                <td class="bg-warning text-right">275</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">282</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">260</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">0</td>
+                <td class="text-right">57.0</td>
+                <td class="bg-info delta text-right">57.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>SongPutri</td>
+                <td class="bg-warning text-right">99</td>
+                <td class="text-right">5.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-5.5</td>
+                <td class="bg-warning text-right">261</td>
+                <td class="text-right">37.0</td>
+                <td class="text-right">36.0</td>
+                <td class="bg-info delta text-right">36.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">283</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">259</td>
+                <td class="text-right">10.0</td>
+                <td class="text-right">7.2</td>
+                <td class="bg-info delta text-right">7.2</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Waduk Notopuro</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">5.0</td>
+                <td class="bg-info delta text-right">5.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">27.5</td>
+                <td class="bg-info delta text-right">27.5</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">9.0</td>
+                <td class="bg-info delta text-right">9.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">48.0</td>
+                <td class="bg-info delta text-right">48.0</td>
+                <td class="bg-warning text-right">0</td>
+                <td class="text-right">0</td>
+                <td class="text-right">47.0</td>
+                <td class="bg-info delta text-right">47.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Randublatung</td>
+                <td class="bg-warning text-right">283</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">2723.25</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-2723.25</td>
+                <td class="bg-warning text-right">268</td>
+                <td class="text-right">2765.5</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-2765.5</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">2922.5</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-2922.5</td>
+                <td class="bg-warning text-right">284</td>
+                <td class="text-right">2917.0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-2917.0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">2905.75</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-2905.75</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">2914.25</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-2914.25</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Pacitan_arr</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">252</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">33.0</td>
+                <td class="bg-info delta text-right">33.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">3.0</td>
+                <td class="bg-info delta text-right">3.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Sragen</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">50.5</td>
+                <td class="text-right">18.0</td>
+                <td class="bg-info delta text-right">18.0</td>
+                <td class="bg-warning text-right">245</td>
+                <td class="text-right">45.5</td>
+                <td class="text-right">7.0</td>
+                <td class="bg-info delta text-right">7.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">16.0</td>
+                <td class="text-right">8.0</td>
+                <td class="bg-info delta text-right">8.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">79.5</td>
+                <td class="text-right">47.0</td>
+                <td class="bg-info delta text-right">47.0</td>
+                <td class="bg-warning text-right">287</td>
+                <td class="text-right">24.0</td>
+                <td class="text-right">14.0</td>
+                <td class="bg-info delta text-right">14.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">3.0</td>
+                <td class="text-right">0.8</td>
+                <td class="bg-info delta text-right">0.8</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">99.0</td>
+                <td class="text-right">27.5</td>
+                <td class="bg-info delta text-right">27.5</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Waduk Dawuhan</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">4.5</td>
+                <td class="text-right">4.0</td>
+                <td class="bg-info delta text-right">4.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-1.0</td>
+                <td class="bg-warning text-right">286</td>
+                <td class="text-right">15.5</td>
+                <td class="text-right">25.0</td>
+                <td class="bg-info delta text-right">25.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">10.0</td>
+                <td class="bg-info delta text-right">10.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">49.0</td>
+                <td class="bg-info delta text-right">49.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Baturetno</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">4.0</td>
+                <td class="text-right">1.9</td>
+                <td class="bg-info delta text-right">1.9</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">0.2</td>
+                <td class="bg-info delta text-right">0.2</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-1.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Tangen Bridge 2</td>
+                <td class="bg-warning text-right">263</td>
+                <td class="text-right">36.0</td>
+                <td class="text-right">45.8</td>
+                <td class="bg-info delta text-right">45.8</td>
+                <td class="bg-warning text-right">242</td>
+                <td class="text-right">16.0</td>
+                <td class="text-right">21.0</td>
+                <td class="bg-info delta text-right">21.0</td>
+                <td class="bg-warning text-right">256</td>
+                <td class="text-right">16.0</td>
+                <td class="text-right">14.0</td>
+                <td class="bg-info delta text-right">14.0</td>
+                <td class="bg-warning text-right">145</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">242</td>
+                <td class="text-right">3.0</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">214</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">165</td>
+                <td class="text-right">8.0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">-8.0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Waduk_Nawangan</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-1.0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">-1.5</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Nglirip Dam</td>
+                <td class="bg-warning text-right">250</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.0</td>
+                <td class="bg-info delta text-right">2.0</td>
+                <td class="bg-warning text-right">232</td>
+                <td class="text-right">0</td>
+                <td class="text-right">2.5</td>
+                <td class="bg-info delta text-right">2.5</td>
+                <td class="bg-warning text-right">265</td>
+                <td class="text-right">0</td>
+                <td class="text-right"></td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">282</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">250</td>
+                <td class="text-right">0</td>
+                <td class="text-right">11.0</td>
+                <td class="bg-info delta text-right">11.0</td>
+                <td class="bg-warning text-right">236</td>
+                <td class="text-right">0</td>
+                <td class="text-right">33.0</td>
+                <td class="bg-info delta text-right">33.0</td>
+                <td class="bg-warning text-right">202</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Tawangmangu</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">1.5</td>
+                <td class="text-right">2.4</td>
+                <td class="bg-info delta text-right">2.4</td>
+                <td class="bg-warning text-right">264</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">5.5</td>
+                <td class="text-right">5.3</td>
+                <td class="bg-info delta text-right">5.3</td>
+                <td class="bg-warning text-right">276</td>
+                <td class="text-right">72.0</td>
+                <td class="text-right">88.5</td>
+                <td class="bg-info delta text-right">88.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">3.5</td>
+                <td class="text-right">4.5</td>
+                <td class="bg-info delta text-right">4.5</td>
+                <td class="bg-warning text-right">288</td>
+                <td class="text-right">2.0</td>
+                <td class="text-right">2.8</td>
+                <td class="bg-info delta text-right">2.8</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            <tr>
+                <td>Madiun - Jiwan</td>
+                <td class="bg-warning text-right">145</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="bg-warning text-right">163</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">145</td>
+                <td class="text-right">2.0</td>
+                <td class="text-right">1.5</td>
+                <td class="bg-info delta text-right">1.5</td>
+                <td class="bg-warning text-right">145</td>
+                <td class="text-right">0.5</td>
+                <td class="text-right">1.0</td>
+                <td class="bg-info delta text-right">1.0</td>
+                <td class="bg-warning text-right">133</td>
+                <td class="text-right">1.0</td>
+                <td class="text-right">8.5</td>
+                <td class="bg-info delta text-right">8.5</td>
+                <td class="bg-warning text-right">97</td>
+                <td class="text-right">9.0</td>
+                <td class="text-right">14.5</td>
+                <td class="bg-info delta text-right">14.5</td>
+                <td class="bg-warning text-right">145</td>
+                <td class="text-right">0</td>
+                <td class="text-right">0.0</td>
+                <td class="bg-info delta text-right">0</td>
+                <td class="text-right sum_delta"></td>
+            </tr>
+            </table>
+    </div>
+</div>
+
+    <!-- CONTENT END -->
+
+    <!-- FOOTER -->
+    <div class="container" style="margin-bottom: 40px">
+        <!-- include 'inc-footer.php'; -->
+        <div class="row hidden-xs visible-lg">
+            <divstyle="padding-bottom:10px;">&nbsp;</div>
+            <div class="histats">
+                <div id="histats_counter"></div>
+            </div>
+            <div class="footer">
+                <p>Copyright &copy; 2016</p>
+            </div>
+        </div><!-- row -->              
+    </div>
+    <!-- END FOOTER -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/static/js/jquery-1.12.0.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        var base_url = 'http://localhost:8080';
+    </script>    
+
+    <!-- Histats.com  START  (aync)-->
+    <script type="text/javascript">
+        var _Hasync= _Hasync|| [];
+        _Hasync.push(['Histats.start', '1,3803507,4,3,170,30,00011111']);
+        _Hasync.push(['Histats.fasi', '1']);
+        _Hasync.push(['Histats.track_hits', '']);
+        (function() {
+            var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+            hs.src = ('//s10.histats.com/js15_as.js');
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+        })();
+    </script>
+    <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?3803507&101" alt="cool hit counter" border="0"></a></noscript>
+    <!-- Histats.com  END  -->
+
+    
+</body>
+</html>

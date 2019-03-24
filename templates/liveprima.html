@@ -1,0 +1,266 @@
+$def with()
+$ pos = ['1804-21', '1804-22', '1803-1']
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>primabot Live</title>
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+        <link href='//fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
+        <style>
+            body {
+                margin: 10px 0 0 0;
+                padding: 0;
+                width: 100%;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                text-align: center;
+                color: #aaa;
+                font-size: 18px;
+            }
+
+            h1 {
+                color: #719e40;
+                letter-spacing: -3px;
+                font-family: 'Lato', sans-serif;
+                font-size: 4em;
+                font-weight: 200;
+                margin-bottom: 0;
+            }
+            p.subtitle {
+                font-family: serif;
+                font-size: 1.5em;
+                padding: 10px 0 20px 0;
+                font-style: italic;
+            }
+
+        .side-card {
+            border: solid 1px #ccc;
+            border-radius: 4px;
+            padding-bottom: 10px;
+        }
+        .side-card .header {
+            font-family: 'Lato', sans-serif;
+            color: #b12;
+            font-size: 2em;
+            padding: 10px;
+            border-bottom: solid 1px #ccc;
+        }
+        .side-card .content {
+            color: #666;
+        }
+        .sensor { margin-top: 10px; font-size: 2em; color: #000;}
+    </style>
+$var js_foot:
+<!-- -->
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>primabot Live</h1>
+            <p class="subtitle"></p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row text-center">
+        <div class="col-md-6">
+            <div class="side-card">
+                <div class="header">Curah Hujan<span id="data1-indicator" style="color: #bbb; font-size: 1em; float: right" class="glyphicon glyphicon-minus-sign"></span></div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d1_samp"><span style="color: #ccc;">0:0</span></span></div>
+                            Waktu Sampling
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d1_tma"><span style="color: #ccc;">0</span></span> 
+                                <span class="unit">mm</span></div>
+                            Curah Hujan
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d1_temp"><span style="color: #ccc;">0</span></span> <span class="unit">&#8451;</span></div>
+                            Temperature
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d1_humi"><span style="color: #ccc;">0</span></span> <span class="unit">%</span></div>
+                            Humidity
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d1_sq"><span style="color: #ccc;">0</span></span> <span class="unit">/30</span></div>
+                            Signal Quality
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d1_batt"><span style="color: #ccc;">-</span></span><span class="unit">Volt</span></div>
+                            Battery
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="side-card">
+                <div class="content">
+                    <div class="row" style="height: 320px">
+                        <div class="col-xs-12">&nbsp;<i>primaBot mengirim data secara instant diterima di Server.</i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+&nbsp;
+    <div class="row text-center">
+        <div class="col-md-6">
+            <div class="side-card">
+                <div class="header">TMA (Sensor Pressure)<span id="data3-indicator" style="color: #bbb; font-size: 1em; float: right" class="glyphicon glyphicon-minus-sign"></span></div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d3_samp"><span style="color: #ccc;">0:0</span></span></div>
+                            Waktu Sampling
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d3_tma"><span style="color: #ccc;">0</span></span> 
+                                <span class="unit">meter</span></div>
+                            Tinggi Muka Air
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d3_temp"><span style="color: #ccc;">0</span></span> <span class="unit">&#8451;</span></div>
+                            Temperature
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d3_humi"><span style="color: #ccc;">0</span></span> <span class="unit">%</span></div>
+                            Humidity
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d3_sq"><span style="color: #ccc;">0</span></span> <span class="unit">/30</span></div>
+                            Signal Quality
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d3_batt"><span style="color: #ccc;">-</span></span><span class="unit">Volt</span></div>
+                            Battery
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="side-card">
+                <div class="header">TMA (Sensor Sonar) <span id="data2-indicator" style="color: #bbb; font-size: 1em; float: right" class="glyphicon glyphicon-minus-sign"></span></div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d2_samp"><span style="color: #ccc;">0:0</span></span></div>
+                            Waktu Sampling
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d2_tma"><span style="color: #ccc;">0</span></span> 
+                                <span class="unit">meter</span></div>
+                            Tinggi Muka Air
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d2_temp"><span style="color: #ccc;">0</span></span> <span class="unit">&#8451;</span></div>
+                            Temperature
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d2_humi"><span style="color: #ccc;">0</span></span> <span class="unit">%</span></div>
+                            Humidity
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d2_sq"><span style="color: #ccc;">0</span></span><span class="unit">/30</span></div>
+                            Signal Quality
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d2_batt"><span style="color: #ccc;">-</span></span><span class="unit">Volt</span></div>
+                            Battery
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="/static/js/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="/static/js/moment.min.js"></script>
+    <script type="text/javascript">
+        var primabots = [
+            {'1804-21': {'tipping_factor': 0.2}},
+            {'1804-22': {'tinggi_sonar': 1000}},
+            {'1803-1': {'factor': 10}}
+        ]
+        \$(document).ready(function(){
+                var ws = new WebSocket('ws://mqtt.bbws-bsolo.net:22286');
+                ws.onopen = function (ws) { console.log('connected') }
+                ws.onmessage = function (msg) {
+                  var data = JSON.parse(msg.data);
+                  if (data.device.split('/')[1] == '1804-21') {
+                    \$('#data1-indicator').css('color', 'blue').removeClass('glyphicon-minus-sign').addClass('glyphicon-plus-sign');
+                    setTimeout(function () { \$('#data1-indicator').css('color', '#bbb').removeClass('glyphicon-plus-sign').addClass('glyphicon-minus-sign')}, 500);
+                      \$('#d1_samp').text(moment(data.sampling * 1000).format('HH:mm'));
+                      \$('#d1_tma').text((0.2 * data.tick).toFixed(2));
+                      \$('#d1_sq').text(data.signal_quality);
+                      \$('#d1_batt').text(data.battery);
+                      \$('#d1_temp').text(data.temperature);
+                      \$('#d1_humi').text(data.humidity);
+                      \$('#d1_elev').text((data.altitude / 100).toFixed(2));
+                      console.log(data);
+                  } else if (data.device.split('/')[1] === '1804-22') {
+                    \$('#data2-indicator').css('color', 'blue').removeClass('glyphicon-minus-sign').addClass('glyphicon-plus-sign');
+                    setTimeout(function () { \$('#data2-indicator').css('color', '#bbb').removeClass('glyphicon-plus-sign').addClass('glyphicon-minus-sign')}, 500);
+                      var tma = data.distance/1000;
+                      \$('#d2_samp').text(moment(data.sampling * 1000).format('HH:mm'));
+                      \$('#d2_tma').text(tma.toFixed(2));
+                      \$('#d2_sq').text(data.signal_quality);
+                      \$('#d2_batt').text(data.battery);
+                      \$('#d2_temp').text(data.temperature);
+                      \$('#d2_humi').text(data.humidity);
+                      \$('#d2_elev').text((data.altitude / 100).toFixed(2));
+                      console.log(data);
+                  } else if (data.device.split('/')[1] === '1803-1') {
+                    \$('#data3-indicator').css('color', 'blue').removeClass('glyphicon-minus-sign').addClass('glyphicon-plus-sign');
+                    setTimeout(function () { \$('#data3-indicator').css('color', '#bbb').removeClass('glyphicon-plus-sign').addClass('glyphicon-minus-sign')}, 500);
+                      var tma = data.wl_scale / 1024 * 2;
+                      \$('#d3_samp').text(moment(data.sampling * 1000).format('HH:mm'));
+                      \$('#d3_tma').text(tma.toFixed(2));
+                      \$('#d3_sq').text(data.signal_quality);
+                      \$('#d3_batt').text(data.battery);
+                      \$('#d3_temp').text(data.temperature);
+                      \$('#d3_humi').text(data.humidity);
+                      \$('#d3_elev').text((data.altitude / 100).toFixed(2));
+                      console.log(data);
+                  }                      
+               }
+                
+        });
+    </script>
+</body>
+</html>

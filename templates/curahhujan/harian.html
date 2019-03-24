@@ -1,0 +1,84 @@
+$def with(ctx)
+$ pos = ctx.get('pos')
+$ data = ctx.get('data')
+$var p_curahhujan: active
+$var extra_header:
+    <link rel="stylesheet" href="/static/css/datepicker3.css">
+$var js_foot:
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function(){
+          \$('#datepicker').datepicker({
+            todayHighlight: true, 
+            format: 'yyyy/mm',
+            startView: 'months',
+            minViewMode: 'months',
+            autoclose: true});
+          \$('#datepicker').on('changeDate', function() {
+              window.location = '/curahhujan/$pos.AgentId/' + \$('#datepicker').datepicker('getFormattedDate');
+              });
+            var chart = new Highcharts.Chart({
+                chart: { type: 'column', renderTo: 'column_chart' },
+                title: { text: '' },
+                tooltip: {
+                    valueDecimals: 2,
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:4px">' +
+                        '{series.name}</td>' +
+                        '<td style="padding:0"><b>{point.y} mm</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                xAxis: {
+                    categories: $data.categories,
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    max: 150,
+                    title: { text: 'Curah Hujan (mm)',
+                        style: {
+                            fontSize: '18px'
+                        }
+                    }
+                },
+                series: series
+            });
+        });
+    </script>
+<!-- -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            <h2><a href="/curahhujan" title="Daftar Pos Hujan" style="text-decoration: none;"><span class="glyphicon glyphicon-chevron-left"></span></a> Pos $pos.cname</h2>
+        </div>
+        <div class="col-sm-4 text-center">
+            <h3 id="datepicker">Curah Hujan $data.bulan.strftime("%b %Y")</h3> 
+        </div>
+        <div class="col-sm-5" style="padding-top: 20px;">
+            <div class="btn-group" role="group" style="float: right;">
+                <a href="/curahhujan/$pos.AgentId" class="btn btn-primary">Jam-jaman</a>
+                <a href="#" class="btn btn-default">Harian</a>
+                <a href="/curahhujan/$pos.AgentId/daily" class="btn btn-primary">10 Harian</a>
+                <a href="/curahhujan/$pos.AgentId/bulanan" class="btn btn-primary">Bulanan</a>
+                <a href="/curahhujan/$pos.AgentId/tertinggi" class="btn btn-primary">Maksimum</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="column_chart" style="width: 100%; height: 400px"></div>
+        </div>
+    </div>
+</div><!-- container -->
+<script>
+var series = [
+  {
+      name: '$data.bulan.strftime('%B')',
+      data: $data.series
+  }
+
+];
+</script>

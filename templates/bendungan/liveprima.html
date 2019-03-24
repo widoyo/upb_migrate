@@ -1,0 +1,211 @@
+$def with(pos, meta)
+$var title: $pos.AgentName &rarr;&nbsp;
+$var tma: meta.get('tma')
+$var p_bendungan: active
+$var extra_header:
+    <style>
+        .side-card {
+            border: solid 1px #ccc;
+            border-radius: 4px;
+            padding-bottom: 10px;
+        }
+        .side-card .header {
+            color: #f12;
+            font-size: 2em;
+            padding: 10px;
+            border-bottom: solid 1px #ccc;
+        }
+        .side-card .content {
+            color: #666;
+        }
+        .sensor { margin-top: 10px; font-size: 2em; color: #000;}
+    </style>
+$var js_foot:
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript" src="/static/js/moment.min.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function(){
+                var ws = new WebSocket('ws://mqtt.bbws-bsolo.net:22286');
+                ws.onopen = function (ws) { console.log('connected') }
+                ws.onmessage = function (msg) {
+                  var data = JSON.parse(msg.data);
+                  if (data.device) {
+                    \$('#data-indicator').css('color', 'blue').removeClass('glyphicon-minus-sign').addClass('glyphicon-plus-sign');
+                    setTimeout(function () { \$('#data-indicator').css('color', '#bbb').removeClass('glyphicon-plus-sign').addClass('glyphicon-minus-sign')}, 500);
+                    if (data.device.split('/')[1] === '$:pos.prima_id') {
+                      if (typeof data.distance !== 'undefined') {
+                        var tma = ($:pos.tinggi_sonar - data.distance/10) / 100;
+                      } else if (typeof data.wlevel !== 'undefined'){
+                        var tma = data.wlevel / 100.0;
+                      }
+                      chart.series[0].data.push({x: data.sampling, y: tma});
+                      \$('#d_samp').text(moment(data.sampling * 1000).format('HH:mm'));
+                      \$('#d_tma').text(tma.toFixed(2));
+                      \$('#d_sq').text(data.signal_quality);
+                      \$('#d_batt').text(data.battery);
+                      \$('#d_temp').text(data.temperature);
+                      \$('#d_humi').text(data.humidity);
+                      \$('#d_elev').text((data.altitude / 100).toFixed(2));
+                      console.log('TMA', data.device);
+                    } else if ( data.device.split('/')[1] === '1901-1' && '1804-18' === '$:pos.prima_id'){ 
+                      var wlevel = data.wl_scale * 0.01 + 142.64;
+                      console.log('WLevel: ', wlevel);
+                      \$('#d_tma2').text(wlevel.toFixed(2));
+                      \$('#d_samp2').text(moment(data.sampling * 1000).format('HH:mm'));
+                      \$('#d_sq2').text(data.signal_quality);
+                      \$('#d_batt2').text(data.battery);
+                      \$('#d_temp2').text(data.temperature);
+                      \$('#d_humi2').text(data.humidity);
+
+                    } else { console.log(data.device.split('/')[1]); }
+                  }
+                }
+                var chart = new Highcharts.Chart({
+                    title: {text: ''},
+                    chart: {
+                        renderTo: "my_chart",
+                        type: 'spline'
+                    },
+                    tooltip: {
+                        formatter: function () {
+                            var s = '<b>'+ moment.unix(this.x).format('DD-MMM-YYYY HH:mm') +'</b>';
+                            s += '<br/>' + this.series.name + ': ' + this.y;
+                            return s;
+                        
+                        },
+                        useHTML: true
+                    },
+                    yAxis: {min: ${pos.siaga4 - (0.02 * pos.siaga4)}, 
+                        title: {text: 'Elevasi (MDPL)'}
+                    },
+                    xAxis: {type: 'datetime',
+                        labels: {
+                            formatter: function () { return moment.unix(this.value).format('DD MMM HH:mm')}
+                        }
+                    },
+                    series: [
+                        {'name': 'TMA', 'data': $:{[{'x': t[0], 'y': t[1]/100.0} for t in meta.get('tma')]}},
+                        {'name': 'MA Banjir', lineWidth: 1, 'data': $:{[{'x': t[0], 'y': pos.siaga3} for t in meta.get('tma')]},
+                        'color': 'red'},
+                        {'name': 'MA Normal', lineWidth: 1, 'data': $:{[{'x': t[0], 'y': pos.siaga1} for t in meta.get('tma')]},
+                        'color': 'green'}
+                    ]
+                });
+        });
+    </script>
+<!-- -->
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+            <h1><a href="/bendungan" style="text-decoration: none;">&larr;</a> $pos.cname</h1>
+        </div>
+        <div class="col-xs-6">
+            <div class="btn-group" role="group" style="float: right">
+                <a href="" class="btn btn-default">Elevasi</a>
+                <a href="/bendungan/$pos.AgentId/operasi" class="btn btn-primary">Operasi</a>
+                <div class="btn-group" role="group">
+                    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Keamanan <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/bendungan/$pos.table_name/vnotch">Rembesan</a></li>
+                        <li><a href="/bendungan/$pos.table_name/piezometer">Tekanan Pori</a></li>
+                    </ul>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="row text-center">
+        <div class="col-md-9">
+            <div id="my_chart" style="width: 100%; height: 350px; margin-bottom: 200px;"></div>
+        </div>
+        <div class="col-md-3">
+            <div class="side-card">
+                <div class="header">primaBot <span id="data-indicator" style="color: #bbb; font-size: 1em; float: right" class="glyphicon glyphicon-minus-sign"></span></div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_samp">${meta.get('latest_sampling').get('sampling')}</span></div>
+                            Waktu Sampling
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_tma">${'%.2f' % meta.get('latest_sampling').get('wlevel')}</span> 
+                                <span class="unit">MDPL</span></div>
+                            Tinggi Muka Air
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_temp">${meta.get('latest_sampling').get('temperature')}</span> <span class="unit">&#8451;</span></div>
+                            Temperature
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_humi">${meta.get('latest_sampling').get('humidity')}</span> <span class="unit">%</span></div>
+                            Humidity
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_sq">${meta.get('latest_sampling').get('sq')}</span> <span class="unit">/30</span></div>
+                            Signal Quality
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_batt">-</span><span class="unit">Volt</span></div>
+                            Battery
+                        </div>
+                    </div>
+                </div>
+            </div>
+        $if pos.prima_id == '1804-18':
+            <br>
+            <div class="side-card">
+                <div class="header">Pressure<span id="data-indicator2" style="color: #bbb; font-size: 1em; float: right" class="glyphicon glyphicon-minus-sign"></span></div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_samp2">-</span></div>
+                            Waktu Sampling
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_tma2">-</span> 
+                                <span class="unit">MDPL</span></div>
+                            Tinggi Muka Air
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_temp2">-</span> <span class="unit">&#8451;</span></div>
+                            Temperature
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_humi2">-</span> <span class="unit">%</span></div>
+                            Humidity
+                        </div>
+                    </div><!-- row -->
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_sq2">-</span> <span class="unit">/30</span></div>
+                            Signal Quality
+                        </div>
+                        <div class="col-xs-6">
+                            <div>
+                                <span class="sensor" id="d_batt2">-</span><span class="unit">Volt</span></div>
+                            Battery
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- endif prima_id -->
+        </div>
+        <a href="/sensor">Semua Sensor</a>
+    </div>
+</div>

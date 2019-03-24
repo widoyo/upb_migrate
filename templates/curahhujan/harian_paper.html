@@ -1,0 +1,100 @@
+$def with (curah_hujan, meta, wilayah)
+$var p_curahhujan: active
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.3.0/paper.css">
+<style>
+    @page { size: A4 }
+    table { page-break-inside: avoid; }
+    html { font-family: helvetica;}
+    .logo { float: left; padding: 0px; }
+    .header { padding: 0px;margin-top: 0px; }
+    .header p { margin-top: 0;margin-bottom: 0; text-transform: uppercase; text-align: center; }
+    p.bbws { font-weight: bold; font-size: 18px; }
+    p.tiny { font-size: 9px;}
+    h3 { line-height: 90%; text-align: center; }
+    .table-bordered { border: solid 2px black; border-collapse: collapse; border-spacing: 0; }
+    .table-bordered th { padding: 4px; border: solid 1px black; }
+    th, td { margin: 0; padding: 4px; border: solid 1px black;}
+    .text-right { text-align: right; }
+    .jam { font-size: 10px;}
+    .text-center { text-align: center; }
+    .mengetahui { width: 33%; float: left; font-size: 12px;}
+</style>
+</head>
+<body class="A4">
+<section class="sheet padding-10mm">
+<div class="container">
+    <div class="logo">
+    <img src="/static/images/logo_pu.png" height=80 width=80 alt="Logo PUPR">
+</div>
+<div class="header">
+    <p>Kementerian Pekerjaan Umum dan Perumahan Rakyat</p>
+    <p>Direktorat Jenderal Sumber Daya Air</p>
+    <p class="bbws">Balai Besar Wilayah Sungai Bengawan Solo</p>
+    <p class="tiny">Jl. Solo - Kartasura Km. 7 PO BOX 267 Telp/Fax (0271) 716071, Pabelan, Kartasura, Sukoharjo 57162</p>
+</div>
+<h3 class="c">MONITORING CURAH HUJAN<br>
+    WILAYAH SUNGAI BENGAWAN SOLO<br>
+    Status: $:meta.get('now').strftime('%d - %B - %Y')</h3>
+	$code:
+	    wil = "0"
+	$for c in curah_hujan:
+        $if c['pos'].wilayah != wil:
+            $if wil != "0":
+                </tbody>
+                </table>
+                </section>
+                <section class="sheet padding-10mm">
+            $code:
+                wil = c['pos'].wilayah
+            <table class="table table-bordered boldtable">
+            <thead>
+            <tr>
+                <th style="background-color: #d2d2d2" colspan="8">Pos Hujan Wilayah $wilayah[c['pos'].wilayah]</th>
+            </tr>
+              <tr>
+                <th rowspan="2">No</th>
+                <th rowspan="2">Pos Hujan</th>
+                <th rowspan="2">Kabupaten</th>
+                <th colspan="4">Waktu (WIB)</th>
+                <th rowspan="2">Kumulatif 24 jam</th>
+              </tr>
+              <tr>
+                <td class="jam">07.01 - 13.00</td>
+                <td class="jam">13.01 - 19.00</td>
+                <td class="jam">19.01 - 01.00</td>
+                <td class="jam">01.01 - 07.00</td>
+              </tr>
+            </thead>
+        <tr>
+            <td>$loop.index</td>
+            <td>$c['pos'].cname</td>
+            <td>
+            $if c['pos'].kab:
+                ${c['pos'].kab[4:]}
+            </td>
+            <td class="text-right">${'%.1f' % c['ch']['pagi']}</td>
+            <td class="text-right">${'%.1f' % c['ch']['sore']}</td>
+            <td class="text-right">${'%.1f' % c['ch']['malam']}</td>
+            <td class="text-right">${'%.1f' % c['ch']['tmalam']}</td>
+            <td class="text-right">${'%.1f' % c['ch']['total']}</td>
+        </tr>
+    <!-- -->
+             </tbody>
+         </table>
+         <p style="font-size: 11px;">Untuk Curah Hujan jam-jaman dapat dilihat melalui website kami:<br>
+         http://hidrologi.bbws-bsolo.net/curahhujan</p>
+         <div class="text-center">
+         <p>Mengetahui:</p>
+         <div class="mengetahui kiri">a.n. Kepala Satker O & P SDA<br>
+             PPK O & P SDA 1<br><br><br><br>ttd<br><br><span style="text-decoration: underline;">Antonius Suryono Amd.T, SH, MMT</span><br>
+         NIP. 19691222 199703 1 005</div>
+         <div class="mengetahui tengah">&nbsp;</div>
+         <div class="mengetahui kanan">Kepala Bidang<br>
+             O & P SDA Bengawan Solo<br><br><br><br>ttd<br><br><span style="text-decoration: underline;">Dra. Nova Dorma Sirait MT</span><br>
+                 NIP. 19651105 199003 2 00</div>
+    </div>
+    </section>
+    </body>
+    </html>

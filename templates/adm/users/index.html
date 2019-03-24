@@ -1,0 +1,28 @@
+$def with (ctx)
+$ title = 'Users'
+$ users = ctx.get('users')
+$code:
+    units = '_Curah hujan_TMA_Bendungan______Superuser'.split('_')
+<h1>User</h1>
+<a href="/adm/user/add">Tambah</a>
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Username</th>
+      <th>Unit</th>
+      <th>Pos</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+$for user in users:
+    <tr>
+      <td>$loop.index</td>
+      <td>$user.username</td>
+      <td>${units[user.is_admin]}</td>
+      <td>$user.table_name</td>
+      <td><span class="glyphicon glyphicon-pencil"></span></td>
+    </tr>
+  </tbody>
+</table>

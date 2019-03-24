@@ -1,0 +1,41 @@
+@import 'class';
+@media(min-width:768px){
+    .navbar-default{
+        -webkit-transition: all .35s;
+        -moz-transition: all .35s;
+        transition: all .35s;
+    }
+    .navbar-default.affix {
+        .navbar-bottom{
+            display: none;
+        }
+    }
+}
+.table>thead th {
+    font-size: 13pt;
+}
+.table>tbody td {
+    font-size: 12pt;
+}
+.navbar-footer .list-group .list-group-item {
+    background-color: none;
+}
+.pt-25 {padding-top: 25px;}
+.pt-30 {padding-top: 30px;}
+.pt-45 {padding-top: 45px;}
+.pb-20 {padding-bottom: 20px;}
+
+.mt-0 {margin-top: 0;}
+.mb-25 {margin-bottom: 25px;}
+
+.text-center {text-align: center;}
+.fl-left {float: left;}
+.fl-right {float: right;}
+
+.white {background-color: $white;}
+.fwhite {color: $white;}
+.primary {color: $primary;}
+.fprimary {color: $primary;}
+
+.uppercase {text-transform: uppercase;}
+.w-100 {width: 100%;}

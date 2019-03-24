@@ -1,0 +1,210 @@
+$def with (ctx)
+$var title: Data Teknis Bendungan
+$ poses = ctx.get('poses')
+$var extra_header:
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/> 
+$var js_foot:
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.floatThead.min.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function () {
+            var \$table = \$('.table');
+            \$table.floatThead({
+                top: 60,
+                responsiveContainer: function (\$table) {
+                    return \$table.closest('.table-responsive');
+                }
+            });
+            \$('.editable').editable({
+                url: '/adm/bendungan/teknis'
+            });
+        });
+    </script>
+
+<h1>Bendungan</h1>
+<h3>Data Teknis</h3>
+<table class="table table-responsive table-bordered table-striped">
+  <thead>
+    <tr>
+      <th rowspan="2">No</th>
+      <th rowspan="2">Nama</th>
+      <th rowspan="2">Kab</th>
+      <th rowspan="2">Tampungan <span class="">(m<sup>3</sup>)</span></th>
+      <th rowspan="2">Irigasi <span class="">(Ha)</span></th>
+      <th rowspan="2">Elev Puncak <span class="">(m)</span></th>
+      <th rowspan="2">MAB <span class="">(m)</span></th>
+      <th rowspan="2">MAN <span class="">(m)</span></th>
+      <th rowspan="2">MAMin <span class="">(m)</span></th>
+      <th rowspan="2">Sedimen <span class="">(m)</span></th>
+      <th rowspan="2">Elev Awas <span class="">(m)</span></th>
+      <th rowspan="2">Elev Siaga <span class="">(m)</span></th>
+      <th rowspan="2">Elev Waspada <span class="">(m)</span></th>
+      <th colspan="2">VNotch 1</th>
+      <th colspan="2">VNotch 2</th>
+      <th colspan="2">VNotch 3</th>
+      <th colspan="3">PiezoM 1A</th>
+      <th colspan="3">PiezoM 1B</th>
+      <th colspan="3">PiezoM 1C</th>
+      <th colspan="3">PiezoM 2A</th>
+      <th colspan="3">PiezoM 2B</th>
+      <th colspan="3">PiezoM 2C</th>
+      <th rowspan="3">Nama</th>
+      <th colspan="3">PiezoM 3A</th>
+      <th colspan="3">PiezoM 3B</th>
+      <th colspan="3">PiezoM 3C</th>
+      <th colspan="3">PiezoM 4A</th>
+      <th colspan="3">PiezoM 4B</th>
+      <th colspan="3">PiezoM 4C</th>
+      <th colspan="3">PiezoM 5A</th>
+      <th colspan="3">PiezoM 5B</th>
+      <th colspan="3">PiezoM 5C</th>
+    </tr>
+    <tr>
+        <th>Pjg Salu (m)</th>
+        <th>Batas Remb (L/dt)</th>
+        <th>Pjg Salu (m)</th>
+        <th>Batas Remb (L/dt)</th>
+        <th>Pjg Salu (m)</th>
+        <th>Batas Remb (L/dt)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+        <th>Elev Dasar Pipa(m)</th>
+        <th>Panjang Pipa(cm)</th>
+        <th>Batas Tekanan Pori(cm)</th>
+    </tr>
+  </thead>
+  <tbody>
+$code:
+    wil = 0
+    wils = 'Hulu_Madiun_Hilir'.split('_')
+$for pos in poses:
+    $if wil != pos.wilayah:
+        $code:
+            wil = pos.wilayah
+        <tr>
+            <th colspan="29" class="text-center">${wils[pos.wilayah - 1]}</th>
+        </tr>
+    <tr>
+      <td>$loop.index</td>
+      <td>$pos.cname</td>
+      <td><a href="#" class="editable" data-title="$pos.cname: Kabupaten"  data-type="text" data-pk="$pos.AgentId" data-name="kab">$pos.kab</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Volume (m3)" data-type="text" data-pk="$pos.AgentId" data-name="volume">${pos.volume}</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Luas Baku Irigasi" data-type="text" data-pk="$pos.AgentId" data-name="lbi">$pos.lbi</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elevasi Puncak" data-type="text" data-pk="$pos.AgentId" data-name="elev_puncak">$pos.elev_puncak</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: MA Banjir(mdpl)" data-type="text" data-pk="$pos.AgentId" data-name="siaga3">$pos.siaga3</td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: MA Normal/Puncak Mercu (m)"  data-type="text" data-pk="$pos.AgentId" data-name="siaga1">$pos.siaga1</td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: MAMin (m)" data-type="text" data-pk="$pos.AgentId" data-name="siaga4">$pos.siaga4</td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Sedimen (m)" data-type="text" data-pk="$pos.AgentId" data-name="sedimen">$pos.sedimen</td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: bts_elev_awas (m)" data-type="text" data-pk="$pos.AgentId" data-name="bts_elev_awas">$pos.bts_elev_awas</td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: bts_elev_siaga (m)" data-type="text" data-pk="$pos.AgentId" data-name="bts_elev_siaga">$pos.bts_elev_siaga</td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: bts_elev_waspada (m)" data-type="text" data-pk="$pos.AgentId" data-name="bts_elev_waspada">$pos.bts_elev_waspada</td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Saluran VNotch1(m)" data-type="text" data-pk="$pos.AgentId" data-name="vn1_panjang_saluran">$pos.vn1_panjang_saluran</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas VNotch 1(L/dt)" data-type="text" data-pk="$pos.AgentId" data-name="vn_q1_limit">$pos.vn_q1_limit</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Saluran VNotch 2(m)" data-type="text" data-pk="$pos.AgentId" data-name="vn2_panjang_saluran">$pos.vn2_panjang_saluran</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas VNotch 2(L/dt)" data-type="text" data-pk="$pos.AgentId" data-name="vn_q2_limit">$pos.vn_q2_limit</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Saluran VNotch 3(m)" data-type="text" data-pk="$pos.AgentId" data-name="vn3_panjang_saluran">$pos.vn3_panjang_saluran</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas VNotch 3(L/dt)" data-type="text" data-pk="$pos.AgentId" data-name="vn_q3_limit">$pos.vn_q3_limit</a></td>
+      <!--P1A -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 1A(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie1a_elev_dasar_pipa">$pos.pie1a_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 1A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie1a_panjang_pipa">$pos.pie1a_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 1A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie1a_batas_tek_pori">$pos.pie1a_batas_tek_pori</a></td>
+      <!--P1B -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 1B(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie1b_elev_dasar_pipa">$pos.pie1b_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 1B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie1b_panjang_pipa">$pos.pie1b_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 1B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie1b_batas_tek_pori">$pos.pie1b_batas_tek_pori</a></td>
+      <!--P1C -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 1C(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie1c_elev_dasar_pipa">$pos.pie1c_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 1C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie1c_panjang_pipa">$pos.pie1c_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 1C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie1c_batas_tek_pori">$pos.pie1c_batas_tek_pori</a></td>
+      <!--P2A -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 2A(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie2a_elev_dasar_pipa">$pos.pie2a_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 2A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie2a_panjang_pipa">$pos.pie2a_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 2A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie2a_batas_tek_pori">$pos.pie2a_batas_tek_pori</a></td>
+      <!--P2B -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 2B(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie2b_elev_dasar_pipa">$pos.pie2b_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 2B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie2b_panjang_pipa">$pos.pie2b_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 2B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie2b_batas_tek_pori">$pos.pie2b_batas_tek_pori</a></td>
+      <!--P2C -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 2C(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie2c_elev_dasar_pipa">$pos.pie2c_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 2C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie2c_panjang_pipa">$pos.pie2c_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 2C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie2c_batas_tek_pori">$pos.pie2c_batas_tek_pori</a></td>
+      <!--P3A -->
+      <td>$pos.cname</td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 3A(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie3a_elev_dasar_pipa">$pos.pie3a_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 3A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie3a_panjang_pipa">$pos.pie3a_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 3A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie3a_batas_tek_pori">$pos.pie3a_batas_tek_pori</a></td>
+      <!--P3B -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 3B(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie3b_elev_dasar_pipa">$pos.pie3b_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 3B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie3b_panjang_pipa">$pos.pie3b_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 3B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie3b_batas_tek_pori">$pos.pie3b_batas_tek_pori</a></td>
+      <!--P3C -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 3C(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie3c_elev_dasar_pipa">$pos.pie3c_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 3C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie3c_panjang_pipa">$pos.pie3c_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 3C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie3c_batas_tek_pori">$pos.pie3c_batas_tek_pori</a></td>
+      <!--P4A -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 4A(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie4a_elev_dasar_pipa">$pos.pie4a_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 4A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie4a_panjang_pipa">$pos.pie4a_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 4A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie4a_batas_tek_pori">$pos.pie4a_batas_tek_pori</a></td>
+      <!--P4B -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 4B(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie4b_elev_dasar_pipa">$pos.pie4b_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 4B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie4b_panjang_pipa">$pos.pie4b_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 4B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie4b_batas_tek_pori">$pos.pie4b_batas_tek_pori</a></td>
+      <!--P4C -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 4C(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie4c_elev_dasar_pipa">$pos.pie4c_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 4C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie4c_panjang_pipa">$pos.pie4c_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 4C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie4c_batas_tek_pori">$pos.pie4c_batas_tek_pori</a></td>
+      <!--P5A -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 5A(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie5a_elev_dasar_pipa">$pos.pie5a_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 5A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie5a_panjang_pipa">$pos.pie5a_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 5A(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie5a_batas_tek_pori">$pos.pie5a_batas_tek_pori</a></td>
+      <!--P5B -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 5B(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie5b_elev_dasar_pipa">$pos.pie5b_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 5B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie5b_panjang_pipa">$pos.pie5b_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 5B(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie5b_batas_tek_pori">$pos.pie5b_batas_tek_pori</a></td>
+      <!--P5C -->
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Elev Dasar Pipa PiezoM 5C(m)" data-type="text" data-pk="$pos.AgentId" data-name="pie5c_elev_dasar_pipa">$pos.pie5c_elev_dasar_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Panjang Pipa PiezoM 5C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie5c_panjang_pipa">$pos.pie5c_panjang_pipa</a></td>
+      <td class="text-right"><a href="#" class="editable" data-title="$pos.cname: Batas Tekanan Pori PiezoM 5C(cm)" data-type="text" data-pk="$pos.AgentId" data-name="pie5c_batas_tek_pori">$pos.pie5c_batas_tek_pori</a></td>
+    </tr>
+  </tbody>
+</table>

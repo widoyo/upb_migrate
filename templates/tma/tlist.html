@@ -1,0 +1,27 @@
+$def with(tmas)
+$var p_tma: active
+<div class="container">
+<h1>TMA Manual</h1>
+<a href="/tma/add" class="btn btn-primary">Tambah / Ganti</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Pos</th>
+            <th>SamplingDate</th>
+            <th>SamplingTime</th>
+            <th>TMA Lokal (Cm)</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    $for r in tmas:
+      <tr>
+          <td>$r[0].cname</td>
+          <td>$r[1]</td>
+          <td>$r[2]</td>
+          <td>$r[3]</td>
+          <td></td>
+      </tr>
+    </tbody>
+</table>
+</div>

@@ -1,0 +1,269 @@
+$def with (content)
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="manifest" href="/static/manifest.json">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Bengawan Solo Alert">
+    <meta name="apple-mobile-web-app-title" content="Bengawan Solo Alert">
+    <meta name="msapplication-starturl" content="/alert">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Sistem Informasi Hidrologi dan Kualitas Air</title>
+    <link rel="shortcut icon" href="/static/images/favicon.ico"/>
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <!-- <link rel="stylesheet" href="/static/css/custom/font.css"> -->
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="/static/css/custom/style-megamenu.css"> 
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/fontawesome/font-awesome.css">
+
+    <!-- Loading Css -->
+    <!-- <link rel="stylesheet" href="/static/css/custom/loading.css"> -->
+    $:content.get('extra_header', '')
+    <style>
+        /* CONTENT*/
+        /*Enable .first-content on First content (below navbar) to reduce margin from navbar, recommended is -4em*/
+        @media screen (min-width: 769px) {
+            .first-content {
+                margin-top: -4em;
+            }
+        }
+        .first-content {
+            /*margin-top: -1em;*/
+        }
+        .navbar {
+            border-radius: 0px;
+        }
+
+        @media (max-width: 767px) {
+/*          .affix {
+                position: static;
+            }*/
+        }
+        .affix {
+            top: 0;
+            width: 100%;
+            border-radius: 0;
+            box-shadow: 0px 0px 30px black;
+        }
+        .affix-top {
+            box-shadow: 0px 2px 5px #777;
+        }
+    </style>
+</head>
+<body>
+    <!-- DESKTOP NAVBAR -->
+    <div class="hidden-xs">
+        <!-- START NAVIGATION -->
+        <nav class="navbar navbar-default white" style="margin-bottom: 0; z-index: 1400;">
+            <div class="navbar-bottom">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">
+                            <div class="visible-xs">BBWS SOLO</div>
+                            <div class="row hidden-xs">
+                                <div class="col-sm-8">
+                                    <img alt="Brand" src="/static/images/logo_bbws_bs.png" class="img-responsive" style="height: 2.5em">
+                                </div>
+                                <br class="visible-xs">
+                                <div class="col-sm-4">
+                                    <img alt="Brand" src="/static/images/bbws_bs.png" class="img-responsive" style="height: 2.5em">
+                                </div>
+                            </div>
+                        </a>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <!-- Responsive Menu -->
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav navbar-right" style="margin-top:15px;">
+                                <li class="dropdown">
+                                    <a href="#" class="bluelink dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-globe"></i> <b>PETA</b> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="bluelink" href="/map/curahhujan">Pos Curah Hujan</a></li>
+                                        <li><a class="bluelink" href="/map/tma">Pos TMA</a></li>
+                                        <li><a class="bluelink" href="/map/bendungan">Bendungan</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="bluelink dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-user"></i> <b>PROFIL</b> <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="bluelink" href="/about/wilayah-kerja">Wilayah Kerja</a></li>
+                                        <li><a class="bluelink" href="/about/struktur-organisasi">Struktur Organisasi</a></li>
+                                    </ul>
+                                </li>
+                                <li><a class="bluelink" href="/about/kontak-kami"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li>
+                        </ul>
+                    </div> <!-- collapse -->
+                </div><!-- /.container -->
+            </div>
+        </nav>
+        <!-- END NAVIGATION -->
+        <div class="container-fluid hidden-xs" style="background-color: #0277BD;">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <h3 align="center" style="margin:5px; color:#fff; ">SISTEM INFORMASI HIDROLOGI DAN KUALITAS AIR</h3>
+        </div>
+        <!-- 2nd Navigation -->
+        <div class="navbar navbar-default white desktop" data-spy="affix" data-offset-top="103" style="z-index: 1300; margin-bottom:20px;">
+          <div class="container-fluid" style="padding-left: 0; padding-right: 0;">
+            <div class="container-fluid navbar-collapse">              
+                <ul class="nav navbar-nav nav-tabs" style="font-size: 16px;">
+                    <li class="$:content.get('p_curahhujan')"><a href="/curahhujan" class="bluelink"><img src="/static/images/icons/icon-curah-hujan.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; CURAH HUJAN</a></li>
+                    <li class="$:content.get('p_klimatologi')"><a href="/klimatologi" class="bluelink"><img src="/static/images/icons/climatology.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; KLIMATOLOGI</a></li>
+                    <li class="$:content.get('p_tma')"><a href="/tma" class="bluelink"><img src="/static/images/icons/icon-muka-air.png" height="90" width="88" class="img-responsive" style="height: 20px">&nbsp; TINGGI MUKA AIR</a></li>
+                    <li class="$:content.get('p_kekeringan')"><a href="/kekeringan" class="bluelink"><img src="/static/images/icons/icon-kekeringan.png" height="88" width="88" class="img-responsive" style="height: 20px;">&nbsp; KEKERINGAN</a></li>
+                    <li class="$:content.get('p_kualitas_air')"><a href="/kualitasair" class="bluelink"><img src="/static/images/icons/icon-curah-hujan.png" height="80" width="84" class="img-responsive" style="height: 20px">&nbsp; KUALITAS AIR</a></li>
+                    <li class="$:content.get('p_bendungan')"><a href="/bendungan/summary" class="bluelink"><img src="/static/images/icons/icon-bendungan.png" height="96" width="96" class="img-responsive" style="height: 20px">&nbsp; BENDUNGAN</a></li><!-- dropdown bendungan -->
+                </ul>
+            </div>
+          </div>
+        </div>
+        <!-- End 2nd Navigation -->
+    </div>
+    <!-- END DESKTOP NAVBAR -->
+
+    <!-- MOBILE NAVBAR -->
+    <div class="hidden-lg hidden-md hidden-sm">
+        <!-- START NAVIGATION -->
+        <nav class="navbar white yamm navbar-default" style="margin-bottom: 0; z-index: 1400;">
+            <div class="navbar-bottom">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-left navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="/">
+                            <div class="visible-xs" style="font-size: 10pt;font-weight: bold;">SISFO HKA BBWS&nbsp;Bengawan&nbsp;Solo</div>
+                            <div class="row hidden-xs">
+                                <div class="col-sm-8">
+                                    <img alt="Brand" src="/static/images/logo_bbws_bs.png" class="img-responsive" style="height: 2.5em">
+                                </div>
+                                <br class="visible-xs">
+                                <div class="col-sm-4">
+                                    <img alt="Brand" src="/static/images/bbws_bs.png" class="img-responsive" style="height: 2.5em">
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Responsive Menu -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <!-- MAIN MENU -->
+                        <ul class="nav navbar-nav" style="font-size: 16px;">
+                            <li class="dropdown">
+                                <a href="#" class="bluelink dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-globe"></i> <b>PETA</b> <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="bluelink" href="/map/curahhujan">Pos Curah Hujan</a></li>
+                                    <li><a class="bluelink" href="/map/tma">Pos TMA</a></li>
+                                    <li><a class="bluelink" href="/map/bendungan">Bendungan</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="bluelink" href="/curahhujan"><img src="/static/images/icons/icon-curah-hujan.png" class="img-responsive" style="height: 20px"> <span>CURAH HUJAN</span></a></li>
+                            <li><a class="bluelink" href="/klimatologi"><img src="/static/images/icons/climatology.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; KLIMATOLOGI</a></li>
+                            <li><a class="bluelink" href="/tma"><img src="/static/images/icons/icon-muka-air.png" height="90" width="88" class="img-responsive" style="height: 20px">&nbsp; TINGGI MUKA AIR</a></li>
+                            <li><a class="bluelink" href="/kekeringan"><img src="/static/images/icons/icon-kekeringan.png" height="88" width="88" class="img-responsive" style="height: 20px;">&nbsp; KEKERINGAN</a></li>
+                            <li><a class="bluelink" href="/kualitasair"><img src="/static/images/icons/icon-curah-hujan.png" height="80" width="84" class="img-responsive" style="height: 20px">&nbsp; KUALITAS AIR</a></li>
+                            <li class="dropdown"><a href="/bendungan/summary" class="bluelink"><img src="/static/images/icons/icon-bendungan.png" height="96" width="96" class="img-responsive" style="height: 20px">&nbsp; BENDUNGAN</a></li>
+                        </ul>                        
+                        <!-- END MAIN MENU -->
+                        <!-- SECONDARY MENU -->
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="bluelink dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-user"></i> <b>PROFIL</b> <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="bluelink" href="/about/wilayah-kerja">Wilayah Kerja</a></li>
+                                    <li><a class="bluelink" href="/about/struktur-organisasi">Struktur Organisasi</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="bluelink" href="/about/kontak-kami"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li>
+                        </ul>
+                        <!-- END SECONDARY MENU -->
+
+                    </div> <!-- collapse -->
+                </div><!-- /.container -->
+            </div>
+        </nav>
+        <!-- End 2nd Navigation -->
+    </div>
+    <!-- END MOBILE NAVBAR -->
+
+    <!-- CONTENT START -->
+    <!-- Enable .first-content on First content (below navbar) to reduce margin from navbar, recommended is -4em -->
+    <!-- // halaman yang di include disini inc-content-* -->
+    $:content
+    <!-- CONTENT END -->
+
+    <!-- FOOTER -->
+    <div class="container" style="margin-bottom: 40px">
+        <!-- include 'inc-footer.php'; -->
+        <div class="row hidden-xs visible-lg">
+            <div style="padding-bottom:10px;">&nbsp;</div>
+        $if session.get('username'):
+            <div id="admin-data" style="position: fixed; padding: 6px; border: solid 1px red; background: white; right: 6px; bottom: 0;">
+                ADMIN is ON<br>
+                (<a href="/logout">logout</a>)
+            </div>
+        <!-- -->
+            <div class="histats">
+                <div id="histats_counter"></div>
+            </div>
+            <div class="footer">
+                <p>Copyright &copy; 2018</p>
+            </div>
+        </div><!-- row -->              
+    </div>
+    <!-- END FOOTER -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/static/js/jquery-1.12.0.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        var base_url = 'http://localhost:8080';
+    </script>    
+
+    <!-- Histats.com  START  (aync)
+    <script type="text/javascript">
+        var _Hasync= _Hasync|| [];
+        _Hasync.push(['Histats.start', '1,3803507,4,3,170,30,00011111']);
+        _Hasync.push(['Histats.fasi', '1']);
+        _Hasync.push(['Histats.track_hits', '']);
+        (function() {
+            var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+            hs.src = ('//s10.histats.com/js15_as.js');
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+        })();
+    </script>
+    <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?3803507&101" alt="cool hit counter" border="0"></a></noscript>
+    Histats.com  END  -->
+
+    $:content.get('js_foot', '')
+</body>
+</html>

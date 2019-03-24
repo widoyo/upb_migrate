@@ -1,0 +1,78 @@
+$def with(ctx)
+$ pos = ctx.get('pos')
+$ tanggal = ctx.get('tanggal')
+$ sebelum = ctx.get('sebelum')
+$ sesudah = ctx.get('sesudah')
+
+$var p_klimatologi: active
+$var js_foot:
+    <script type="text/javascript" src="/static/js/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script>
+      \$('#datepicker').datepicker({
+        todayHighlight: true, 
+        format: 'yyyy/mm/dd',
+        autoclose: true});
+        \$('#datepicker').on('changeDate', function() {
+              console.log('changeDate');
+              \$('#dp_input').val(\$('#datepicker').datepicker('getFormattedDate'));
+              window.location = '/klimatologi?d=' + \$('#datepicker').datepicker('getFormattedDate');
+              });
+    </script>
+<div class="container">
+    <h2>Status:  <span id="datepicker" data-date="${tanggal.strftime('%Y/%m/%d')}">${tanggal.strftime('%d %b %Y')}</span> <span style="font-size: 14px" class="glyphicon glyphicon-calendar"></span></h2>
+    <form method="GET"><input type="hidden" id="dp_input" name="d"></form>
+$for a, b in pos:
+    <div class="row card">
+        <div class="col-sm-2">
+            <h3>$a.cname</h3>
+            <ul style="list-style: none;padding-left: 0px;">
+                <li><span class="glyphicon glyphicon-star-empty"></span> $a.kab</li>
+                <li><span class="glyphicon glyphicon-map-marker"></span> <a href="https://maps.google.com?q=$a.ll">Peta</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-10">
+            <table class="table table-bordered boldtable" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>07:00</th>
+                        <th>10:00</th>
+                        <th>13:00</th>
+                        <th>16:00</th>
+                        <th>19:00</th>
+                        <th>22:00</th>
+                        <th>02:00</th>
+                        <th>04:00</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Suhu (&deg;C)</td>
+                $for z in b.get('suhu'):
+                    <td class="text-right">$z</td>
+                </tr>
+                    <tr>
+                        <td>Kelembaban (%)</td>
+                $for z in b.get('kelembaban'):
+                    <td class="text-right">$z</td>
+                </tr>
+                    <tr>
+                        <td>Kec. Angin (Km/Jam)</td>
+                $for z in b.get('arah_angin'):
+                    <td class="text-right">$z</td>
+                </tr>
+                    <tr>
+                        <td>Radiasi Matahari (Watt/M<sup>2</sup>)</td>
+                $for z in b.get('radiasi_mthr'):
+                    <td class="text-right">$z</td>
+                </tr>
+                    <tr>
+                        <td>Penguapan</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>

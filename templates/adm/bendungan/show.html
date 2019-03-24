@@ -1,0 +1,661 @@
+$def with (ctx)
+$ pos = ctx.get('bd')
+$ periodic = ctx.get('periodic')
+$ tg = ctx.get('tanggal')
+$ msg = ctx.get('msg')
+$code:
+    haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
+    bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
+    hars = [h.title() for h in "senin_selasa_rabu_kamis_jum'at_sabtu_minggu".split('_')]
+$var title: $pos.cname
+$var extra_header:
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/> 
+    <style type="text/css">
+       .datepicker {z-index: 1002;}
+    </style>
+
+$var js_foot:
+
+
+    <script type="text/javascript" src="/static/js/moment.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/transition.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/collapse.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-datetimepicker.min.css" />
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.floatThead.min.js"></script>
+
+    <script type="text/javascript">
+        \$(document).ready(function () {
+            var \$table = \$('.table');
+            \$table.floatThead({
+                top: 60,
+                responsiveContainer: function (\$table) {
+                    return \$table.closest('.table-responsive');
+                }
+            });
+            var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
+            var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
+            \$('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+             }); 
+            \$('.editable').editable({
+                url: '/adm/bendungan/update'
+            });
+            \$('.gotomonth').datepicker({
+                format: 'yyyy-mm-dd',
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true
+             }); 
+          \$('.gotomonth').on('changeDate', function() {
+              window.location = '/adm/bendungan/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
+          });
+          \$('.datepicker').on('changeDate', function() {
+              //window.location = '/adm/bendungan/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
+              var dated = \$(this).datepicker('getDate');
+              var wd = dated.getDay() - 1;
+              if (wd === -1) { wd = 6; }
+              \$(this).html(hars[wd] + ", " +dated.getDate() +' '+ buls[dated.getMonth()] +' '+ dated.getFullYear());
+              var form = \$(this).parents('form:first');
+              \$('input[name=waktu]', form).val(dated.getFullYear()+'/'+(dated.getMonth()+1) +'/'+dated.getDate());
+              });
+          \$('input[name=tma]').blur(function (){
+              console.log('tma blur')
+                if (! \$(this).val()) {
+                    \$(this).parents('.form-group').addClass('has-error').removeClass('has-success');
+                    } else {
+                    \$(this).parents('.form-group').addClass('has-success').removeClass('has-error');
+                    }
+              });
+          \$('input[name=vol]').blur(function (){
+                if (! \$(this).val()) {
+                    \$(this).parents('.form-group').addClass('has-error').removeClass('has-success');
+                    } else {
+                    \$(this).parents('.form-group').addClass('has-success').removeClass('has-error');
+                    }
+              });
+          \$('.btn.save').on('click', function (){
+              var form = \$(this).parents('form:first');
+              var ret = false;
+              ret = \$('input[name=tma]', form).val() ? true : false;
+              console.log('TMA' + ret);
+              if (!ret) {\$('input[name=tma]', form).parents('.form-group').addClass('has-error')}
+              ret = \$('input[name=vol]', form).val() ? true : false; 
+              console.log('VOL' + ret);
+              if (!ret) {\$('input[name=vol]', form).parents('.form-group').addClass('has-error')}
+              return ret;
+              });
+
+          \$('#datetimepicker3').datetimepicker({
+                    format: 'HH:mm:ss'
+                });
+          \$('#datetimepicker4').datetimepicker({
+                    format: 'HH:mm:ss'
+                });
+
+        });
+    </script>
+
+
+<h1>$pos.cname</h1>
+$if msg:
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        $:msg
+    </div>
+<div class="row">
+    <div class="col-md-4 col-xs-12">
+<form method="POST" action="/adm/bendungan/$pos.table_name">
+    <h4>Form Data Pagi <a data-toggle="collapse" href="#form-pagi"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-pagi" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="csrf_token" value="${csrf_token()}">
+        <input type="hidden" name="tahap" value="pagi">
+        <input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${haris[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 form-group">
+            <label>Curah Hujan
+            <input name="curahhujan" type="number" step="0.1" class="form-control text-right" placeholder="contoh: 15.1"></label>
+        <p class="help-block">mm </p>
+        </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6 form-group">
+        <label>TMA
+        <input name="tma" type="number" step="0.01" class="form-control text-right" placeholder="contoh: 123.45"></label>
+        <p class="help-block">M (wajib diisi)</p>
+    </div>
+    <div class="col-xs-6 form-group">
+        <label>Volume
+        <input name="vol" type="number" class="form-control text-right" placeholder="contoh: 1234567"></label>
+        <p class="help-block">M<sup>3</sup> (wajib diisi)</p>
+    </div>
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-xs-12">
+        <h4>Inflow</h4>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+        <label>Debit
+        <input name="inflow_q" type="number" step="0.001" class="form-control text-right" value="0"></label>
+        <p class="help-block">M<sup>3</sup>/detik</p>
+    </div>
+    <div class="col-xs-6">
+        <label>Volume
+        <input name="inflow_v" type="number" class="form-control text-right" value="0"></label>
+        <p class="help-block">M<sup>3</sup></p>
+    </div>
+    </div>
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-xs-12">
+        <h4>Outflow</h4>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+        <label>Debit Intake
+        <input name="intake_q" type="number" step="0.001" class="form-control text-right" placeholder="contoh: 123456.789" value="0"> </label>
+        <p class="help-block">M<sup>3</sup>/detik</p>
+    </div>
+    <div class="col-xs-6">
+        <label>Volume Intake
+        <input name="intake_v" type="number" class="form-control text-right" value="0"></label>
+        <p class="help-block">M<sup>3</sup></p>
+    </div>
+    </div>
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-xs-6">
+        <label>Debit Spillway
+        <input name="spillway_q" type="number" step="0.001" class="form-control text-right" value="0"></label>
+        <p class="help-block">M<sup>3</sup>/detik</p>
+    </div>
+    <div class="col-xs-6">
+        <label>Volume Spillway
+        <input name="spillway_v" type="number" class="form-control text-right" value="0"> </label>
+        <p class="help-block">M<sup>3</sup></p>
+    </div>
+    </div>
+    </div>
+    <button type="submit" class="save btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-pagi" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+<form method="POST" action="/adm/bendungan/$pos.table_name" style="margin-bottom: 30px;">
+    <h4>Form VNotch<a data-toggle="collapse" href="#form-keamanan"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-keamanan" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="csrf_token" value="${csrf_token()}">
+        <input type="hidden" name="tahap" value="vnotch">
+        <input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${hars[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-xs-12">
+        <h4>V-Notch</h4>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+        <b>Satu</b>
+        <label>Tinggi Muka Air
+        <input name="vnotch_tin1" type="number" step="0.01" class="form-control text-right" placeholder="contoh: 0.45"></label>
+        <p class="help-block">CM</p>
+    </div>
+    <div class="col-xs-6">
+        &nbsp;
+        <label>Debit
+        <input name="vnotch_q1" type="number" step="0.01" class="form-control text-right" placeholder="contoh: 12.34"></label>
+        <p class="help-block">L/detik</p>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+        <b>Dua</b>
+        <label>Tinggi Muka Air
+        <input name="vnotch_tin2" type="number" step="0.01" class="form-control text-right" placeholder="contoh: 0.45"></label>
+        <p class="help-block">CM</p>
+    </div>
+    <div class="col-xs-6">
+        &nbsp;
+        <label>Debit
+        <input name="vnotch_q2" type="number" step="0.01" class="form-control text-right" placeholder="contoh: 12.34"></label>
+        <p class="help-block">L/detik</p>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+        <b>Tiga</b>
+        <label>Tinggi Muka Air
+        <input name="vnotch_tin3" type="number" step="0.01" class="form-control text-right" placeholder="contoh: 0.45"></label>
+        <p class="help-block">CM</p>
+    </div>
+    <div class="col-xs-6">
+        &nbsp;
+        <label>Debit
+        <input name="vnotch_q3" type="number" step="0.01" class="form-control text-right" placeholder="contoh: 12.34"></label>
+        <p class="help-block">L/detik</p>
+    </div>
+    </div>
+    </div>
+    <button type="submit" class="btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-keamanan" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+
+<form method="POST" action="/adm/bendungan/$pos.table_name">
+    <h4>Form Curah Hujan Terkini <a data-toggle="collapse" href="#form-chterkini"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-chterkini" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="csrf_token" value="${csrf_token()}">
+        <input type="hidden" name="tahap" value="chterkini">
+        <input type="hidden" name="tanggall" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${hars[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+        
+
+        <label for="">Jam</label>
+        <div class="row">
+            <div class='col-xs-6'>
+                <div class="form-group">
+                    <div class='input-group date' id='datetimepicker4'>
+                        <input name="jam" type='text' class="form-control" />
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-xs-12">
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+        <label for="">Curah Hujan</label>
+        <input name="ch_terkini" type="number" step="0.01" class="form-control" placeholder="123.45">
+        <p class="help-block"> (wajib diisi)</p>
+    </div>
+    </div>
+    </div>
+    <button type="submit" class="btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-banjir" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+
+
+    </div>
+    <div class="col-md-4 col-xs-12">
+<form method="POST" action="/adm/bendungan/$pos.table_name">
+    <h4>Form Data Siang <a data-toggle="collapse" href="#form-siang"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-siang" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="csrf_token" value="${csrf_token()}">
+        <input type="hidden" name="tahap" value="siang">
+        <input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${hars[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+    </div>
+    <div class="row">
+    <div class="col-xs-6 form-group">
+        <label for="">TMA</label>
+        <input name="tma" type="number" step="0.01" class="form-control" placeholder="contoh: 123.45">
+        <p class="help-block">M (wajib diisi)</p>
+    </div>
+    <div class="col-xs-6 form-group">
+        <label for="">Volume</label>
+        <input name="vol" type="number" class="form-control" placeholder="cth: 123456789">
+        <p class="help-block">M<sup>3</sup> (wajib diisi)</p>
+    </div>
+    </div>
+    <button type="submit" class="save btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-siang" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+<form method="POST" action="/adm/bendungan/$pos.table_name">
+    <h4>Form Piezometer<a data-toggle="collapse" href="#form-piezometer"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-piezometer" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="csrf_token" value="${csrf_token()}">
+        <input type="hidden" name="tahap" value="piezometer">
+        <input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${hars[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-xs-12">
+        <h4>PiezoMeter</h4>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-4">
+        <b>Profile 1</b>
+        <label>1A
+        <input name="a1" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <b>Profile 2</b>
+        <label>2A
+        <input name="a2" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <b>Profile 3</b>
+        <label>3A
+        <input name="a3" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-4">
+        <label>1B
+        <input name="b1" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <label>2B
+        <input name="b2" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <label>3B
+        <input name="b3" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-4">
+        <label>1C
+        <input name="c1" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <label>2C
+        <input name="c2" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <label>3C
+        <input name="c3" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-4">
+        <b>Profile 4</b>
+        <label>4A
+        <input name="a4" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <b>Profile 5</b>
+        <label>5A
+        <input name="a5" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        &nbsp;
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-4">
+        <label>4B
+        <input name="b4" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <label>5B
+        <input name="b5" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        &nbsp;
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-4">
+        <label>4C
+        <input name="c4" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        <label>5C
+        <input name="c5" type="number" step="0.01" class="form-control text-right" placeholder="12.34"></label>
+        <p class="help-block"></p>
+    </div>
+    <div class="col-xs-4">
+        &nbsp;
+    </div>
+    </div>
+    </div>
+    <button type="submit" class="btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-piezometer" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+    </div>
+    <div class="col-md-4 col-xs-12">
+<form method="POST" action="/adm/bendungan/$pos.table_name">
+    <h4>Form Data Sore <a data-toggle="collapse" href="#form-sore"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-sore" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="csrf_token" value="${csrf_token()}">
+        <input type="hidden" name="tahap" value="sore">
+        <input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${hars[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+    </div>
+    <div class="row">
+    <div class="col-xs-6 form-group">
+        <label for="">TMA</label>
+        <input name="tma" type="number" step="0.01" class="form-control" placeholder="123.45">
+        <p class="help-block">M (wajib diisi)</p>
+    </div>
+    <div class="col-xs-6 form-group">
+        <label for="">Volume</label>
+        <input name="vol" type="number" class="form-control" placeholder="cth: 12345678">
+        <p class="help-block">M<sup>3</sup> (wajib diisi)</p>
+    </div>
+    </div>
+    <button type="submit" class="save btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-sore" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+
+<form method="POST" action="/adm/bendungan/$pos.table_name">
+    <h4>Form Kondisi Banjir <a data-toggle="collapse" href="#form-banjir"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-banjir" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="csrf_token" value="${csrf_token()}">
+        <input type="hidden" name="tahap" value="banjir">
+        <input type="hidden" name="tanggall" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${hars[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+        
+
+        <label for="">Jam</label>
+        <div class="row">
+            <div class='col-xs-6'>
+                <div class="form-group">
+                    <div class='input-group date' id='datetimepicker3'>
+                        <input name="jam" type='text' class="form-control" />
+                        <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="form-group">
+    <div class="row">
+    <div class="col-xs-12">
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+        <label for="">TMA</label>
+        <input name="tmab" type="number" step="0.01" class="form-control" placeholder="123.45">
+        <p class="help-block">M (wajib diisi)</p>
+    </div>
+    <div class="col-xs-6">
+        <label>Debit Spillway
+        <input name="spillwayb_q" type="number" step="0.001" class="form-control text-right" value="0"></label>
+        <p class="help-block">M<sup>3</sup>/detik</p>
+    </div>
+    </div>
+    </div>
+    <button type="submit" class="btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-banjir" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+
+    </div>
+</div>
+
+<h4><a href='$pos.table_name/FormBlangko'> Form-A Operasi </a> <a data-toggle="collapse" href="#link-operasi"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+<div id="link-operasi" class="collapse">
+    <ol>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formA">FORM-A MONITORING AIR WADUK</a></li>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formA1">FORM-A 1 MONITORING PELAYANAN AIR</a></li>
+    </ol>
+</div>
+
+<h4><a href='$pos.table_name/FormBlangko'> Form-B Pemantauan </a> <a data-toggle="collapse" href="#link-pemantauan"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+<div id="link-pemantauan" class="collapse">
+    <ol>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formB">FORM-B (Laporan Pemeriksaan Visual Fisik)</a></li>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formB1_1">FORM-B 1-1 (Catatan Pemeriksaan Bendungan Tubuh Bendungan)</a></li>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formB1_2">FORM-B 1-2 (Catatan Pemeriksaan Bendungan Saluran Pelimpah Spill Way)</a></li>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formB1_3">FORM-B 1-3 (Catatan Pemeriksaan Bendungan Instrumentasi)</a></li>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formB1_4">FORM-B 1-4 (Catatan Pemeriksaan Bendungan Hidromekanikal)</a></li>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formB2_1">FORM-B 2-1 (Laporan Pemeriksaan Bendungan)</a></li>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formB2_2">FORM-B 2-2 (Laporan Pemeriksaan Bendungan)</a></li>
+        <li> <a href="/adm/bendungan/$pos.table_name/FormBlangko/formB3">FORM-B 3 (Laporan Pemeriksaan Bendungan)</a></li>
+    </ol>
+</div>
+
+
+<h3>Data Harian <span class="gotomonth" style="color: #18bc9c">${tg.strftime('%b %Y')}</span>
+$if session.get('is_admin') == 3 and not session.get('table_name'):
+    <a href="$pos.table_name?csv=1&sampling=${tg.strftime('%Y-%m-%d')}">CSV</a>
+</h3>
+<table class="table table-bordered table-stripped">
+  <thead>
+    <tr>
+      <th rowspan="3">Tanggal</th>
+      <th rowspan="3">Curah hujan</th>
+      <th colspan="2">Jam 6</th>
+      <th colspan="2">Jam 12</th>
+      <th colspan="2">Jam 18</th>
+      <th colspan="2">Inflow</th>
+      <th colspan="4">Outflow</th>
+      <th colspan="2">V-Notch</th>
+      <th colspan="15">Piezometer</th>
+    </tr>
+    <tr>
+      <th rowspan="2">TMA</th>
+      <th rowspan="2">Vol</th>
+      <th rowspan="2">TMA</th>
+      <th rowspan="2">Vol</th>
+      <th rowspan="2">TMA</th>
+      <th rowspan="2">Vol</th>
+      <th rowspan="2">Debit</th>
+      <th rowspan="2">Volume</th>
+      <th rowspan="2">Q Intake</th>
+      <th rowspan="2">V Intake</th>
+      <th rowspan="2">Q Spillway</th>
+      <th rowspan="2">V Spillway</th>
+      <th rowspan="2">Tinggi</th>
+      <th rowspan="2">Debit</th>
+      <th colspan="3">Profil 1</th>
+      <th colspan="3">Profil 2</th>
+      <th colspan="3">Profil 3</th>
+      <th colspan="3">Profil 4</th>
+      <th colspan="3">Profil 5</th>
+  </tr>
+  <tr>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+    </tr>
+  </thead>
+  $if not len(periodic):
+    <tbody>
+      <tr>
+          <td colspan="22" class="text-center"><h4 style="color: #f39c12">tidak ada data bulan ${tg.strftime('%b %Y')}</h4></td>
+      </tr>
+    </tbody>
+$for r in periodic:
+    <tr>
+      <td class="text-right">${haris[r.waktu.weekday()]}, $r.waktu.day</td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="curahhujan">$r.curahhujan</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tma6">$r.tma6</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vol6">$r.vol6</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tma12">$r.tma12</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vol12">$r.vol12</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="tma18">$r.tma18</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vol18">$r.vol18</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="inflow_q">$r.inflow_q</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="inflow_v">$r.inflow_v</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="intake_q">$r.intake_q</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="intake_v">$r.intake_v</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="spillway_q">$r.spillway_q</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="spillway_v">$r.spillway_v</a></td>
+      <td class="text-right">1. <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vnotch_tin1">$r.vnotch_tin1</a><br/>
+          2. <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vnotch_tin2">$r.vnotch_tin2</a><br />
+          3. <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vnotch_tin3">$r.vnotch_tin3</a> </td>
+      <td class="text-right">1. <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vnotch_q1">$r.vnotch_q1</a><br />
+          2. <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vnotch_q2">$r.vnotch_q2</a><br />
+          3. <a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="vnotch_q3">$r.vnotch_q3</a><br /></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="a1">$r.a1</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="b1">$r.b1</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="c1">$r.c1</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="a2">$r.a2</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="b2">$r.b2</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="c2">$r.c2</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="a3">$r.a3</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="b3">$r.b3</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="c3">$r.c3</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="a4">$r.a4</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="b4">$r.b4</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="c4">$r.c4</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="a5">$r.a5</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="b5">$r.b5</a></td>
+      <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$r.id" data-name="c5">$r.c5</a></td>
+    </tr>
+</table>

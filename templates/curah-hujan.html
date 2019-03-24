@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Sistem Informasi Hidrologi dan Kualitas Air</title>
+
+    <!-- Bootstrap -->
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/custom/non-responsive.css">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="static/fonts/font.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- Style SVC -->
+    <link rel="stylesheet" href="static/css/custom/style-maps.css">
+    <link rel="stylesheet" href="static/css/custom/style.css">
+    
+
+  </head>
+  <body>
+    <div class="bg"></div>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="navbar-top">
+          <div class="container-fluid">
+
+              <!-- Collect the nav links, forms, and other content for toggling -->
+              <ul class="nav navbar-nav">
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> <b>PROFIL</b> <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Wilayah Kerja</a></li>
+                    <li><a href="#">Struktur Organisasi</a></li>
+                    <li><a href="#">Profil Tim</a></li>
+                  </ul>
+                </li>
+                <li><a href="#"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li>
+              </ul>
+              
+              <ul class="nav navbar-nav navbar-right">
+                  <li>
+                      <form id="demo-2" class="cari">
+                            <div class="ui-widget">
+                                <input id="tags" type="search" placeholder="Search">
+                            </div>
+                      </form>
+                  </li>
+              </ul>
+          </div>
+      </div>
+      <div class="navbar-bottom">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">
+                  <img src="static/images/logo_bbws_bs.png" alt="" height="100%" class="main-logo">
+                  <img src="static/images/bbws_bs.png" alt="" height="100%">
+              </a>
+            </div>
+          </div><!-- /.container -->
+      </div>
+    </nav>
+    
+    <div class="container-fluid pt-25">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="main-title"><b>SISTEM INFORMASI HIDROLOGI DAN KUALITAS AIR</b></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 aside">
+                <div class="list-group">
+                  <a href="/curahhujan" class="list-group-item active" role="button"><img src="static/images/icons/icon-curah-hujan.png" alt="">&emsp; CURAH HUJAN</a>
+                  <a href="tinggi-muka-air.html" class="list-group-item" role="button"><img src="static/images/icons/icon-muka-air.png" alt="">&emsp; TINGGI MUKA AIR</a>
+                  <a href="kekeringan.html" class="list-group-item" role="button"><img src="static/images/icons/icon-kekeringan.png" alt="">&emsp; KEKERINGAN</a>
+                  <a href="kualitas-air.html" class="list-group-item" role="button"><img src="static/images/icons/icon-kualitas-air.png" alt="">&emsp;&emsp; KUALITAS AIR</a>
+                  <a href="bendungan.html" class="list-group-item" role="button"><img src="static/images/icons/icon-bendungan.png" alt="">&emsp; BENDUNGAN</a>
+                </div>
+            </div>
+            <div class="col-sm-9 content">
+                <div class="maps">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="histats">
+                <img src="static/images/sample-histats.png" alt="" height="64px">
+            </div>
+            <div class="footer">
+                <p>Copyright &copy; 2016</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7WfmDxmITKD9UCthFVroakNwNgGcfE5g&callback=initMap"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="static/js/bootstrap.min.js"></script>
+    
+    <script src="static/js/wilayah.js"></script>
+<!--    <script src="static/js/map.js"></script>-->
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+    <script>
+      $( function() {
+        var availableTags = [
+            "Bendung",
+            "Gunungan",
+            "Jatisrono",
+            "Jurug",
+            "Kalijambe",
+            "Karangpandan",
+            "Klaten",
+            "Nepen",
+            "Pabelan",
+            "Parangjoho",
+            "Pracimantoro",
+            "Purwanto",
+            "Rejoso"
+        ];
+        $( "#tags" ).autocomplete({
+          source: availableTags
+        });
+      } );
+  </script>
+    
+    
+  </body>
+</html>

@@ -1,0 +1,163 @@
+$def with(ctx)
+$ pos = ctx.get('pos')
+$ tg = ctx.get('tg')
+$ data = ctx.get('data')
+$code:
+    haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
+    hars = [h.title() for h in "senin_selasa_rabu_kamis_jum'at_sabtu_minggu".split('_')]
+    bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
+$var extra_header:
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+    <style type="text/css">
+       .month {padding: 0 8px;}
+    </style>
+$var js_foot:
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.floatThead.min.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function () {
+            var \$table = \$('.table');
+            \$table.floatThead({
+                top: 60,
+                responsiveContainer: function (\$table) {
+                    return \$table.closest('.table-responsive');
+                }
+            });
+            var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
+            var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
+            \$('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+             }); 
+            \$('.editable').editable({
+                url: '/adm/tma/update',
+                error: function(response, newValue) {
+                    if(response.status === 500) {
+                        return 'Mohon Di isi lewat Form Input Data!'; 
+                }
+                }
+            });
+            \$('.gotomonth').datepicker({
+                format: 'yyyy-mm-dd',
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true
+             }); 
+          \$('.gotomonth').on('changeDate', function() {
+              window.location = '/adm/tma/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
+          });
+          \$('.datepicker').on('changeDate', function() {
+              var dated = \$(this).datepicker('getDate');
+              var wd = dated.getDay() - 1;
+              if (wd === -1) { wd = 6; }
+              \$(this).html(hars[wd] + ", " +dated.getDate() +' '+ buls[dated.getMonth()] +' '+ dated.getFullYear());
+              var form = \$(this).parents('form:first');
+              \$('input[name=waktu]', form).val(dated.getFullYear()+'/'+(dated.getMonth()+1) +'/'+dated.getDate());
+              });
+          \$('input[name=tma]').blur(function (){
+              console.log('tma blur')
+                if (! \$(this).val()) {
+                    \$(this).parents('.form-group').addClass('has-error').removeClass('has-success');
+                    } else {
+                    \$(this).parents('.form-group').addClass('has-success').removeClass('has-error');
+                    }
+              });
+          \$('.btn.save').on('click', function (){
+              var form = \$(this).parents('form:first');
+              var ret = false;
+              ret = \$('input[name=tma]', form).val() ? true : false;
+              console.log('TMA' + ret);
+              if (!ret) {\$('input[name=tma]', form).parents('.form-group').addClass('has-error')}
+              return ret;
+              });
+        });
+    </script>
+<h1>POS TMA $pos.cname</h1>
+<div class="row">
+    <div class="col-xs-12">
+<form method="POST" action="/adm/tma/$pos.table_name">
+    <h4>Form Input Data <a data-toggle="collapse" href="#form-pagi"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-pagi" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${haris[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+    </div>
+    <div class="row">
+    <div class="col-xs-6">
+        <div class="form-check form-check-inline">
+            <b>Jam</b><br>
+            <label class="form-check-label">
+                <input name="jam" type="radio" value="06" class="form-check-input">
+        6 (pagi)</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                <input name="jam" type="radio" value="12" class="form-check-input">12 (siang)</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                <input name="jam" type="radio" value="18" class="form-check-input">18 (sore)</label>
+        </div>
+    </div>
+    </div>
+        <br/>
+    <div class="row">
+    <div class="col-xs-6 form-group">
+        <label>TMA
+        <input name="tma" type="number" step="0.01" class="form-control text-right" placeholder="contoh: 123.45"></label>
+        <p class="help-block">M (wajib diisi)</p>
+    </div>
+    </div>
+    <button type="submit" class="save btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-pagi" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Data Harian <span class="gotomonth" style="color: #18bc9c">${tg.strftime('%b %Y')}</span></h2>
+        <table class="table table-bordered table-stripped">
+            <thead>
+                <tr>
+                    <th rowspan="2">Hari, Tgl</th>
+                    <th colspan="2">TMA 6</th>
+                    <th colspan="2">TMA 12</th>
+                    <th colspan="2">TMA 18</th>
+                </tr>
+                <tr>
+                    <th>Lokal (M)</th>
+                    <th>TTG (M)</th>
+                    <th>Lokal (M)</th>
+                    <th>TTG (M)</th>
+                    <th>Lokal (M)</th>
+                    <th>TTG (M)</th>
+                </tr>
+            </thead>
+            <tbody>
+            $for d in ctx.get('dated'):
+                <tr>
+                    <td>${hars[d.weekday()]}, <b>$d.day</b></td>
+
+                    $code:
+                        pk6 = data.get(d).get('06')and data.get(d).get('06').get('lokal').get('id') or ""         
+                        pk12 = data.get(d).get('12')and data.get(d).get('12').get('lokal').get('id') or ""
+                        pk18 = data.get(d).get('18')and data.get(d).get('18').get('lokal').get('id') or ""                       
+                    
+                    <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$pk6" data-name="manual">${data.get(d).get('06')and data.get(d).get('06').get('lokal').get('lokal') or '-'}</a></td>
+                   <td class="text-right">${data.get(d).get('06') and data.get(d).get('06').get('ttg') or '-'}</td>
+                    
+                     <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$pk12" data-name="manual">${data.get(d).get('12')and data.get(d).get('12').get('lokal').get('lokal') or '-'}</a></td>
+                    <td class="text-right">${data.get(d).get('12') and data.get(d).get('12').get('ttg') or '-'}</td>
+                    
+                    <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="$pk18" data-name="manual">${data.get(d).get('18')and data.get(d).get('18').get('lokal').get('lokal') or '-'}</a></td>
+                    <td class="text-right">${data.get(d).get('18') and data.get(d).get('18').get('ttg') or '-'}</td>
+                    
+ 
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

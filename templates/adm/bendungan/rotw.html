@@ -1,0 +1,55 @@
+$def with(ctx)
+$ data = ctx.get('data')
+$ periode = ctx.get('periode')
+$ bdgs = ctx.get('bendungan')
+$ pola_operasi = ctx.get('pola_operasi')
+$ tgl = ctx.get('tanggal')
+$var title: RTOW Bendungan BBWS Bengawan Solo
+$var extra_header:
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/> 
+$var js_foot:
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript">
+    \$(document).ready(function () {
+        \$('.edit_pola').editable({
+            url: '/adm/bendungan/update'
+        });
+     
+            \$('.gotoyear').datepicker({
+                format: 'yyyy-mm-dd',
+                startView: "years",
+                minViewMode: "years",
+                autoclose: true
+             });
+          \$('.gotoyear').on('changeDate', function() {
+              window.location = '/adm/bendungan/rotw?periode=' + \$(this).data('datepicker').getFormattedDate('yyyy/mm/dd');
+          });
+    });
+    </script>
+<!-- -->
+<h1>RTOW Pola: <span class="edit_pola">$pola_operasi</span> Periode <span class="gotoyear">${tgl.strftime('%Y')}</span></h1>
+<div class="table-responsive">
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Bendungan</th>
+    $for p in periode:
+        <th style="width: 200px">$p.strftime('%b %y')</th>
+    </tr>
+    </thead>
+    <tbody>
+$for r in data:
+    <tr>
+        <td>${bdgs.get('%s' % (r[0])).cname}<br>
+            <a href="/adm/bendungan/${bdgs.get('%s' % (r[0])).table_name}/rtow/export" title="Export RTOW">Exp</a> | <a href="/adm/bendungan/${bdgs.get('%s' % (r[0])).table_name}/rtow/import" title="Import RTOW">Imp</a></td>
+        $for d in r[1]:
+        <td class="rtow_tvq" data-pk=>T: <a href="#" class="edit_pola" data-pk=${d.get('id')} data-name="po_tma" data-title="RTOW TMA (m)">${d.get('tma')}</a><br/>V: <a href="#" class="edit_pola" data-pk=${d.get('id')} data-name="po_outflow_v" data-title="Volume Outflow (m3)">${d.get('v')}</a><br/>Q: <a href="#" class="editable" data-pk=${d.get('id')} data-name="po_outflow_q" data-title="Debit Outflow (m3/dt)">${d.get('q')}</a>
+          <br/>BonA: <a href="#" class="edit_pola" data-pk=${d.get('id')} data-name="po_bona" data-title="Batas Atas">${d.get('bona')}</a>
+          <br/>BonB: <a href="#" class="edit_pola" data-pk=${d.get('id')} data-name="po_bonb" data-title="Batas Bawah">${d.get('bonb')}</a>
+          <br/>VolBonA: <a href="#" class="edit_pola" data-pk=${d.get('id')} data-name="vol_bona" data-title="Volume Batas Atas">${d.get('volbona')}</a>
+          <br/>VolBonB: <a href="#" class="edit_pola" data-pk=${d.get('id')} data-name="vol_bonb" data-title="Volume Batas Bawah">${d.get('volbonb')}</a>
+</td>
+    </tr>
+</table>
+</div>

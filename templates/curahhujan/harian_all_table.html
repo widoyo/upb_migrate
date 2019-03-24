@@ -1,0 +1,46 @@
+$def with (curah_hujan, meta, wilayah)
+                        <table class="table table-bordered mt-50">
+                            <thead>
+                              <tr>
+                                <th rowspan="3">No</th>
+                                <th rowspan="3">Pos Hujan</th>
+                                <th><a data-pjax href="?d=$:meta.get('before').strftime('%Y/%m/%d')"><span class="glyphicon glyphicon-arrow-left"></span></a></th>
+                                <th colspan="3">$:meta.get('now').strftime('%d - %B - %Y')</th>
+                                <th><a data-pjax href="?d=$:meta.get('after').strftime('%Y/%m/%d')"><span class="glyphicon glyphicon-arrow-right"></span></a></th>
+                                <th rowspan="3">Manual Harian (24 jam)</th>
+                              </tr>
+                              <tr>
+                                <th colspan="5">Waktu (WIB)</th>
+                              </tr>
+                              <tr>
+                                <th>07.01 - 13.00</th>
+                                <th>13.01 - 19.00</th>
+                                <th>19.01 - 01.00</th>
+                                <th>01.01 - 07.00</th>
+                                <th>Total Telemetri</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+	$code:
+	    wil = "0"
+	$for c in curah_hujan:
+        $if c['pos'].wilayah != wil:
+            $code:
+                wil = c['pos'].wilayah
+            <tr>
+                <td colspan="8" class="active">Wilayah $wilayah[c['pos'].wilayah]</td>
+            </tr>
+        <tr>
+            <td>$loop.index</td>
+            <td><a href="/curahhujan/$c['pos'].AgentId">$c['pos'].cname</a></td>
+            <td class="text-right">$c['ch']['pagi']</td>
+            <td class="text-right">$c['ch']['sore']</td>
+            <td class="text-right">$c['ch']['malam']</td>
+            <td class="text-right">$c['ch']['tmalam']</td>
+            <td class="text-right">$c['ch']['total']</td>
+            <td class="text-right" data-mtime="$c['ch'].get('mtime_manual')" title="Diterima: $c['ch'].get('mtime_manual'), HP: $c['ch'].get('origin_manual')">$c['ch'].get('manual')</td>
+        </tr>
+    <!-- -->
+                            </tbody>
+                          </table>
+

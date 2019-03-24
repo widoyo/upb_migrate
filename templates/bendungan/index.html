@@ -1,0 +1,87 @@
+$def with(bendungan, meta, wilayah, js)
+$var p_bendungan: active
+<div class="container">
+    <table class="table table-bordered boldtable">
+    <tbody>
+    $code:
+        wil = "0"
+    $for t in bendungan:
+        $if t.pos.wilayah != wil:
+            $code:
+                wil = t.pos.wilayah
+            <tr style="border-top: solid 2px black;border-bottom: solid 2px black"><th colspan="20" class="text-center col-wilayah">Wilayah $wilayah[t.pos.wilayah]</th></tr>
+            <thead>
+            <tr style="border-top: solid 2px black">
+            <th rowspan="3" style="border-bottom: solid 2px black;vertical-align: middle">No</th>
+            <th rowspan="3" style="border-bottom: solid 2px black;vertical-align: middle; border-right: solid 2px black; border-left: solid 2px black">Nama Bendungan</th>
+            <th colspan="5" class="c" style="border-right: solid 2px black;">Data Teknis Bendungan</th>
+            <th colspan="9" class="c"><a href="?d=$meta['before']" style="float: left"><span class="glyphicon glyphicon-arrow-left"></span></a> $meta['now'] <a href="?d=$meta['after']" style="float: right"><span class="glyphicon glyphicon-arrow-right"></span></a></th>
+            <th rowspan="3" style="border-bottom: solid 2px black">Kondisi Tampungan</th>
+            <th rowspan="3" style="border-bottom: solid 2px black">Kondisi Banjir</th>
+            </tr>
+            <tr style="border-bottom: solid 2px black">
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">Tampungan<br>(Juta M<sup>3</sup>)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">Irigasi<br>(Ha)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">Elevasi Puncak<br>(M)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">Elevasi Puncak Mercu<br>(M)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">Elevasi Air Minimum<br>(M)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black;border-left: solid 2px black">07<br>(M)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">12<br>(M)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">18<br>(M)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">Vol<br>(Juta M<sup>3</sup>)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">TMA Banjir</th>
+            <th colspan="2" class="c" style="border-bottom: solid 2px black">Outflow<br/>(M<sup>3</sup>/det)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">VNotch<br/>(L/det)</th>
+            <th rowspan="2" class="c" style="border-bottom: solid 2px black">Curah Hujan (mm) </th> 
+            </tr>
+               <tr style="border-top: solid 2px black">
+                <th class="c" style="border-bottom: solid 2px black"> Intake </th>
+                <th class="c" style="border-bottom: solid 2px black"> Spillway </th>
+               </tr>
+            </thead>
+        <tr class="row-data">
+            <td>$loop.index</td>
+            <td style="border-right: solid 2px black; border-left: solid 2px black"><a href="/bendungan/$t.pos.AgentId">$t.pos.cname</a> 
+                $if (t.pos.kab):
+                    <span style="font-weight: normal">($t.pos.kab)</span>
+                $if (t.pos.prima_id):
+                    <a href='/bendungan/primabot/$t.pos.prima_id' style="float: right;" title="$t.pos.prima_id">primaBot</a>
+                </td>
+            <td class="text-right">${'%.2f' % (float(t.pos.volume) / 1000000.0)}</td>
+            <td class="text-right">$commify('%.2f' % t.pos.lbi)</td>
+            <td class="text-right mab">
+            $if t.pos.elev_puncak:
+                $commify('%.2f' % t.pos.elev_puncak)
+            $else:
+                -
+            </td>
+            <td class="text-right man">$commify('%.2f' % t.pos.siaga1)</td>
+            <td class="text-right mamin">$commify('%.2f' % t.pos.siaga4)</td>
+            <td class="text-right pagi" style="border-left: solid 2px black">$t.tma.pagi.manual</td>
+            <td class="text-right siang">$t.tma.siang.manual</td>
+            <td class="text-right sore">$t.tma.sore.manual</td>
+            <td class="text-right vol">$t.tma.vol</td>
+            <td class="text-right">$t.tma.tmab <br> <small> <i> $t.tma.jam </i> </small> </td>
+            <td class="text-right">$t.tma.outflow_intake_q</td>
+            <td class="text-right">$t.tma.outflow_spillway_q</td>
+            <td class="text-right">$t.tma.vnotchq</td>
+            <td class="text-right">$t.tma.ch_latest  <br> <small> <i> $t.tma.jamm </i> </small> </td>
+            <td class="text-center kondisi">$t.tma.kondisi</td>
+            $code:
+                warna = "black"
+            $if t.tma.tmab >= t.tma.awas:
+                $code:
+                    warna = "red"
+            $if (t.tma.tmab < t.tma.awas) and (t.tma.tmab >= t.tma.siaga):
+                $code:
+                    warna = "yellow"
+            $if (t.tma.tmab < t.tma.siaga) and (t.tma.tmab >= t.tma.waspada):
+                $code:
+                    warna = "green"
+            <td class="text-right"><font color='$warna'>$t.tma.limpass</font></td>
+
+        </tr>
+    </tbody>
+</table>
+</div>
+

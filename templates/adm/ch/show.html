@@ -1,0 +1,102 @@
+$def with(ctx)
+$ pos = ctx.get('pos')
+$ tg = ctx.get('tg')
+$ data = ctx.get('data')
+$code:
+    haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
+    hars = [h.title() for h in "senin_selasa_rabu_kamis_jum'at_sabtu_minggu".split('_')]
+    bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
+$var extra_header:
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+    <style type="text/css">
+       .datepicker {z-index: 1002;}
+    </style>
+$var js_foot:
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.floatThead.min.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function () {
+            var \$table = \$('.table');
+            \$table.floatThead({
+                top: 60,
+                responsiveContainer: function (\$table) {
+                    return \$table.closest('.table-responsive');
+                }
+            });
+            var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
+            var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
+            \$('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                endDate:'-1d',
+                autoclose: true
+             });
+            \$('.editable').editable({
+                url: '/adm/ch/update'
+            });
+            \$('.gotomonth').datepicker({
+                format: 'yyyy-mm-dd',
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true
+             });
+          \$('.gotomonth').on('changeDate', function() {
+              window.location = '/adm/ch/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
+          });
+          \$('.datepicker').on('changeDate', function() {
+              var dated = \$(this).datepicker('getDate');
+              var wd = dated.getDay() - 1;
+              if (wd === -1) { wd = 6; }
+              \$(this).html(hars[wd] + ", " +dated.getDate() +' '+ buls[dated.getMonth()] +' '+ dated.getFullYear());
+              var form = \$(this).parents('form:first');
+              \$('input[name=waktu]', form).val(dated.getFullYear()+'/'+(dated.getMonth()+1) +'/'+dated.getDate());
+              });
+        });
+    </script>
+<h1>POS Curah Hujan $pos.cname</h1>
+<div class="row">
+    <div class="col-xs-12">
+<form method="POST" action="/adm/ch/$pos.table_name">
+    <h4>Form Input Data <a data-toggle="collapse" href="#form-pagi"><span class="glyphicon glyphicon-triangle-right"></span></a></h4>
+    <hr>
+    <div id="form-pagi" class="collapse">
+    <div class="form-group">
+        <label for="">Tanggal</label>
+        <input type="hidden" name="csrf_token" value="${csrf_token()}">
+        <input type="hidden" name="waktu" value="${tg.strftime('%Y/%m/%d')}">
+        <p class="datepicker">${haris[tg.weekday()]}, ${tg.strftime('%d %b %Y')}</p>
+    </div>
+    <div class="row">
+    <div class="col-xs-6 form-group">
+        <label>Curah Hujan
+        <input name="hujan" type="number" step="0.1" class="form-control text-right" placeholder="contoh: 12.3"></label>
+        <p class="help-block">mm (wajib diisi)</p>
+    </div>
+    </div>
+    <button type="submit" class="save btn btn-success">Kirim</button> <a data-toggle="collapse" href="#form-pagi" style="margin-left: 20px;">batal</a>
+    </div>
+</form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Data Harian <span class="gotomonth" style="color: #18bc9c">${tg.strftime('%b %Y')}</span></h2>
+        <table class="table table-bordered table-stripped">
+            <thead>
+                <tr>
+                    <th>Hari</th>
+                    <th>Tgl</th>
+                    <th>Curah Hujan (mm)</th>
+                </tr>
+            </thead>
+            <tbody>
+            $for d in data:
+                <tr>
+                    <td>${hars[d.get('waktu').weekday()]}</td>
+                    <td><b>${d.get('waktu').day}</b></td>
+                    <td class="text-right"><a href="#" class="editable" data-type="text" data-pk="${d.get('id')}" data-name="manual">${d.get('ch')}</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
