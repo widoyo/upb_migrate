@@ -5,7 +5,6 @@ $def with (content)
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="manifest" href="/static/manifest.json">
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,8 +14,8 @@ $def with (content)
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Sistem Informasi Hidrologi dan Kualitas Air</title>
-    <link rel="shortcut icon" href="/static/images/favicon.ico"/>
+    <title>Sistem Informasi Bendungan BBWS BSolo</title>
+    <link rel="shortcut icon" href="/static/images/pupr.ico"/>
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom Fonts -->
@@ -97,8 +96,6 @@ $def with (content)
                                         <i class="fa fa-globe"></i> <b>PETA</b> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="bluelink" href="/map/curahhujan">Pos Curah Hujan</a></li>
-                                        <li><a class="bluelink" href="/map/tma">Pos TMA</a></li>
                                         <li><a class="bluelink" href="/map/bendungan">Bendungan</a></li>
                                     </ul>
                                 </li>
@@ -118,25 +115,11 @@ $def with (content)
             </div>
         </nav>
         <!-- END NAVIGATION -->
-        <div class="container-fluid hidden-xs" style="background-color: #0277BD;">
+        <div class="container-fluid hidden-xs" style="margin-bottom: 10px;background-color: #0277BD;">
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <h3 align="center" style="margin:5px; color:#fff; ">SISTEM INFORMASI HIDROLOGI DAN KUALITAS AIR</h3>
+            <h3 align="center" style="margin:5px; color:#fff; ">SISTEM INFORMASI BENDUNGAN</h3>
         </div>
         <!-- 2nd Navigation -->
-        <div class="navbar navbar-default white desktop" data-spy="affix" data-offset-top="103" style="z-index: 1300; margin-bottom:20px;">
-          <div class="container-fluid" style="padding-left: 0; padding-right: 0;">
-            <div class="container-fluid navbar-collapse">              
-                <ul class="nav navbar-nav nav-tabs" style="font-size: 16px;">
-                    <li class="$:content.get('p_curahhujan')"><a href="/curahhujan" class="bluelink"><img src="/static/images/icons/icon-curah-hujan.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; CURAH HUJAN</a></li>
-                    <li class="$:content.get('p_klimatologi')"><a href="/klimatologi" class="bluelink"><img src="/static/images/icons/climatology.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; KLIMATOLOGI</a></li>
-                    <li class="$:content.get('p_tma')"><a href="/tma" class="bluelink"><img src="/static/images/icons/icon-muka-air.png" height="90" width="88" class="img-responsive" style="height: 20px">&nbsp; TINGGI MUKA AIR</a></li>
-                    <li class="$:content.get('p_kekeringan')"><a href="/kekeringan" class="bluelink"><img src="/static/images/icons/icon-kekeringan.png" height="88" width="88" class="img-responsive" style="height: 20px;">&nbsp; KEKERINGAN</a></li>
-                    <li class="$:content.get('p_kualitas_air')"><a href="/kualitasair" class="bluelink"><img src="/static/images/icons/icon-curah-hujan.png" height="80" width="84" class="img-responsive" style="height: 20px">&nbsp; KUALITAS AIR</a></li>
-                    <li class="$:content.get('p_bendungan')"><a href="/bendungan/summary" class="bluelink"><img src="/static/images/icons/icon-bendungan.png" height="96" width="96" class="img-responsive" style="height: 20px">&nbsp; BENDUNGAN</a></li><!-- dropdown bendungan -->
-                </ul>
-            </div>
-          </div>
-        </div>
         <!-- End 2nd Navigation -->
     </div>
     <!-- END DESKTOP NAVBAR -->
@@ -156,7 +139,7 @@ $def with (content)
                             <span class="icon-bar"></span>
                         </button>
                         <a class="navbar-brand" href="/">
-                            <div class="visible-xs" style="font-size: 10pt;font-weight: bold;">SISFO HKA BBWS&nbsp;Bengawan&nbsp;Solo</div>
+                            <div class="visible-xs" style="font-size: 10pt;font-weight: bold;">SISFO Bendungan BBWS&nbsp;B&nbsp;Solo</div>
                             <div class="row hidden-xs">
                                 <div class="col-sm-8">
                                     <img alt="Brand" src="/static/images/logo_bbws_bs.png" class="img-responsive" style="height: 2.5em">
@@ -177,17 +160,9 @@ $def with (content)
                                     <i class="fa fa-globe"></i> <b>PETA</b> <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="bluelink" href="/map/curahhujan">Pos Curah Hujan</a></li>
-                                    <li><a class="bluelink" href="/map/tma">Pos TMA</a></li>
                                     <li><a class="bluelink" href="/map/bendungan">Bendungan</a></li>
                                 </ul>
                             </li>
-                            <li><a class="bluelink" href="/curahhujan"><img src="/static/images/icons/icon-curah-hujan.png" class="img-responsive" style="height: 20px"> <span>CURAH HUJAN</span></a></li>
-                            <li><a class="bluelink" href="/klimatologi"><img src="/static/images/icons/climatology.png" height="45" width="46" class="img-responsive" style="height: 20px">&nbsp; KLIMATOLOGI</a></li>
-                            <li><a class="bluelink" href="/tma"><img src="/static/images/icons/icon-muka-air.png" height="90" width="88" class="img-responsive" style="height: 20px">&nbsp; TINGGI MUKA AIR</a></li>
-                            <li><a class="bluelink" href="/kekeringan"><img src="/static/images/icons/icon-kekeringan.png" height="88" width="88" class="img-responsive" style="height: 20px;">&nbsp; KEKERINGAN</a></li>
-                            <li><a class="bluelink" href="/kualitasair"><img src="/static/images/icons/icon-curah-hujan.png" height="80" width="84" class="img-responsive" style="height: 20px">&nbsp; KUALITAS AIR</a></li>
-                            <li class="dropdown"><a href="/bendungan/summary" class="bluelink"><img src="/static/images/icons/icon-bendungan.png" height="96" width="96" class="img-responsive" style="height: 20px">&nbsp; BENDUNGAN</a></li>
                         </ul>                        
                         <!-- END MAIN MENU -->
                         <!-- SECONDARY MENU -->
@@ -201,7 +176,6 @@ $def with (content)
                                     <li><a class="bluelink" href="/about/struktur-organisasi">Struktur Organisasi</a></li>
                                 </ul>
                             </li>
-                            <li><a class="bluelink" href="/about/kontak-kami"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li>
                         </ul>
                         <!-- END SECONDARY MENU -->
 

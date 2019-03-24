@@ -76,11 +76,16 @@ class AgentBd(SQLObject):
     prima_id = StringCol(length=12) # ID Logger prima, mis: '1711-2'
     logger_model = IntCol() # GPA, SCU, Cuwin, BPPT, Prima
     cname = StringCol(length=50) # Common Name
+    siaga1 = FloatCol(dbName='Normal')
+    siaga2 = FloatCol(dbName='SiagaLower')
+    siaga3 = FloatCol(dbName='SiagaUpper')
+    siaga4 = FloatCol(dbName='CriticalLower')
     sedimen = FloatCol(dbName='Sedimen')
     bts_elev_awas = FloatCol(dbName='bts_elev_awas')
     bts_elev_siaga = FloatCol(dbName='bts_elev_siaga')
     bts_elev_waspada = FloatCol(dbName='bts_elev_waspada')
     wilayah = IntCol(default=1)
+    kab = StringCol(length=35) # Kabupaten / Kota
     lbi = FloatCol(default=0, notNone=False)  # Luas Baku Irigasi, utk bendungan
     volume = FloatCol(default=0, notNone=False)  # volume untuk bendungan
     lengkung_kapasitas = StringCol(length=1024, default=None)  # data lengkung

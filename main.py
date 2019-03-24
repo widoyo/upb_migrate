@@ -344,7 +344,7 @@ class get_tmb:
 
 class index:
     def GET(self):
-        return render.index()
+        return web.seeother('/bendungan/summary')
         # return map_render.map_tma(news)
 
 
