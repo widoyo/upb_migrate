@@ -716,8 +716,8 @@ class Index:
         agents = Agent.select(Agent.q.AgentType == BENDUNGAN).orderBy(('wilayah', 'urutan'))
 
         # Menambah field Kondisi bendungan
-        for a in agents:
-            a.get_segmented_tma_bendungan(tanggal)
+        #for a in agents:
+        #    a.get_segmented_tma_bendungan(tanggal)
 
         data = [Struct(**{'pos': a,
                           'tma': Struct(

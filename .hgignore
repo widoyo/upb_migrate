@@ -4,3 +4,4 @@ syntax: glob
 sessions
 env
 oauth2
+.*.swp

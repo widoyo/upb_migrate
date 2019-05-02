@@ -9,7 +9,7 @@ from helper import Struct
 from common_data import CAUSE_TABLE, NO_VNOTCH, FAIL_VNOTCH
 
 DB_USER = 'root'
-DB_NAME = 'ffws_hosted'
+DB_NAME = 'upbbsolodb'
 DB_PWD = ''
 
 MONGO_PORT = 27017

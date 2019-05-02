@@ -20,13 +20,8 @@ from sqlobject import AND
 
 from models import Agent, NewsTicker, Authuser, conn, HIDROLOGI
 
-from curahhujan import app_ch
-from tma import app_tma
 from bendungan import app_bendungan
 from about import app_about
-from kekeringan import app_kekeringan
-from kualitas_air import app_kualitas_air
-from klimatologi import app_klimatologi
 from api import app_api
 from map import app_map
 from adm import app_adm  # Data Management
@@ -37,27 +32,18 @@ web.config.debug = False
 
 urls = (
     '/', 'index',
-    '/pos', 'PosList',
-    '/pos/(?P<agent_name>\w+)', 'PosDetail',
     '/about', app_about,
     '/get_tma', 'get_tma',
     '/get_tmb', 'get_tmb',
-    '/incoming', 'Incoming',
-    '/curahhujan', app_ch,
-    '/tma', app_tma,
     '/bendungan', app_bendungan,
     '/api', app_api,
     '/adm', app_adm,
     '/sensor', app_sensor,
-    '/kekeringan', app_kekeringan,
-    '/kualitasair', app_kualitas_air,
-    '/klimatologi', app_klimatologi,
     '/map', app_map,
     '/login', 'Login',
     '/logout', 'Logout',
     '/dmd', app_dmd,
     '/live', 'LivePrimabot',
-    '/kalipepe', 'Kalipepe'
 )
 
 
@@ -73,10 +59,6 @@ render_map = web.template.render('templates/', base='layout_map',
 render = web.template.render('templates/', base='base', globals=globals)
 render_plain = web.template.render('templates/', globals=globals)
 
-
-class Kalipepe:
-    def GET(self):
-        return render.kalipepe()
 
 class LivePrimabot:
     def GET(self):
@@ -345,7 +327,6 @@ class get_tmb:
 class index:
     def GET(self):
         return web.seeother('/bendungan/summary')
-        # return map_render.map_tma(news)
 
 
 def is_test():
