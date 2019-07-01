@@ -43,13 +43,17 @@ $def with (content)
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav navbar-center">
             $if not session.table_name:
                 <li class="active"><a href="/adm/user">User<span class="sr-only">(current)</span></a></li>
                 $if session.is_admin == 3:
                     <li><a href="/adm/bendungan">Bendungan</a></li>
                     <li><a href="/adm/bendungan/teknis">Data Teknis</a></li>
                     <li><a href="/adm/bendungan/rotw">RTOW</a></li>
+            <li class="nav-item"><a href="/adm/bendungan/${session.table_name}" class="nav-link"><span class="h4">Operasi</span><div><small class="text-muted">TMA, Vol, Debit</small></div></a></li>
+						<li class="nav-item"><a href="/adm/bendungan/${session.table_name}/keamanan" class="nav-link"><span class="h4">Keamanan</span><div><small class="text-muted">VNotch, Piezometer</small></div></a></li>
+						<li class="nav-item"><a href="/adm/bendungan/${session.table_name}/kegiatan" class="nav-link"><span class="h4">Kegiatan</span><div><small class="text-muted">Foto kegiatan</small></div></a></li>
+						<li class="nav-item"><a href="/adm/bendungan/${session.table_name}/kerusakan" class="nav-link"><span class="h4">Kerusakan</span><div><small class="text-muted">Kerusakan Bendungan</small></div></a></li>
             <!-- -->
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -60,12 +64,13 @@ $def with (content)
       </div><!-- /.container-fluid -->
     </nav>
     </div>
-    <div class="container" id="content" style="margin-top: 60px;">
+    <div class="container" id="content" style="margin-top: 90px;">
     $:content
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/moment.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     $:content.get('js_foot', '')
   </body>

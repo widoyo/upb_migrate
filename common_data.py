@@ -1,6 +1,8 @@
 '''
 Data Umum bersama
 '''
+BENDUNGAN_DICT = {'bd_gebyar': 113, 'bd_botok': 94, 'bd_pacal': 110, 'bd_songputri': 83, 'bd_plumbon': 84, 'bd_telaga_ngebel': 100, 'bd_gonggang': 102, 'bd_nawangan': 81, 'bd_kedung_brubus': 105, 'bd_telaga_pasir': 101, 'bd_krisak': 88, 'bd_brambang': 95, 'bd_notopuro': 106, 'bd_delingan': 91, 'bd_sangiran': 107, 'bd_jombor': 89, 'bd_saradan': 104, 'bd_prijetan': 111, 'bd_parangjoho': 85, 'bd_gembong': 96, 'bd_dawuhan': 103, 'bd_kedunguling': 86, 'bd_lalung': 92, 'bd_gondang': 112, 'bd_wonogiri': 87, 'bd_ngancar': 82, 'bd_cengklik': 93, 'bd_mulur': 90, 'bd_ketro': 99, 'bd_kedung_bendo': 109, 'bd_blimbing': 97, 'bd_pondok': 108, 'bd_kembangan': 98}
+
 NO_VNOTCH = ('kedunguling', 'jombor', 'mulur', 'blimbing', 'brambang', 'gembing', 'saradan')
 
 FAIL_VNOTCH = ('plumbon', 'lalung', 'botok', 'ketro', 'dawuhan', 'notopuro', 'prijetan')

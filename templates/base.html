@@ -58,7 +58,61 @@ $def with (content)
         .affix-top {
             box-shadow: 0px 2px 5px #777;
         }
+			.mega-dropdown {
+		position: static !important;
+	}
+	.mega-dropdown-menu {
+			padding: 20px 0px;
+			width: 60%;
+			-webkit-box-shadow: 0 6px 12px;
+			box-shadow: 0 6px 12px;
+	}
+	.mega-dropdown-menu > li > ul {
+		padding: 0;
+		margin: 0;
+	}
+	.mega-dropdown-menu > li > ul > li {
+		list-style: none;
+	}
+	.mega-dropdown-menu > li > ul > li > a {
+		display: block;
+		margin-left: 10px;
+		font-size: 1.4em;
+		padding: 3px 5px;
+	}
+	.mega-dropdown-menu > li ul > li > a:hover,
+	.mega-dropdown-menu > li ul > li > a:focus {
+		text-decoration: none;
+		background-color: #eee;
+	}
+	.mega-dropdown-menu .dropdown-header {
+		font-size: 1.6em;
+		padding: 5px 60px 5px 5px;
+		line-height: 30px;
+	}
+
+
+      @media screen and (min-width: 1199.98px) {
+
+        #logo-pupr {
+          width: 430px;
+          height: 50px;
+        }
+
+      }
+
+      @media screen and (max-width: 576.98px) {
+
+        #logo-pupr {
+          width: 225px;
+          height: 28px;
+        }
+
+      }   
+
     </style>
+    <!-- end custom style for mega menu (asnanzulfikar) --> 
+
 </head>
 <body>
     <!-- DESKTOP NAVBAR -->
@@ -91,13 +145,80 @@ $def with (content)
                     <!-- Responsive Menu -->
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-right" style="margin-top:15px;">
-                                <li><a class="bluelink" href="/bendungan/summary"><i class="fa fa-home"></i> <b>Bendungan</b> </a></li>
+                                <li class="dropdown mega-dropdown">
+                                  <a class="bluelink" href="/bendungan" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-hdd-o"></i>
+                                    <b>Bendungan</b><span class="caret">
+                                  </a>
+                                    	<ul class="dropdown-menu mega-dropdown-menu"> 
+																				<li class="col-sm-4">
+																					<ul>
+																						<li class="dropdown-header">Hulu</li>
+																						<li><a href="/bendungan/81">Nawangan</a></li>
+<li><a href="/bendungan/82">Ngancar</a></li>
+<li><a href="/bendungan/83">Songputri</a></li>
+<li><a href="/bendungan/84">Plumbon</a></li>
+<li><a href="/bendungan/85">Parangjoho</a></li>
+<li><a href="/bendungan/86">Kedunguling</a></li>
+<li><a href="/bendungan/87">Wonogiri</a></li>
+<li><a href="/bendungan/88">Krisak</a></li>
+<li><a href="/bendungan/89">Jombor</a></li>
+<li><a href="/bendungan/90">Mulur</a></li>
+<li><a href="/bendungan/91">Delingan</a></li>
+<li><a href="/bendungan/92">Lalung</a></li>
+<li><a href="/bendungan/93">Cengklik</a></li>
+<li><a href="/bendungan/94">Botok</a></li>
+<li><a href="/bendungan/95">Brambang</a></li>
+<li><a href="/bendungan/96">Gembong</a></li>
+<li><a href="/bendungan/97">Blimbing</a></li>
+<li><a href="/bendungan/98">Kembangan</a></li>
+<li><a href="/bendungan/99">Ketro</a></li>
+<li><a href="/bendungan/113">Gebyar</a></li>
+
+																					</ul>
+																				</li>
+																				<li class="col-sm-4">
+																					<ul>
+																						<li class="dropdown-header">Madiun</li>
+																						<li><a href="/bendungan/101">Telaga Pasir</a></li>
+<li><a href="/bendungan/102">Gonggang</a></li>
+<li><a href="/bendungan/103">Dawuhan</a></li>
+<li><a href="/bendungan/104">Saradan</a></li>
+<li><a href="/bendungan/105">Kedung Brubus</a></li>
+<li><a href="/bendungan/106">Notopuro</a></li>
+<li><a href="/bendungan/107">Sangiran</a></li>
+<li><a href="/bendungan/108">Pondok</a></li>
+<li><a href="/bendungan/109">Kedung Bendo</a></li>
+<li><a href="/bendungan/100">Telaga Ngebel</a></li>
+
+																					</ul>
+																				</li>
+																				<li class="col-sm-4">
+																					<ul>
+																						<li class="dropdown-header">Hilir</li>
+																						<li><a href="/bendungan/110">Pacal</a></li>
+<li><a href="/bendungan/111">Prijetan</a></li>
+<li><a href="/bendungan/112">Gondang</a></li>
+																					</ul>
+																					<a href="/bendungan" class="btn btn-primary btn-lg" style="color: #eee;margin-top: 50px;">Semua Bendungan</a>
+																				</li>
+																			</ul>
+                                      
+                                </li>
+                                <li class="dropdown">
+                                  <a class="bluelink" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-inbox"></i>
+                                    <b>EMBUNG</b><span class="caret"></span>
+                                  </a>
+                                  <ul class="dropdown-menu">
+                                    <b>DAFTAR EMBUNG</b>
+                                  </ul>
+                                </li>
                                 <li class="dropdown">
                                     <a href="#" class="bluelink dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-globe"></i> <b>PETA</b> <span class="caret"></span>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a class="bluelink" href="/map/bendungan">Bendungan</a></li>
+                                        <li><a class="bluelink" href="#">Embung</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown">
@@ -107,9 +228,10 @@ $def with (content)
                                     <ul class="dropdown-menu">
                                         <li><a class="bluelink" href="/about/wilayah-kerja">Wilayah Kerja</a></li>
                                         <li><a class="bluelink" href="/about/struktur-organisasi">Struktur Organisasi</a></li>
+                                        <li><a class="bluelink" href="/about/kontak-kami">Kontak Kami</a></li>
                                     </ul>
                                 </li>
-                                <li><a class="bluelink" href="/about/kontak-kami"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li>
+                                <!-- <li><a href="/about/kontak-kami"><i class="fa fa-phone"></i> <b>KONTAK KAMI</b> </a></li> -->
                         </ul>
                     </div> <!-- collapse -->
                 </div><!-- /.container -->
@@ -118,7 +240,7 @@ $def with (content)
         <!-- END NAVIGATION -->
         <div class="container-fluid hidden-xs" style="margin-bottom: 10px;background-color: #0277BD;">
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <h3 align="center" style="margin:5px; color:#fff; ">SISTEM INFORMASI BENDUNGAN</h3>
+            <h3 align="center" style="margin:5px; color:#fff; ">UNIT PENGELOLA BENDUNGAN</h3>
         </div>
         <!-- 2nd Navigation -->
         <!-- End 2nd Navigation -->
@@ -220,25 +342,11 @@ $def with (content)
     <script src="/static/js/jquery-1.12.0.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/moment.min.js"></script>
 
     <script type="text/javascript">
         var base_url = 'http://localhost:8080';
     </script>    
-
-    <!-- Histats.com  START  (aync)
-    <script type="text/javascript">
-        var _Hasync= _Hasync|| [];
-        _Hasync.push(['Histats.start', '1,3803507,4,3,170,30,00011111']);
-        _Hasync.push(['Histats.fasi', '1']);
-        _Hasync.push(['Histats.track_hits', '']);
-        (function() {
-            var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-            hs.src = ('//s10.histats.com/js15_as.js');
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-        })();
-    </script>
-    <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?3803507&101" alt="cool hit counter" border="0"></a></noscript>
-    Histats.com  END  -->
 
     $:content.get('js_foot', '')
 </body>

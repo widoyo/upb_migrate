@@ -6,7 +6,7 @@ import time
 import datetime
 
 from helper import Struct
-from common_data import CAUSE_TABLE, NO_VNOTCH, FAIL_VNOTCH
+from common_data import BENDUNGAN_DICT, CAUSE_TABLE, NO_VNOTCH, FAIL_VNOTCH
 
 DB_USER = 'root'
 DB_NAME = 'upbbsolodb'
@@ -14,6 +14,8 @@ DB_PWD = ''
 
 MONGO_PORT = 27017
 MONGO_HOST = 'localhost'
+
+FOTO_PATH = 'static/img/foto/'
 
 try:
     from local_settings import *
@@ -44,6 +46,51 @@ AWLR = (('colo_weir', 'jurug', 'jarum', 'wonogiri_dam', 'tangen_bridge'),
 BSOLO2 = ('rejoso', 'nglirip_dam', 'wonogiri_dam', 'tangen_brigde', 'colo_weir',
           'babat_barrage')
 ONLIMO_STATION_MAP = {'jurug': 1, 'pabelan': 2, 'cepu': 3}
+
+
+class Embung(SQLObject):
+    nama = StringCol(length=35)
+    jenis = StringCol(length=1, default='b') # 'a': Air Baku, 'b': BPAir
+    desa = StringCol(length=35)
+    kec = StringCol(length=35)
+    kab = StringCol(length=35)
+    ll = StringCol(length=50)
+    sumber_air = StringCol(length=35)
+    tampungan = FloatCol(notNone=False) # dalam Meter Kubik
+    debit = FloatCol(notNone=False) # dalam Liter / detik
+    pipa_transmisi = FloatCol(notNone=False) # dalam Meter
+    saluran_traansmisi = FloatCol(notNone=False) # dalam Meter
+    air_baku = IntCol(notNone=False) # Banyaknya KK terlayani
+    irigasi = FloatCol(notNone=False) # dalam Hektar
+    cuser = StringCol(length=35)
+    muser = StringCol(length=35, default=None)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
+    mdate = DateTimeCol(default=None)
+
+
+class Foto(SQLObject):
+    filepath = StringCol(length=100)
+    keterangan = StringCol(length=255, notNone=False)
+    obj_type = StringCol(length=20) # nama class
+    obj_id = IntCol()
+    cuser = StringCol(length=35)
+    muser = StringCol(length=35, default=None)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
+    mdate = DateTimeCol(default=None)
+
+PETUGAS_CHOICES = "koordinator_keamanan_pemantauan_operasi_pemeliharaan".split('_')
+KEGIATAN_CHOICES = ('koordinasi','keamanan','pemantauan','operasi','pemeliharaan')
+
+class Kegiatan(SQLObject):
+    foto = ForeignKey('Foto')
+    table_name = StringCol(length=35) # nama bendungan
+    sampling = DateTimeCol()
+    petugas = StringCol(length=35) # lihat PERSONIL_CHOICES
+    uraian = StringCol()
+    cuser = StringCol(length=35)
+    muser = StringCol(length=35, default=None)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
+    mdate = DateTimeCol(default=None)
 
 
 class RequestResponse(SQLObject):

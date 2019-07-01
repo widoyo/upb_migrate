@@ -5,3 +5,4 @@ sessions
 env
 oauth2
 .*.swp
+static/img/foto

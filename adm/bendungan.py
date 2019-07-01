@@ -1,4 +1,5 @@
 # Data Management
+import os
 import sys
 import datetime
 import calendar
@@ -10,45 +11,25 @@ import web
 from sqlobject import OR, AND, SQLObjectNotFound
 
 from models import AgentBd, conn, WadukDaily,TinggiMukaAir, BendungAlert
-from models import CurahHujanTerkini, BendungFormA, BendungFormA1
-from models import BendungFormB, BendungFormB1_1, BendungFormB1_2
-from models import BendungFormB1_3, BendungFormB1_4, BendungFormB3
-from models import NO_VNOTCH, FAIL_VNOTCH
+from models import NO_VNOTCH, FAIL_VNOTCH, FOTO_PATH, PETUGAS_CHOICES
+from models import Kegiatan, Foto, BENDUNGAN_DICT
 
 from helper import to_date, json_serializer
+from keamanan import app_keamanan
 
 urls = (
     '', 'BdIndex',
-    '/(\w+\.*\-*\w+)/FormBlangko', 'FormBlangkoIndex',
-    '/(\w+\.*\-*\w+)/FormBlangko/formA', 'FormA',
-    '/(\w+\.*\-*\w+)/FormBlangko/formA1', 'FormA1',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB', 'FormB',
-    #'/(\w+\.*\-*\w+)/FormBlangko/formB/rekap', 'RekapB',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB1_1', 'FormB1_1',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB1_2', 'FormB1_2',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB1_3', 'FormB1_3',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB1_4', 'FormB1_4',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB2_1', 'FormB2_1',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB2_2', 'FormB2_2',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB3', 'FormB3',
-    '/(\w+\.*\-*\w+)/FormBlangko/formA/update', 'FormAUpdate',
-    '/(\w+\.*\-*\w+)/FormBlangko/formA1/update', 'FormA1Update',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB/update', 'FormBUpdate',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB1_1/update', 'FormB1_1Update',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB1_2/update', 'FormB1_2Update',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB1_3/update', 'FormB1_3Update',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB1_4/update', 'FormB1_4Update',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB2_1/update', 'FormB2_1Update',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB2_2/update', 'FormB2_2Update',
-    '/(\w+\.*\-*\w+)/FormBlangko/formB3/update', 'FormB3Update',
     '/update', 'BdUpdate',
     '/teknis', 'BdIndexTeknis',
     '/rotw', 'BdIndexRotw',
     '/rotw/csv', 'BdRtowImport',
+    '/(\w+\.*\-*\w+)/keamanan', 'BdKeamanan',
     '/(\w+\.*\-*\w+)', 'BdShow',
     '/(\w+\.*\-*\w+)/rtow/export', 'BdRtowExport',
     '/(\w+\.*\-*\w+)/rtow/import', 'BdRtowImport',
     '/(\w+\.*\-*\w+)/add', 'BdPeriodicAdd',
+    '/(\w+\.*\-*\w+)/kegiatan', 'BdFoto',
+    '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan',
 )
 
 
@@ -63,9 +44,95 @@ def csrf_token():
         session['csrf_token'] = uuid4().hex
     return session.get('csrf_token')
 
+def login_required(func):
+    def func_wrapper(*args, **kwargs):
+        if not session.get('username'):
+            raise web.seeother('/login', absolute=True)
+        return func(*args, **kwargs)
+    return func_wrapper
+
+
+def admin_required(func):
+    def func_wrapper(*args, **kwargs):
+        if session.get('table_name'):
+            raise web.forbidden()
+        return func(*args, **kwargs)
+    return func_wrapper
+
 
 globals = {'session': session, 'csrf_token': csrf_token}
 render = web.template.render('templates/', base='base_adm', globals=globals)
+
+class BdKeamanan:
+    @login_required
+    @profile
+    def GET(self, table_name):
+        inp = web.input()
+        ordering = '-waktu'
+        try:
+            pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
+        except:
+            return web.notfound()
+        webinput = web.input(sampling=str(datetime.date.today()))
+        tg = datetime.datetime.strptime(webinput.sampling, '%Y-%m-%d').date()
+        #sql = "SELECT * FROM waduk_daily WHERE \
+        #        pos_id=%s AND waktu='%s'" % (pos.id, tg)
+        #rs = conn.queryAll(sql)
+        if tg.month == datetime.date.today().month:
+            rs = [r for r in WadukDaily.select(WadukDaily.q.pos==pos).orderBy(ordering) if r.waktu.month == tg.month and r.waktu.year == tg.year and r.waktu.day <= tg.day]
+        else:
+            rs = [r for r in WadukDaily.select(WadukDaily.q.pos==pos).orderBy(ordering) if r.waktu.month == tg.month and r.waktu.year == tg.year]
+        msg = ''
+        if session.has_key('err'):
+            msg = session.pop('err')
+        return render.adm.bendungan.keamanan({'bd': pos, 'periodic': rs,
+            'tanggal': tg, 'msg': msg})
+
+
+class BdKerusakan:
+    def GET(self, table_name):
+        try:
+            pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
+        except:
+            return web.notfound()
+        tgl = datetime.date.today()
+        return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl})
+
+
+class BdFoto:
+    def GET(self, table_name):
+        inp = web.input()
+        tgl = datetime.date.today()
+        bd_id = BENDUNGAN_DICT.get(table_name)
+        pos = AgentBd.get(int(bd_id))
+        fotos = Kegiatan.select(
+            Kegiatan.q.table_name==table_name)
+        return render.adm.bendungan.foto(dict(pos=pos,
+                                              petugas=PETUGAS_CHOICES,
+                                              kegiatan=fotos, tgl=tgl))
+
+    def POST(self, table_name):
+        inp = web.input()
+        print inp
+        for k, v in inp.items():
+            print 'Kunci: ', k, 'Nilai: ', v
+        kegiatan = inp.get('kegiatan')
+        uraian = inp.get('uraian')
+        x = web.input(foto={})
+        our_path = FOTO_PATH + table_name + '/'
+        if not os.path.isdir(our_path):
+            os.mkdir(our_path)
+        if 'foto' in x:
+            filepath = x['foto'].name.replace('\\', '/')
+            filename = our_path + filepath.split('/')[-1]
+            with open(filename, 'w') as f:
+                f.write(x['foto'].file.read())
+            foto = Foto(filepath=filename, cuser=session.get('username'))
+            keg = Kegiatan(foto=foto, table_name=table_name, 
+                           kegiatan=kegiatan, uraian=uraian, 
+                           sampling=to_date(inp.get('waktu')),
+                          cuser=session.username)
+        return web.redirect('/adm/bendungan/%s/foto' % table_name, absolute=True)
 
 
 class BdRtowExport:
@@ -187,22 +254,6 @@ def bd_hari(sampling=datetime.date.today()):
     return sampling
 
 
-def login_required(func):
-    def func_wrapper(*args, **kwargs):
-        if not session.get('username'):
-            raise web.seeother('/login', absolute=True)
-        return func(*args, **kwargs)
-    return func_wrapper
-
-
-def admin_required(func):
-    def func_wrapper(*args, **kwargs):
-        if session.get('table_name'):
-            raise web.forbidden()
-        return func(*args, **kwargs)
-    return func_wrapper
-
-
 class BdIndexTeknis:
     @login_required
     @admin_required
@@ -271,154 +322,6 @@ class BdUpdate:
 
         return {"Ok": "true"}
 
-class FormAUpdate:
-    @login_required
-    def POST(self,table_name):
-        inp = web.input()
-        print inp
-        try:
-            formA = BendungFormA.get(int(inp.get('pk')))
-            data_ = inp.get('value',0)
-            try:
-                formA.set(**{inp.get('name'): float(data_)})
-            except ValueError:
-                formA.set(**{inp.get('name'): data_})
-            except TypeError:
-                formA.set(**{inp.get('name'): int(data_)})
-            formA.syncUpdate()
-        except SQLObjectNotFound:
-            return web.notfound()
-
-        return {"Ok": "true"}
-
-class FormA1Update:
-    @login_required
-    def POST(self,table_name):
-        inp = web.input()
-        print inp
-        try:
-            formA1 = BendungFormA1.get(int(inp.get('pk')))
-            data_ = inp.get('value',0)
-            try:
-                formA1.set(**{inp.get('name'): float(data_)})
-            except ValueError:
-                formA1.set(**{inp.get('name'): data_})
-            except TypeError:
-                formA1.set(**{inp.get('name'): int(data_)})
-            formA1.syncUpdate()
-        except SQLObjectNotFound:
-            return web.notfound()
-
-        return {"Ok": "true"}
-
-
-class FormBUpdate:
-    @login_required
-    def POST(self,table_name):
-        inp = web.input()
-        print inp
-        try:
-            formB = BendungFormB.get(int(inp.get('pk')))
-            try:
-                formB.set(**{inp.get('name'): float(inp.get('value',0))})
-            except ValueError:
-                formB.set(**{inp.get('name'): inp.get('value',0)})
-            formB.syncUpdate()
-        except SQLObjectNotFound:
-            return web.notfound()
-
-        return {"Ok": "true"}
-
-class FormB1_1Update:
-    @login_required
-    def POST(self,table_name):
-        inp = web.input()
-        print inp
-        try:
-            formB1_1 = BendungFormB1_1.get(int(inp.get('pk')))
-            try:
-                formB1_1.set(**{inp.get('name'): float(inp.get('value',0))})
-            except ValueError:
-                formB1_1.set(**{inp.get('name'): inp.get('value',0)})
-            formB1_1.syncUpdate()
-        except SQLObjectNotFound:
-            return web.notfound()
-
-        return {"Ok": "true"}
-
-
-class FormB1_2Update:
-    @login_required
-    def POST(self,table_name):
-        inp = web.input()
-        print inp
-        try:
-            formB1_2 = BendungFormB1_2.get(int(inp.get('pk')))
-            try:
-                formB1_2.set(**{inp.get('name'): float(inp.get('value',0))})
-            except ValueError:
-                formB1_2.set(**{inp.get('name'): inp.get('value',0)})
-            formB1_2.syncUpdate()
-        except SQLObjectNotFound:
-            return web.notfound()
-
-        return {"Ok": "true"}
-
-class FormB1_3Update:
-    @login_required
-    def POST(self,table_name):
-        inp = web.input()
-        print inp
-        try:
-            formB1_3 = BendungFormB1_3.get(int(inp.get('pk')))
-            try:
-                formB1_3.set(**{inp.get('name'): str(inp.get('value',0))})
-            except ValueError:
-                formB1_3.set(**{inp.get('name'): inp.get('value',0)})
-
-            formB1_3.syncUpdate()
-        except SQLObjectNotFound:
-            return web.notfound()
-
-        return {"Ok": "true"}
-
-class FormB1_4Update:
-    @login_required
-    def POST(self,table_name):
-        inp = web.input()
-        print inp
-        try:
-            formB1_4 = BendungFormB1_4.get(int(inp.get('pk')))
-            try:
-                formB1_4.set(**{inp.get('name'): str(inp.get('value',0))})
-            except ValueError:
-                formB1_4.set(**{inp.get('name'): inp.get('value',0)})
-
-            formB1_4.syncUpdate()
-        except SQLObjectNotFound:
-            return web.notfound()
-
-        return {"Ok": "true"}
-
-class FormB3Update:
-    @login_required
-    def POST(self,table_name):
-        inp = web.input()
-        print inp
-        try:
-            formB3 = BendungFormB3.get(int(inp.get('pk')))
-            try:
-                formB3.set(**{inp.get('name'): str(inp.get('value',0))})
-            except ValueError:
-                formB3.set(**{inp.get('name'): inp.get('value',0)})
-
-            formB3.syncUpdate()
-        except SQLObjectNotFound:
-            return web.notfound()
-
-        return {"Ok": "true"}
-
-
 class BdShow:
     @login_required
     @profile
@@ -427,7 +330,7 @@ class BdShow:
         csv = inp.get('csv')
         ordering = csv and 'waktu' or '-waktu'
         try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
+            pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
         except:
             return web.notfound()
         webinput = web.input(sampling=str(datetime.date.today()))
@@ -674,816 +577,6 @@ class BdIndex:
         poses = [(poses.get(p), daily_bd.get(p)) for p in [p.table_name for p in bdgs]]
         return render.adm.bendungan.index({'poses': poses, 'tanggal': tanggal})
 
-
-class FormBlangkoIndex:
-    @login_required
-    def GET(self, tabel_name):
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == tabel_name][0]
-        except:
-            return web.notfound()
-        return render.adm.bendungan.FormBlangko.index({'bd':pos,'table_name': tabel_name})
-
-class FormA:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        csv = inp.get('csv')
-        ordering ='-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-#-----------------------------------------------------------------------------
-        if tgal.month == datetime.date.today().month:
-            bendufor = [r for r in BendungFormA.select(BendungFormA.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day <= tgal.day]
-            #sql = "SELECT id FROM bendung_form_a WHERE bendungan_id=%s AND YEAR(waktu)=%s AND MONTH(waktu)=%s AND DAY(waktu)<=%s" %(poss.AgentId, tgal.year, tgal.month, tgal.day)
-            #ids = [i[0] for i in conn.queryAll(sql)]
-            #bendufor = BendungFormA.select(BendungFormA.q.id in ids)
-        else:
-            bendufor = [r for r in BendungFormA.select(BendungFormA.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day <= tgal.day]
-            #sql = "SELECT id FROM bendung_form_a WHERE bendungan_id=%s AND YEAR(waktu)=%s AND MONTH(waktu)=%s AND DAY(waktu)<=%s" %(poss.AgentId, tgal.year, tgal.month, tgal.day)
-            #ids = [i[0] for i in conn.queryAll(sql)]
-            #bendufor = BendungFormA.select(BendungFormA.q.id in ids)
-
-#-----------------------------------------------------------------------------
-        order ='-waktu'
-        tagl = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-        if tagl.month == datetime.date.today().month:
-            wadudail = [rr for rr in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(order) if rr.waktu.month == tagl.month and rr.waktu.year == tagl.year and rr.waktu.day <= tagl.day]
-            #sql = "SELECT id FROM waduk_daily WHERE pos_id=%s AND YEAR(waktu)=%s AND MONTH(waktu)=%s AND DAY(waktu)<=%s" %(poss.AgentId, tgal.year, tgal.month, tgal.day)
-            #ids = [i[0] for i in conn.queryAll(sql)]
-            #wadudail = WadukDaily.select(WadukDaily.q.id in ids)
-        else:
-            wadudail = [rr for rr in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(order) if rr.waktu.month == tagl.month and rr.waktu.year == tagl.year and rr.waktu.day <= tagl.day]
-            #sql = "SELECT id FROM waduk_daily WHERE pos_id=%s AND YEAR(waktu)=%s AND MONTH(waktu)=%s AND DAY(waktu)<=%s" %(poss.AgentId, tgal.year, tgal.month, tgal.day)
-            #ids = [i[0] for i in conn.queryAll(sql)]
-            #wadudail = WadukDaily.select(WadukDaily.q.id in ids)
-
-#------menampilkan 30 hari-----------------------------------------------------
-        now=datetime.datetime.now()
-        if tgal:
-            now = tgal
-        tahun = now.year
-        bul = now.month
-        num_hari = (calendar.monthrange(now.year, now.month)[1]) + 1
-        tgl_kosong = [datetime.date(tahun,bul, i) for i in range(1, num_hari)]
-        dout = [(t, []) for t in tgl_kosong]
-        dout = dict(dout)
-        dwds = [(r.waktu.date(), r) for r in wadudail]
-        dwds = dict(dwds)
-        outputt = sorted([(t, dwds.get(t)) for t in dout.keys()])
-
-        a = []
-        for c in outputt:
-            a.append(c[1])
-
-        now = datetime.datetime.now()
-        if tgal:
-            now = tgal
-        tahuns = now.year
-        buls = now.month
-        num_harii = (calendar.monthrange(now.year, now.month)[1]) + 1
-        tgl_kosong1 = [datetime.date(tahuns,buls, k) for k in range(1, num_harii)]
-        bfout = [(w, []) for w in tgl_kosong1]
-        bfout = dict(bfout)
-        dbfa = [(rr.waktu, rr) for rr in bendufor]
-        dbfa = dict(dbfa)
-        output_dbfa = sorted([(w, dbfa.get(w)) for w in bfout.keys()])
-
-        y = []
-        for x in output_dbfa:
-            y.append(x[1])
-
-        z = []
-        for b,d in zip (a, y):
-                #if b != None and d !=None:
-                if b and d:
-                    z.append((b,d))
-
-#----------------------vol total-----------------------
-        p = []
-        for s in z :
-            total_vol = (s[1].vol_pintu1 or 0) + (s[1].vol_pintu2 or 0) + (s[1].vol_pelimpahutama or 0)
-            p.append(total_vol)
-
-#----------------------debit rerata total-----------------------
-        v = []
-        for q in z:
-            total_debit = (q[1].debit_rerata_pintu1 or 0) + (q[1].debit_rerata_pintu2 or 0) + (q[1].debit_pelimpahutama or 0)
-            v.append(total_debit)
-        j = []
-        k = 0
-        for t,u in zip (a, y):
-                if t and u:
-                    j.append((t,u,p[k],v[k]))
-                    k = k+1
-
-        return render.adm.bendungan.FormBlangko.forma.Form_A({'tanggal': tgal, 'bd':poss, 'periodicc': output_dbfa, 'periodic_wdd': outputt, 'new_periodic': j, 'table_name': table_nama})
-
-
-
-    @login_required
-    # @csrf_protected
-    def POST(self, table_name):       
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
-            bendungan_id = pos.id
-        except IndexError:
-            return web.notfound()
-        inp = web.input()
-        fields = 'waktu,bukaan_pintu1,vol_pintu1,debit_rerata_pintu1,jam_pintu1,bukaan_pintu2,vol_pintu2,debit_rerata_pintu2,jam_pintu2,h_pelimpahutama,vol_pelimpahutama,debit_pelimpahutama,jam_pelimpahutama,vol_total_pelepasan,debit_rerata_total_pelepasan,keterangan'.split(',')
-
-        # memeriksa apakah record pada Pos dan waktu(tgl) sudah ada pada tabel 'bendung_form'
-        try:
-            form = BendungFormA.select(AND(BendungFormA.q.waktu==to_date(inp.waktu), BendungFormA.q.bendungan==bendungan_id))[0]
-            is_form_exist = True
-        except IndexError:
-            form = None
-            is_form_exist = False
-
-        objj = {}
-        for f in fields:
-            if inp.get(f):
-
-                if f == 'waktu':
-                    nilai = to_date(inp.waktu)
-
-                else:
-                    nilai = inp.get(f)
-                
-            else:
-                nilai = None
-            objj.update({f: nilai})
-        objj.update({'bendunganID':bendungan_id, 'waktu': to_date(inp.waktu)})
-        print objj
-        if not is_form_exist:
-            form = BendungFormA(**objj)
-        else:
-            form.set(**objj)
-        bf = form.sqlmeta.asDict()
-        waktuu = bf['waktu']
-        waktuu = waktuu.strftime('%Y-%m-%d')
-
-
-        return web.redirect('/adm/bendungan/' + table_name + '/FormBlangko/formA?sampling='+waktuu, absolute=True)
-
-class FormA1:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        csv = inp.get('csv')
-        ordering ='-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-#-----------------------------------------------------------------------------
-        if tgal.month == datetime.date.today().month:
-            bendufor = [r for r in BendungFormA1.select(BendungFormA1.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day <= tgal.day]
-        else:
-            bendufor = [r for r in BendungFormA1.select(BendungFormA1.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day] 
-
-
-#-----------------------------------------------------------------------------
-        order ='-waktu'
-        tagl = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-        if tagl.month == datetime.date.today().month:
-            wadudail = [rr for rr in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(order) if rr.waktu.month == tagl.month and rr.waktu.year == tagl.year and rr.waktu.day <= tagl.day]
-        else:
-            wadudail = [rr for rr in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(order) if rr.waktu.month == tagl.month and rr.waktu.year == tagl.year and rr.waktu.day == tagl.day]
-
-
-#------menampilkan 30 hari-----------------------------------------------------
-        now=datetime.datetime.now()
-        if tgal:
-            now = tgal
-        tahun = now.year
-        bul = now.month
-        num_hari = (calendar.monthrange(now.year, now.month)[1]) + 1
-        tgl_kosong = [datetime.date(tahun,bul, i) for i in range(1, num_hari)]
-        dout = [(t, []) for t in tgl_kosong]
-        dout = dict(dout)
-        dwds = [(r.waktu.date(), r) for r in wadudail]
-        dwds = dict(dwds)
-        outputt = sorted([(t, dwds.get(t)) for t in dout.keys()])
-
-        a=[]
-        for c in outputt:
-            a.append(c[1])
-        #print a
-
-
-
-        now=datetime.datetime.now()
-        if tgal:
-            now = tgal
-        tahuns = now.year
-        buls = now.month
-        num_harii = (calendar.monthrange(now.year, now.month)[1]) + 1
-        tgl_kosong1 = [datetime.date(tahuns,buls, k) for k in range(1, num_harii)]
-        bfout = [(w, []) for w in tgl_kosong1]
-        bfout = dict(bfout)
-        dbfa = [(rr.waktu, rr) for rr in bendufor]
-        dbfa = dict(dbfa)
-        output_dbfa = sorted([(w, dbfa.get(w)) for w in bfout.keys()])
-
-        y=[]
-        for x in output_dbfa:
-            y.append(x[1])
-        #print y
-
-
-        z=[]
-        for b,d in zip (a, y):
-                if b != None and d !=None:
-                    z.append((b,d))       
-
-        
-
-
-        return render.adm.bendungan.FormBlangko.forma1.Form_A1({'tanggal': tgal, 'bd':poss, 'periodicc': output_dbfa, 'periodic_wdd': outputt, 'new_periodic': z, 'table_name': table_nama})
-
-
-    @login_required
-    # @csrf_protected
-    def POST(self, table_name):       
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
-            bendungan_id = pos.id
-        except IndexError:
-            return web.notfound()
-        inp = web.input()
-        fields = 'waktu,luas_baku,nama_di,luas_terlayani,padi_jenistanaman,palawija_jenistanaman,bero_jenistanaman,padi_umurtanaman,palawija_umurtanaman,padi_sisaumur,palawija_sisaumur,keterangan'.split(',')
-
-        # memeriksa apakah record pada Pos dan waktu(tgl) sudah ada pada tabel 'bendung_form'
-        try:
-            form = BendungFormA1.select(AND(BendungFormA1.q.waktu==to_date(inp.waktu), BendungFormA1.q.bendungan==bendungan_id))[0]
-            is_form_exist = True
-        except IndexError:
-            form = None
-            is_form_exist = False
-
-        objj = {}
-        for f in fields:
-            if inp.get(f):
-
-                if f == 'waktu':
-                    nilai = to_date(inp.waktu)
-
-                else:
-                    nilai = inp.get(f)
-                
-            else:
-                nilai = None
-            objj.update({f: nilai})
-        objj.update({'bendunganID':bendungan_id, 'waktu': to_date(inp.waktu)})
-        print objj
-        if not is_form_exist:
-            form = BendungFormA1(**objj)
-        else:
-            form.set(**objj)
-        bf = form.sqlmeta.asDict()
-        waktuu = bf['waktu']
-        waktuu = waktuu.strftime('%Y-%m-%d')
-
-
-        return web.redirect('/adm/bendungan/' + table_name + '/FormBlangko/formA1?sampling='+waktuu, absolute=True)
-
-
-
-class FormB:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        csv = inp.get('csv')
-        ordering ='-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-#-----------------------------------------------------------------------------
-        if tgal.month == datetime.date.today().month:
-            bendfor = [r for r in BendungFormB.select(BendungFormB.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day <= tgal.day]
-        else:
-            bendfor = [r for r in BendungFormB.select(BendungFormB.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day] 
-
-
-#-----------------------------------------------------------------------------
-        order ='-waktu'
-        tagl = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-        if tagl.month == datetime.date.today().month:
-            waddail = [rr for rr in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(order) if rr.waktu.month == tagl.month and rr.waktu.year == tagl.year and rr.waktu.day <= tagl.day]
-        else:
-            waddail = [rr for rr in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(order) if rr.waktu.month == tagl.month and rr.waktu.year == tagl.year and rr.waktu.day == tagl.day]
-
-
-#------menampilkan 30 hari-----------------------------------------------------
-        now=datetime.datetime.now()
-        if tgal:
-            now = tgal
-        tahun = now.year
-        bul = now.month
-        num_hari = (calendar.monthrange(now.year, now.month)[1]) + 1
-        tgl_kosong = [datetime.date(tahun,bul, i) for i in range(1, num_hari)]
-        dout = [(t, []) for t in tgl_kosong]
-        dout = dict(dout)
-        dwds = [(r.waktu.date(), r) for r in waddail]
-        dwds = dict(dwds)
-        output = sorted([(t, dwds.get(t)) for t in dout.keys()])
-
-        now=datetime.datetime.now()
-        if tgal:
-            now = tgal
-        tahuns = now.year
-        buls = now.month
-        num_harii = (calendar.monthrange(now.year, now.month)[1]) + 1
-        tgl_kosong1 = [datetime.date(tahuns,buls, k) for k in range(1, num_harii)]
-        bfout = [(w, []) for w in tgl_kosong1]
-        bfout = dict(bfout)
-        dbfs = [(rr.waktu, rr) for rr in bendfor]
-        dbfs = dict(dbfs)
-        output_dbfs = sorted([(w, dbfs.get(w)) for w in bfout.keys()])
-
-
-        return render.adm.bendungan.FormBlangko.formb.Form_B({'tanggal': tgal, 'bd':poss, 'periodic': output_dbfs, 'periodic_wd': output, 'table_name': table_nama})
-
-
-    @login_required
-    # @csrf_protected
-    def POST(self, table_name):       
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
-            bendungan_id = pos.id
-        except IndexError:
-            return web.notfound()
-        inp = web.input()
-        fields = 'waktu,retakan_puncak_bendung,penurunan_puncak_bendung,kelurusan_puncak_bendung,retakan_lereng_hulu,penurunan_lereng_hulu,tonjolan_lereng_hulu,retakan_lereng_hilir,penurunan_lereng_hilir,tonjolan_lereng_hilir,retakan_pd_beton,gerusan_ujung_hilir,mengetahui_petugas,mengetahui_koordinator'.split(',')
-
-        # memeriksa apakah record pada Pos dan waktu(tgl) sudah ada pada tabel 'bendung_form'
-        try:
-            form = BendungFormB.select(AND(BendungFormB.q.waktu==to_date(inp.waktu), BendungFormB.q.bendungan==bendungan_id))[0]
-            is_form_exist = True
-        except IndexError:
-            form = None
-            is_form_exist = False
-
-
-        objj = {}
-        for f in fields:
-            if inp.get(f):
-
-                if f == 'waktu':
-                    nilai = to_date(inp.waktu)
-                else:
-                    nilai = inp.get(f)
-                
-            else:
-                nilai = None
-            objj.update({f: nilai})
-        objj.update({'bendunganID':bendungan_id, 'waktu': to_date(inp.waktu)})
-        print objj
-        if not is_form_exist:
-            form = BendungFormB(**objj)
-        else:
-            form.set(**objj)
-        bf = form.sqlmeta.asDict()
-        waktuu = bf['waktu']
-        waktuu = waktuu.strftime('%Y-%m-%d')
-
-
-        return web.redirect('/adm/bendungan/' + table_name + '/FormBlangko/formB?sampling='+waktuu, absolute=True)
-
-
-class FormB1_1:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        ordering ='waktu' or '-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rss = [r for r in BendungFormB1_1.select(BendungFormB1_1.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rss = [r for r in BendungFormB1_1.select(BendungFormB1_1.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-            print rss
-
-
-        #menghubungkan dengan tabel waduk daily untuk mendapatkan data elevasi muka air
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-
-        return render.adm.bendungan.FormBlangko.formb1_1.Form_B1_1({'tanggal': tgal, 'bd':poss, 'periodic': rss, 'periodic_wd': rs2})
-
-    @login_required
-    # @csrf_protected
-    def POST(self, table_name):       
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
-            bendungan_id = pos.id
-        except IndexError:
-            return web.notfound()
-        inp = web.input()
-        fields = 'waktu,kondisi_cuaca,tinggi,panjang,kond_jln_atas_mercu,tanda_penurunan_mercu,tanda_pergerakan_mercu,kond_pembuang_mercu,kond_pagar_mercu,tanda_gerakan_lerenghulu,tonjolan_lubangbenam_retakan_lerenghulu,erosi_penurunan_lerenghulu,dimana_kedalaman_lebarpanjangretakan_lerenghulu,tumbuhan_sarangbinatang_lerenghulu,tanda_retak_platbeton,dimana_kedalaman_lebarpanjangretakan_platbeton,parimeter_joint_platbeton,kond_beton_platbeton,erosi_platbeton,kond_permukaan_buitmen,erosi_buitmen,tanda_gerakan_riprap,rusak_krn_cuaca_riprap,pelapukan_riprap,erosi_riprap,slip_dbwhair_riprap,tanda_gerakan_lerenghilir,tonjolan_lubangbenam_retak_lerenghilir,erosi_penurunan_longsorantanah_lerenghilir,dimana_kedalaman_lebarpanjangretakan_lerenghilir,slip_dbwhair_lerenghilir,tanda_rembesan,dimana_kuantitas_warna_rembesan,kondtumbuhan,jns_plindung_lereng'.split(',')
-
-        # memeriksa apakah record pada Pos dan waktu(tgl) sudah ada pada tabel 'bendung_form'
-        try:
-            form = BendungFormB1_1.select(AND(BendungFormB1_1.q.waktu==to_date(inp.waktu), BendungFormB1_1.q.bendungan==bendungan_id))[0]
-            is_form_exist = True
-        except IndexError:
-            form = None
-            is_form_exist = False
-
-
-        objj = {}
-        for f in fields:
-            if inp.get(f):
-
-                if f == 'waktu':
-                    nilai = to_date(inp.waktu)
-                else:
-                    nilai = inp.get(f)
-                
-            else:
-                nilai = None
-            objj.update({f: nilai})
-        objj.update({'bendunganID':bendungan_id, 'waktu': to_date(inp.waktu)})
-        if not is_form_exist:
-            form = BendungFormB1_1(**objj)
-        else:
-            form.set(**objj)
-        bf = form.sqlmeta.asDict()
-        waktuu = bf['waktu']
-        waktuu = waktuu.strftime('%Y-%m-%d')
-
-
-
-        return web.redirect('/adm/bendungan/' + table_name + '/FormBlangko/formB1_1?sampling='+waktuu, absolute=True)
-
-class FormB1_2:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        ordering ='waktu' or '-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rss = [r for r in BendungFormB1_2.select(BendungFormB1_2.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rss = [r for r in BendungFormB1_2.select(BendungFormB1_2.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-            print rss
-
-
-        #menghubungkan dengan tabel waduk daily untuk mendapatkan data elevasi muka air
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-
-        return render.adm.bendungan.FormBlangko.formb1_2.Form_B1_2({'tanggal': tgal, 'bd':poss, 'periodic': rss, 'periodic_wd': rs2})
-
-    @login_required
-    # @csrf_protected
-    def POST(self, table_name):       
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
-            bendungan_id = pos.id
-        except IndexError:
-            return web.notfound()
-        inp = web.input()
-        fields = 'waktu,jenis_bendung,pintu_jml_jenis_bendung,pengoperasian_bendung,operasidarurat_bendung,pelimpahbantu_bendung,jplimphbantu_bendung,kondisi_salpengahantar,lantdasar_salpenghantar,lereng_salpenghantar,kondisi_spillweir,auserosi_spillweir,lokasi_spillweir,kondisi_dinding,auserosi_dinding,dmn_dinding,kondisijoint_dinding,kondisisaluran_dinding,kond_salcuram,auserosi_salcuram,lapbasah_salcuram,dmn_salcuram,jenis_kolam,kondisi_kolam,auserosi_kolam,lapbasah_kolam,dmn_kolam,ketidakwajaran_kinerja,tandaslip_dsekitar,tandarembesan_dsekitar,jenistumbuhan_dsekitar,gangguan_dsekitar'.split(',')
-
-        # memeriksa apakah record pada Pos dan waktu(tgl) sudah ada pada tabel 'bendung_form'
-        try:
-            form = BendungFormB1_2.select(AND(BendungFormB1_2.q.waktu==to_date(inp.waktu), BendungFormB1_2.q.bendungan==bendungan_id))[0]
-            is_form_exist = True
-        except IndexError:
-            form = None
-            is_form_exist = False
-
-
-        objj = {}
-        for f in fields:
-            if inp.get(f):
-
-                if f == 'waktu':
-                    nilai = to_date(inp.waktu)
-                else:
-                    nilai = inp.get(f)
-                
-            else:
-                nilai = None
-            objj.update({f: nilai})
-        objj.update({'bendunganID':bendungan_id, 'waktu': to_date(inp.waktu)})
-        if not is_form_exist:
-            form = BendungFormB1_2(**objj)
-        else:
-            form.set(**objj)
-        bf = form.sqlmeta.asDict()
-        waktuu = bf['waktu']
-        waktuu = waktuu.strftime('%Y-%m-%d')
-
-
-
-        return web.redirect('/adm/bendungan/' + table_name + '/FormBlangko/formB1_2?sampling='+waktuu, absolute=True)
-
-class FormB1_3:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        ordering ='waktu' or '-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rss = [r for r in BendungFormB1_3.select(BendungFormB1_3.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rss = [r for r in BendungFormB1_3.select(BendungFormB1_3.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-            print rss
-
-
-        #menghubungkan dengan tabel waduk daily untuk mendapatkan data elevasi muka air
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-
-        return render.adm.bendungan.FormBlangko.formb1_3.Form_B1_3({'tanggal': tgal, 'bd':poss, 'periodic': rss, 'periodic_wd': rs2})
-
-    @login_required
-    # @csrf_protected
-    def POST(self, table_name):       
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
-            bendungan_id = pos.id
-        except IndexError:
-            return web.notfound()
-        inp = web.input()
-        fields = 'waktu,lok_piezometer,jumlah_piezometer,jenis_piezometer,kond_baik_piezometer,kond_tdkbaik_piezometer,lok_alt_rembesan,jml_alt_rembesan,jns_alt_rembesan,kond_altbaik_rembesan,kond_alttdkbaik_rembesan,lok_altpnurunan,jml_altpnurunan,jns_altpnurunan,kond_altbaikpnurunan,kond_alttdkbaikpnurunan,lok_multilayer,jml_multilayer,jns_multilayer,kond_baikmultilayer,kond_tdkbaikmultilayer,lok_observasi,jml_observasi,jns_observasi,kond_baikobservasi,kond_tdkbaikobservasi,lok_inclinometer,jml_inclinometer,jns_inclinometer,kond_baikinclinometer,kond_tdkbaikinclinometer,tandaerosi_kakibendung,aliranlubang_kakibendung,lapsbasah_kakibendung,dmn_kakibendung,lihat_lubang_benam_tumpuanbendung,slip_tumpuanbendung,tndapatahan_tumpuanbendung,retakan_tumpuanbendung'.split(',')
-
-        # memeriksa apakah record pada Pos dan waktu(tgl) sudah ada pada tabel 'bendung_form'
-        try:
-            form = BendungFormB1_3.select(AND(BendungFormB1_3.q.waktu==to_date(inp.waktu), BendungFormB1_3.q.bendungan==bendungan_id))[0]
-            is_form_exist = True
-        except IndexError:
-            form = None
-            is_form_exist = False
-
-
-        objj = {}
-        for f in fields:
-            if inp.get(f):
-
-                if f == 'waktu':
-                    nilai = to_date(inp.waktu)
-                else:
-                    nilai = inp.get(f)
-                
-            else:
-                nilai = None
-            objj.update({f: nilai})
-        objj.update({'bendunganID':bendungan_id, 'waktu': to_date(inp.waktu)})
-        if not is_form_exist:
-            form = BendungFormB1_3(**objj)
-        else:
-            form.set(**objj)
-        bf = form.sqlmeta.asDict()
-        waktuu = bf['waktu']
-        waktuu = waktuu.strftime('%Y-%m-%d')
-
-
-
-        return web.redirect('/adm/bendungan/' + table_name + '/FormBlangko/formB1_3?sampling='+waktuu, absolute=True)
-
-class FormB1_4:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        ordering ='waktu' or '-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rss = [r for r in BendungFormB1_4.select(BendungFormB1_4.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rss = [r for r in BendungFormB1_4.select(BendungFormB1_4.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-            print rss
-
-
-        #menghubungkan dengan tabel waduk daily untuk mendapatkan data elevasi muka air
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-
-        return render.adm.bendungan.FormBlangko.formb1_4.Form_B1_4({'tanggal': tgal, 'bd':poss, 'periodic': rss, 'periodic_wd': rs2})
-
-    @login_required
-    # @csrf_protected
-    def POST(self, table_name):       
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
-            bendungan_id = pos.id
-        except IndexError:
-            return web.notfound()
-        inp = web.input()
-        fields = 'waktu,lok_inlet,jns_inlet,akses_inlet,kond_inlet,auserosi_inlet,lapbas_inlet,dmnlok_inlet,kondsamb_inlet,kondsalbuang_inlet,pintu_hidromekanik,katupjenis_hidromekanik,metodoperasi_hidromekanik,pengoperasiandarurat_hidromekanik,kond_hidromekanik,lok_outlet,jns_outlet,akses_outlet,kond_outlet,auserosi_outlet,lapsbas_outlet,dmnlok_outlet,kondsamb_outlet,kondsalbuang_outlet,ukur_gorong,kond_gorong,auserosi_gorong,lapsbas_gorong,dmnlok_gorong,kondsamb_gorong,kondsalbuang_gorong,endapan_gorong,endapan_waduk,tebingsungai_hilir,erosipengikisan_hilir,pengaruhtumbuhan_hilir,habitatterdekat_hilir,jumlahpenduduk_hilir'.split(',')
-
-        # memeriksa apakah record pada Pos dan waktu(tgl) sudah ada pada tabel 'bendung_form'
-        try:
-            form = BendungFormB1_4.select(AND(BendungFormB1_4.q.waktu==to_date(inp.waktu), BendungFormB1_4.q.bendungan==bendungan_id))[0]
-            is_form_exist = True
-        except IndexError:
-            form = None
-            is_form_exist = False
-
-
-        objj = {}
-        for f in fields:
-            if inp.get(f):
-
-                if f == 'waktu':
-                    nilai = to_date(inp.waktu)
-                else:
-                    nilai = inp.get(f)
-                
-            else:
-                nilai = None
-            objj.update({f: nilai})
-        objj.update({'bendunganID':bendungan_id, 'waktu': to_date(inp.waktu)})
-        if not is_form_exist:
-            form = BendungFormB1_4(**objj)
-        else:
-            form.set(**objj)
-        bf = form.sqlmeta.asDict()
-        waktuu = bf['waktu']
-        waktuu = waktuu.strftime('%Y-%m-%d')
-
-
-
-        return web.redirect('/adm/bendungan/' + table_name + '/FormBlangko/formB1_4?sampling='+waktuu, absolute=True)
-
-class FormB2_1:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        ordering ='waktu' or '-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-        #menghubungkan dengan tabel waduk daily untuk mendapatkan data elevasi muka air
-
-        rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year]
-
-        return render.adm.bendungan.FormBlangko.formb2_1.Form_B2_1({'tanggal': tgal, 'bd':poss, 'periodic': rs2})
-
-class FormB2_2:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        ordering ='waktu' or '-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-        #menghubungkan dengan tabel waduk daily untuk mendapatkan data elevasi muka air
-        rs2 = [r for r in WadukDaily.select(WadukDaily.q.pos==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year]
-        e=[]
-        for p in rs2:
-            waktuuu = p.waktu.strftime('%Y-%m-%d')
-            x = p.waktu + datetime.timedelta(days=1)
-            x = x.strftime('%Y-%m-%d')
-            x = datetime.datetime.strptime(x, '%Y-%m-%d').date()
-            e.append(x)
-        b=[]
-        for a in e:
-            wd = WadukDaily.select(AND(WadukDaily.q.waktu==a, WadukDaily.q.pos==poss))
-            try:
-                wdch = wd[0].curahhujan
-            except IndexError:
-                wdch = None
-            b.append(wdch)
-        z=[]
-        for b,d in zip (rs2, b):
-            z.append((b,d))
-        print z
-        return render.adm.bendungan.FormBlangko.formb2_2.Form_B2_2({'tanggal': tgal, 'bd':poss, 'periodic': z})
-
-class FormB3:
-    @login_required
-    def GET(self, table_nama):
-        inp = web.input()
-        ordering ='waktu' or '-waktu'
-        try:
-            poss = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_nama][0]
-        except:
-            return web.notfound()
-        webinputt = web.input(sampling=str(datetime.date.today()))
-        tgal = datetime.datetime.strptime(webinputt.sampling, '%Y-%m-%d').date()
-
-        if tgal.year == datetime.date.today().year and tgal.month == datetime.date.today().month and tgal.day == datetime.date.today().day:
-            rss = [r for r in BendungFormB3.select(BendungFormB3.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-        else:
-            rss = [r for r in BendungFormB3.select(BendungFormB3.q.bendungan==poss).orderBy(ordering) if r.waktu.month == tgal.month and r.waktu.year == tgal.year and r.waktu.day == tgal.day]
-
-
-        return render.adm.bendungan.FormBlangko.formb3.Form_B3({'tanggal': tgal, 'bd':poss, 'periodic': rss})
-
-    @login_required
-    # @csrf_protected
-    def POST(self, table_name):       
-        try:
-            pos = [a for a in AgentBd.select(AgentBd.q.AgentType==3) if a.table_name == table_name][0]
-            bendungan_id = pos.id
-        except IndexError:
-            return web.notfound()
-        inp = web.input()
-        fields = 'waktu,mslah_pbendung,tndkan_pbendung,mslah_lerhulubend,tndkan_lerhulubend,mslah_lerhilirbend,tndkan_lerhilirbend,mslah_instrumentasi,tndkan_instrumentasi,mslah_pmbuang,tndkan_pmbuang,mslah_tumpuan,tndkan_tumpuan,mslah_plimpah,tndkan_plimpah,mslah_inlet,tndkan_inlet,mslah_hidromekanik,tndkan_hidromekanik,mslah_outlet,tndkan_outlet,mslah_waduk,tndkan_waduk,mslah_bagsungai,tndkan_bagsungai,mslah_lain,tndkan_lain'.split(',')
-
-        # memeriksa apakah record pada Pos dan waktu(tgl) sudah ada pada tabel 'bendung_form'
-        try:
-            form = BendungFormB3.select(AND(BendungFormB3.q.waktu==to_date(inp.waktu), BendungFormB3.q.bendungan==bendungan_id))[0]
-            is_form_exist = True
-        except IndexError:
-            form = None
-            is_form_exist = False
-
-
-        objj = {}
-        for f in fields:
-            if inp.get(f):
-
-                if f == 'waktu':
-                    nilai = to_date(inp.waktu)
-                else:
-                    nilai = inp.get(f)
-                
-            else:
-                nilai = None
-            objj.update({f: nilai})
-        objj.update({'bendunganID':bendungan_id, 'waktu': to_date(inp.waktu)})
-        if not is_form_exist:
-            form = BendungFormB3(**objj)
-        else:
-            form.set(**objj)
-        bf = form.sqlmeta.asDict()
-        waktuu = bf['waktu']
-        waktuu = waktuu.strftime('%Y-%m-%d')
-
-        return web.redirect('/adm/bendungan/' + table_name + '/FormBlangko/formB3?sampling='+waktuu, absolute=True)
 
 class BdPeriodicAdd:
     @login_required
