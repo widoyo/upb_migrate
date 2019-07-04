@@ -136,7 +136,56 @@ $var js_foot:
 			});
 		</script>
 <!-- End -->
-<h1>Kerusakan $pos.cname</h1>
+<h1>Kerusakan $pos.cname 
+	<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="collapse" data-target="#collapseExample"><span class="glyphicon glyphicon-triangle-right"></span>Tambah Kerusakan</button>
+</h1>
+
+
+<div class="container">
+	<div class="collapse" id="collapseExample">
+	  <div class="card card-body">
+	    <form>
+		  <div class="form-group row">
+		    <label class="col-sm-2 col-form-label">Uraian Kerusakan</label>
+		    <div class="col-sm-10">
+		      <textarea class="form-control" rows="5" cols="25" id="uraian_kerusakan" placeholder="Uraian Kerusakan"></textarea>
+		    </div>
+		  </div>
+		  <fieldset class="form-group">
+		    <div class="row">
+		      <label class="col-form-label col-sm-2">Kategori</label>
+		      <div class="col-sm-10">
+		        <div class="form-check">
+		          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
+		          <label class="form-check-label" for="gridRadios1">
+		            Ringan
+		          </label>
+		        </div>
+		        <div class="form-check">
+		          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
+		          <label class="form-check-label" for="gridRadios2">
+		            Sedang
+		          </label>
+		        </div>
+		        <div class="form-check">
+		          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="option3">
+		          <label class="form-check-label" for="gridRadios3">
+		            Berat
+		          </label>
+		        </div>
+		      </div>
+		    </div>
+		  </fieldset>
+		  <div class="form-group row">
+		    <div class="col-sm-10">
+		      <button type="submit" class="btn btn-primary btn-sm">Kirim</button>
+		    </div>
+		  </div>
+		</form>
+	  </div>
+	</div>
+</div>
+
 <div class="container">
   <table class="table table-bordered table-stripped">
     <thead>
