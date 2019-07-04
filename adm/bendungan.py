@@ -13,6 +13,7 @@ from sqlobject import OR, AND, SQLObjectNotFound
 from models import AgentBd, conn, WadukDaily,TinggiMukaAir, BendungAlert
 from models import NO_VNOTCH, FAIL_VNOTCH, FOTO_PATH, PETUGAS_CHOICES
 from models import Kegiatan, Foto, BENDUNGAN_DICT
+from models import Kerusakan
 
 from helper import to_date, json_serializer
 from keamanan import app_keamanan
@@ -102,7 +103,9 @@ class BdKerusakan:
         inp = web.input()
         uraian_kerusakan = inp.get('uraian_kerusakan')
         kategori = inp.get('kategori')
-        return uraian_kerusakan + " " +kategori
+        kerusakan_db = Kerusakan(table_name = table_name, cuser = session.get('username'), uraian_kerusakan = uraian_kerusakan, kategori = kategori)
+        return web.redirect('kerusakan')
+        #return uraian_kerusakan + " " +kategori
 
 
 class BdFoto:
