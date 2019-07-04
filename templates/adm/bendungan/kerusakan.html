@@ -144,11 +144,11 @@ $var js_foot:
 <div class="container">
 	<div class="collapse" id="collapseExample">
 	  <div class="card card-body">
-	    <form>
+	    <form action="/adm/bendungan/$pos.table_name/kerusakan" method="POST">
 		  <div class="form-group row">
 		    <label class="col-sm-2 col-form-label">Uraian Kerusakan</label>
 		    <div class="col-sm-10">
-		      <textarea class="form-control" rows="5" cols="25" id="uraian_kerusakan" placeholder="Uraian Kerusakan"></textarea>
+		      <textarea class="form-control" rows="5" cols="25" name="uraian_kerusakan" id="uraian_kerusakan" placeholder="Uraian Kerusakan"></textarea>
 		    </div>
 		  </div>
 		  <fieldset class="form-group">
@@ -156,20 +156,20 @@ $var js_foot:
 		      <label class="col-form-label col-sm-2">Kategori</label>
 		      <div class="col-sm-10">
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
-		          <label class="form-check-label" for="gridRadios1">
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_ringan" value="ringan" checked>
+		          <label class="form-check-label">
 		            Ringan
 		          </label>
 		        </div>
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-		          <label class="form-check-label" for="gridRadios2">
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_sedang" value="sedang">
+		          <label class="form-check-label">
 		            Sedang
 		          </label>
 		        </div>
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="option3">
-		          <label class="form-check-label" for="gridRadios3">
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_berat" value="berat">
+		          <label class="form-check-label">
 		            Berat
 		          </label>
 		        </div>
