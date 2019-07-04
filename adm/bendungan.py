@@ -98,6 +98,12 @@ class BdKerusakan:
         tgl = datetime.date.today()
         return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl})
 
+    def POST(self, table_name):
+        inp = web.input()
+        uraian_kerusakan = inp.get('uraian_kerusakan')
+        kategori = inp.get('kategori')
+        return uraian_kerusakan + " " +kategori
+
 
 class BdFoto:
     def GET(self, table_name):
