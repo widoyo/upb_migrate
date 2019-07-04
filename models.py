@@ -8,9 +8,9 @@ import datetime
 from helper import Struct
 from common_data import BENDUNGAN_DICT, CAUSE_TABLE, NO_VNOTCH, FAIL_VNOTCH
 
-DB_USER = 'root'
+DB_USER = 'admin'
 DB_NAME = 'upbbsolodb'
-DB_PWD = ''
+DB_PWD = 'admin4321'
 
 MONGO_PORT = 27017
 MONGO_HOST = 'localhost'
@@ -91,6 +91,14 @@ class Kegiatan(SQLObject):
     muser = StringCol(length=35, default=None)
     cdate = DateTimeCol(default=datetime.datetime.utcnow)
     mdate = DateTimeCol(default=None)
+
+
+class Kerusakan(SQLObject):
+    table_name = StringCol(length=35) # nama bendungan
+    cuser = StringCol(length=35)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
+    uraian_kerusakan = StringCol()
+    kategori = StringCol(length=10)
 
 
 class RequestResponse(SQLObject):
