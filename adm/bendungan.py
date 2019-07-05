@@ -31,6 +31,7 @@ urls = (
     '/(\w+\.*\-*\w+)/add', 'BdPeriodicAdd',
     '/(\w+\.*\-*\w+)/kegiatan', 'BdFoto',
     '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan',
+    '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdTest',
 )
 
 
@@ -63,6 +64,11 @@ def admin_required(func):
 
 globals = {'session': session, 'csrf_token': csrf_token}
 render = web.template.render('templates/', base='base_adm', globals=globals)
+
+class BdTest:
+    def GET(self, table_name, kerusakan_id):
+        
+        return kerusakan_id
 
 class BdKeamanan:
     @login_required
@@ -97,7 +103,7 @@ class BdKerusakan:
         except:
             return web.notfound()
         tgl = datetime.date.today()
-        sql = "select * from kerusakan"
+        sql = " select * from kerusakan where table_name = table_name "
         kerusakan = conn.queryAll(sql)
         return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
 
