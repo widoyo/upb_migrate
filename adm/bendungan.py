@@ -97,7 +97,9 @@ class BdKerusakan:
         except:
             return web.notfound()
         tgl = datetime.date.today()
-        return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl})
+        sql = "select * from kerusakan"
+        kerusakan = conn.queryAll(sql)
+        return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
 
     def POST(self, table_name):
         inp = web.input()
