@@ -13,7 +13,7 @@ from sqlobject import OR, AND, SQLObjectNotFound
 from models import AgentBd, conn, WadukDaily,TinggiMukaAir, BendungAlert
 from models import NO_VNOTCH, FAIL_VNOTCH, FOTO_PATH, PETUGAS_CHOICES
 from models import Kegiatan, Foto, BENDUNGAN_DICT
-from models import Kerusakan
+from models import Kerusakan, Asset
 
 from helper import to_date, json_serializer
 from keamanan import app_keamanan
@@ -30,8 +30,9 @@ urls = (
     '/(\w+\.*\-*\w+)/rtow/import', 'BdRtowImport',
     '/(\w+\.*\-*\w+)/add', 'BdPeriodicAdd',
     '/(\w+\.*\-*\w+)/kegiatan', 'BdFoto',
+    '/(\w+\.*\-*\w+)/asset', 'BdAsset',
     '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan',
-    '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdTest',
+    '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdKerusakanDetail',
 )
 
 
@@ -65,10 +66,11 @@ def admin_required(func):
 globals = {'session': session, 'csrf_token': csrf_token}
 render = web.template.render('templates/', base='base_adm', globals=globals)
 
-class BdTest:
+class BdKerusakanDetail:
     def GET(self, table_name, kerusakan_id):
-        
-        return kerusakan_id
+        kerusakan_id = kerusakan_id
+        #return render.adm.bendungan.kerusakan_detail({'kerusakan_id' : kerusakan_id})
+        return "Detail Kerusakan Dengan ID " + kerusakan_id
 
 class BdKeamanan:
     @login_required
@@ -111,10 +113,19 @@ class BdKerusakan:
         inp = web.input()
         uraian_kerusakan = inp.get('uraian_kerusakan')
         kategori = inp.get('kategori')
-        kerusakan_db = Kerusakan(table_name = table_name, cuser = session.get('username'), uraian_kerusakan = uraian_kerusakan, kategori = kategori)
+        kerusakan_db = Kerusakan(table_name = table_name, cuser = session.get('username'), uraian = uraian_kerusakan, kategori = kategori)
         return web.redirect('kerusakan')
         #return uraian_kerusakan + " " +kategori
 
+class BdAsset:
+    def GET(self, table_name):
+        try:
+            pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
+        except:
+            return web.notfound()
+        tgl = datetime.date.today()
+        asset = Asset.select(Asset.q.table_name==table_name)
+        return render.adm.bendungan.asset({'pos': pos, 'tgl': tgl, 'asset' : asset})
 
 class BdFoto:
     def GET(self, table_name):
