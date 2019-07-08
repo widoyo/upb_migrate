@@ -97,9 +97,19 @@ class Kerusakan(SQLObject):
     table_name = StringCol(length=35) # nama bendungan
     cuser = StringCol(length=35)
     cdate = DateTimeCol(default=datetime.datetime.utcnow)
-    uraian_kerusakan = StringCol()
-    kategori = StringCol(length=10)
+    uraian = StringCol()
+    kategori = StringCol(length=10) #ringan,sedang,berat
 
+class Asset(SQLObject):
+    table_name = StringCol(length=35) # nama bendungan
+    cuser = StringCol(length=35)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
+    kategori = StringCol(length=100) 
+    nama = StringCol()
+    merk = StringCol(default=None)
+    model = StringCol(default=None)
+    perolehan = DateCol() #tgl perolehan asset
+    nilai_perolehan = FloatCol(default=None) #nilai rupiah asset
 
 class RequestResponse(SQLObject):
     ReqDate = DateCol(dbName='ReqDate')
