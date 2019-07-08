@@ -94,6 +94,7 @@ class Kegiatan(SQLObject):
 
 
 class Kerusakan(SQLObject):
+    asset = ForeignKey('Asset')
     table_name = StringCol(length=35) # nama bendungan
     cuser = StringCol(length=35)
     cdate = DateTimeCol(default=datetime.datetime.utcnow)
