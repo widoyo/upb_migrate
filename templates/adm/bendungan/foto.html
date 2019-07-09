@@ -25,10 +25,8 @@ $var extra_header:
 		</style>
 $var js_foot:
     <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="/static/js/MinifyJpegAsync.js"></script>
 		<script>
-			let formData = new FormData();
-      let resizedImage = '';
-      let fileName = '';
       \$(document).ready(function () {
           var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
           var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
@@ -38,7 +36,7 @@ $var js_foot:
 					}
 					console.log(this.value);
 				});
-				\$('#fotoFile').change(function (){ readURL(this); });
+				\$('#fotoFile').change(function (event){ readURL(event); });
         \$('.gotomonth').datepicker({
             format: 'yyyy-mm-dd',
             startView: "months",
@@ -54,87 +52,32 @@ $var js_foot:
               if (wd === -1) { wd = 6 }; 
          });
       });
-			function go_upload() {
-        var XHR = new XMLHttpRequest();
-        
-        XHR.open("POST", "/adm/bendungan/${pos.table_name}/kegiatan", true);
-        XHR.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			  formData = new FormData(document.getElementById('formUpload'));
-        formData.append('foto', resizedImage, fileName);
-        for (var a of formData) { console.log(a) }
+			let enc_img = '';
+			let file_name = '';
+			function readURL(event) {
+        let f = event.target.files[0];
+				file_name = f.name;
+        let reader = new FileReader();
 
-        XHR.send(formData);
-			}
-			function readURL(input) {
-				if (input.files && input.files[0]) {
-					var reader = new FileReader();
-          fileName = input.files[0].name;
-					reader.onload = function (readerEvent) {
-					  var image = new Image();
-            image.onload = function (imageEvent) {
-						  \$('#blah').attr('src', readerEvent.target.result);
-						  var canvas = document.createElement('canvas'),
-							  max_size = 1024,
-							  width = image.width,
-							  height = image.height;
-						  if (width > height) {
-							  if (width > max_size) {
-								  height *= max_size / width;
-								  width = max_size;
-							  }
-    				  } else {
-		    				if (height > max_size) {
-				    			width *= max_size / height;
-                }
-              }
-              canvas.width = width;
-              canvas.height = height;
-              canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-              var dataUrl = canvas.toDataURL('image/jpeg');
-              resizedImage = dataURLToBlob(dataUrl);
-              \$.event.trigger({
-                type: "imageResized",
-                blob: resizedImage,
-                url: dataUrl,
-              });
-            }
-            image.src = readerEvent.target.result;
-          }
-					reader.readAsDataURL(input.files[0]);
-				}
+        reader.onloadend = (function(theFile){
+          return function(e) {
+						MinifyJpegAsync.minify(e.target.result, 1280, function(data) { 
+							enc_img = "data:image/jpeg;base64," + btoa(data);
+							let img = new Image();
+							img.src = enc_img;
+							document.getElementById('blah').src = enc_img;
+							//\$.post('/adm/bendungan/bd_krisak/kegiatan', {data: enc_img, filename: f.name})
+							console.log('Hasil proses minify') 
+						});
+          };
+        })(f);
+				reader.readAsDataURL(f);
 			};
-
-			var dataURLToBlob = function (dataURL) {
-				var BASE64_MARKER = ';base64,';
-				if (dataURL.indexOf(BASE64_MARKER) == -1) {
-					var parts = dataURL.split(',');
-					var contentType = parts[0].split(':')[1];
-					var raw = parts[1];
-
-					return new Blob([raw], {type: contentType});
-				}
-
-				var parts = dataURL.split(BASE64_MARKER);
-				var contentType = parts[0].split(':')[1];
-				var raw = window.atob(parts[1]);
-				var rawLength = raw.length;
-
-				var uInt8Array = new Uint8Array(rawLength);
-
-				for (var i=0; i < rawLength; ++i) {
-					uInt8Array[i] = raw.charCodeAt(i);
-				}
-
-				return new Blob([uInt8Array], {type: contentType})
+			function go_upload() {
+				\$.post('/adm/bendungan/bd_krisak/kegiatan', {data: enc_img, filename: file_name})
+				
 			}
-			\$(document).on("imageResized", function (event) {
-			  formData = new FormData(document.getElementById('formUpload'));
-				if (event.blob) {
-					formData.append('foto', event.blob, event.filename);
-				}
-        //\$.ajax({url: event.url, data: data, type: 'POST'});
-        for (var a of formData) { console.log(event.blob) }
-			});
+
 		</script>
 <!-- End -->
 <h1>Kegiatan Petugas $pos.cname <a class="btn btn-outline-primary btn-sm" data-toggle="collapse" href="#form-kegiatan"><span class="glyphicon glyphicon-triangle-right"></span>Tambah Kegiatan</a>
@@ -161,7 +104,7 @@ $var js_foot:
 		<div class="form-group">
       <label for="">Petugas Kegiatan</label>
       <div style="margin-left: 10px;" class="custom-control">
-        <select class="custom-select" name="kegiatan">
+        <select class="custom-select form-control" name="kegiatan">
           <option value="">-</option>
       $for p in petugas:
           <option value="$p">${p.title()}</option>
@@ -169,7 +112,7 @@ $var js_foot:
     </div>
     </div>
 		<div class="form-group">
-	<input type="button" name="submit" value="upload" onclick="go_upload()" class="btn btn-primary disabled">
+	<input type="button" name="submit" value="upload" onclick="go_upload()" class="btn btn-primary">
 		</form>
 		</div>
 	</div>
