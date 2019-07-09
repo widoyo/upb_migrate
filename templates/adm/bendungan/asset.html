@@ -6,135 +6,10 @@ $code:
     haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
 $var extra_header:
-		<style>
-      .foto-thumb {
-        border: solid 1px #ddd;
-        padding: 5px;
-      }
-			.img-fluid {
-				max-width: 100%;
-				height: auto;
-			}
-			.img-preview {
-				max-width: 100%;
-				height: auto;
-				padding: 5px;
-				border: solid 1px #ddd;
-			}
-		</style>
+
 $var js_foot:
-    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
-		<script>
-      \$(document).ready(function () {
-          var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
-          var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
-				\$('input[name="kegiatan"]').change(function () {
-					if (\$('input#fotoFile')[0].files && (\$('input#fotoFile')[0].files.length > 0)) {
-						\$('input[name="submit"]').removeClass('disabled');
-					}
-					console.log(this.value);
-				});
-				\$('#fotoFile').change(function (){ readURL(this); });
-        \$('.gotomonth').datepicker({
-            format: 'yyyy-mm-dd',
-            startView: "months",
-            minViewMode: "months",
-            autoclose: true
-         }); 
-        \$('.gotomonth').on('changeDate', function() {
-            window.location = '/adm/bendungan/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
-          });
-        \$('.datepicker').on('changeDate', function() {
-              var dated = \$(this).datepicker('getDate');
-              var wd = dated.getDay() - 1;
-              if (wd === -1) { wd = 6 }; 
-         });
-      });
-			function go_upload() {
-				\$.ajax({
-					type: 'POST',
-					url: '',
-					success: function (data) { console.log(data); }
-				});
-			};
-			function readURL(input) {
-				if (input.files && input.files[0]) {
-					var reader = new FileReader();
-					var image = new Image();
-					console.log("input.files[0] = ", input.files[0].name);
-					reader.onload = function (e) {
-						\$('#blah').attr('src', e.target.result);
-						var canvas = document.createElement('canvas'),
-							max_size = 1024,
-							width = image.width,
-							height = image.height;
-						if (width > height) {
-							if (width > max_size) {
-								height *= max_size / width;
-								width = max_size;
-							}
-						} else {
-							if (height > max_size) {
-								width *= max_size / height;
-								height = max_size;
-							}
-						}
+<script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
 
-						canvas.width = width;
-						canvas.height = height;
-						canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-						var dataUrl = canvas.toDataURL('image/jpeg');
-						document.getElementById("fotoFile").src = canvas.toDataURL();
-						var resizedImage = dataURLToBlob(dataUrl);
-
-						\$.event.trigger({
-							type: "imageResized",
-							blob: resizedImage,
-							filename: input.files[0].name,
-							url: dataUrl
-						});
-						
-					}
-
-					reader.readAsDataURL(input.files[0]);
-				}
-			}
-
-			var dataURLToBlob = function (dataURL) {
-				var BASE64_MARKER = ';base64,';
-				if (dataURL.indexOf(BASE64_MARKER) == -1) {
-					var parts = dataURL.split(',');
-					var contentType = parts[0].split(':')[1];
-					var ra = parts[1];
-
-					return new Blob([raw], {type: contentType});
-				}
-
-				var parts = dataURL.split(BASE64_MARKER);
-				var contentType = parts[0].split(':')[1];
-				var raw = window.atob(parts[1]);
-				var rawLength = raw.length;
-
-				var uInt8Array = new Uint8Array(rawLength);
-
-				for (var i=0; i < rawLength; ++i) {
-					uInt8Array[i] = raw.charCodeAt(i);
-				}
-
-				return new Blob([uInt8Array], {type: contentType})
-			}
-			\$(document).on("imageResized", function (event) {
-				let thisForm = document.getElementById('formUpload');
-				var form = new FormData(thisForm);
-				if (event.blob) {
-					form.append('foto', event.blob, event.filename);
-				}
-        \$.ajax({url: event.url, data: form, type: 'POST'});
-				console.log(event.filename);
-				console.log(thisForm);
-				console.log(form);
-			});
-		</script>
 <!-- End -->
 <h1>Daftar Asset $pos.cname ($asset.count()) </h1>
 
@@ -157,7 +32,7 @@ $var js_foot:
 		    		<td>$a.kategori</td>
 		    		<td>$a.nama</td>
 		    		<td style="background-color: #5af542;">Baik</td>
-		    		<td><center><a href="" class="btn btn-primary btn-sm">Lapor Rusak</a></center></td>
+		    		<td><center><a href="asset/$a.id/kerusakan/add" class="btn btn-primary btn-sm">Lapor Rusak</a></center></td>
 		    	</tr>
 		    </tbody>
 		 </table>
