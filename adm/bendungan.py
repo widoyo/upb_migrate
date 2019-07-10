@@ -31,8 +31,9 @@ urls = (
     '/(\w+\.*\-*\w+)/add', 'BdPeriodicAdd',
     '/(\w+\.*\-*\w+)/kegiatan', 'BdFoto',
     '/(\w+\.*\-*\w+)/asset', 'BdAsset',
-    '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan',
-    '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdKerusakanDetail',
+     '/(\w+\.*\-*\w+)/asset/(\d+)/kerusakan/add', 'BdAssetKerusakan',
+    '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan', #tidak / belum digunakan
+    '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdKerusakanDetail', #tidak / belum digunakan
 )
 
 
@@ -66,12 +67,6 @@ def admin_required(func):
 globals = {'session': session, 'csrf_token': csrf_token}
 render = web.template.render('templates/', base='base_adm', globals=globals)
 
-class BdKerusakanDetail:
-    def GET(self, table_name, kerusakan_id):
-        kerusakan_id = kerusakan_id
-        #return render.adm.bendungan.kerusakan_detail({'kerusakan_id' : kerusakan_id})
-        return "Detail Kerusakan Dengan ID " + kerusakan_id
-
 class BdKeamanan:
     @login_required
     @profile
@@ -98,7 +93,7 @@ class BdKeamanan:
             'tanggal': tg, 'msg': msg})
 
 
-class BdKerusakan:
+class BdKerusakan: #tidak / belum digunakan
     def GET(self, table_name):
         try:
             pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
@@ -117,6 +112,12 @@ class BdKerusakan:
         return web.redirect('kerusakan')
         #return uraian_kerusakan + " " +kategori
 
+class BdKerusakanDetail: #tidak / belum digunakan
+    def GET(self, table_name, kerusakan_id):
+        kerusakan_id = kerusakan_id
+        #return render.adm.bendungan.kerusakan_detail({'kerusakan_id' : kerusakan_id})
+        return "Detail Kerusakan Dengan ID " + kerusakan_id
+
 class BdAsset:
     def GET(self, table_name):
         try:
@@ -126,6 +127,16 @@ class BdAsset:
         tgl = datetime.date.today()
         asset = Asset.select(Asset.q.table_name==table_name)
         return render.adm.bendungan.asset({'pos': pos, 'tgl': tgl, 'asset' : asset})
+
+class BdAssetKerusakan:
+    def GET(self, table_name, asset_id):
+        try:
+            pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
+        except:
+            return web.notfound()
+        tgl = datetime.date.today()
+        asset = Asset.get(asset_id)
+        return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl, 'asset':asset})
 
 class BdFoto:
     def GET(self, table_name):
