@@ -7,6 +7,8 @@ import json
 sys.path.append('../')
 from memory_profiler import profile
 
+import base64
+
 import web
 from sqlobject import OR, AND, SQLObjectNotFound
 
@@ -29,7 +31,7 @@ urls = (
     '/(\w+\.*\-*\w+)/rtow/export', 'BdRtowExport',
     '/(\w+\.*\-*\w+)/rtow/import', 'BdRtowImport',
     '/(\w+\.*\-*\w+)/add', 'BdPeriodicAdd',
-    '/(\w+\.*\-*\w+)/kegiatan', 'BdFoto',
+    '/(\w+\.*\-*\w+)/kegiatan', 'BdKegiatan',
     '/(\w+\.*\-*\w+)/asset', 'BdAsset',
      '/(\w+\.*\-*\w+)/asset/(\d+)/kerusakan/add', 'BdAssetKerusakan',
     '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan', #tidak / belum digunakan
@@ -138,40 +140,43 @@ class BdAssetKerusakan:
         asset = Asset.get(asset_id)
         return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl, 'asset':asset})
 
-class BdFoto:
+class BdKegiatan:
     def GET(self, table_name):
         inp = web.input()
         tgl = datetime.date.today()
         bd_id = BENDUNGAN_DICT.get(table_name)
         pos = AgentBd.get(int(bd_id))
-        fotos = Kegiatan.select(
+        kegiatans = Kegiatan.select(
             Kegiatan.q.table_name==table_name)
-        return render.adm.bendungan.foto(dict(pos=pos,
+        return render.adm.bendungan.kegiatan(dict(pos=pos,
                                               petugas=PETUGAS_CHOICES,
-                                              kegiatan=fotos, tgl=tgl))
+                                              kegiatan=kegiatans, tgl=tgl))
 
     def POST(self, table_name):
         inp = web.input()
-        print inp
+        #print inp
         for k, v in inp.items():
             print 'Kunci: ', k, 'Nilai: ', v
         kegiatan = inp.get('kegiatan')
+        with open('/tmp/foto_' + inp.get('filename'), 'wb') as f:
+            f.write(base64.b64decode(inp.get('data').split(',')[1]))
         uraian = inp.get('uraian')
-        x = web.input(foto={})
-        our_path = FOTO_PATH + table_name + '/'
-        if not os.path.isdir(our_path):
-            os.mkdir(our_path)
-        if 'foto' in x:
-            filepath = x['foto'].name.replace('\\', '/')
-            filename = our_path + filepath.split('/')[-1]
-            with open(filename, 'w') as f:
-                f.write(x['foto'].file.read())
-            foto = Foto(filepath=filename, cuser=session.get('username'))
-            keg = Kegiatan(foto=foto, table_name=table_name, 
-                           kegiatan=kegiatan, uraian=uraian, 
-                           sampling=to_date(inp.get('waktu')),
-                          cuser=session.username)
-        return web.redirect('/adm/bendungan/%s/foto' % table_name, absolute=True)
+        # x = web.input(foto={})
+        # our_path = FOTO_PATH + table_name + '/'
+        # if not os.path.isdir(our_path):
+        #     os.mkdir(our_path)
+        # if 'foto' in x:
+        #     filepath = x['foto'].name.replace('\\', '/')
+        #     filename = our_path + filepath.split('/')[-1]
+        #     with open(filename, 'w') as f:
+        #         f.write(x['foto'].file.read())
+            # foto = Foto(filepath=filename, cuser=session.get('username'))
+            # keg = Kegiatan(foto=foto, table_name=table_name, 
+            #                kegiatan=kegiatan, uraian=uraian, 
+            #                sampling=to_date(inp.get('waktu')),
+            #               cuser=session.username)
+        #return web.redirect('/adm/bendungan/%s/foto' % table_name, absolute=True)
+        return "oke"
 
 
 class BdRtowExport:
