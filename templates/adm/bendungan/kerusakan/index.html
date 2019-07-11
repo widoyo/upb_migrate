@@ -1,0 +1,40 @@
+$def with (ctx)
+$ kerusakan = ctx.get('kerusakan')
+$ pos = ctx.get('pos')
+$ tg = ctx.get('tgl')
+$code:
+    haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
+    bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
+$var extra_header:
+$var js_foot:
+<script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+<!-- End -->
+<h1>Daftar Kerusakan Asset Pada $pos.cname</h1>
+
+<div class="container">
+  <table class="table table-bordered table-stripped">
+    <thead>
+      <tr>
+      	<th></th>
+      	<th>Nama Asset</th>
+        <th>Dilaporkan</th>
+        <th>Kategori</th>
+        <th>Uraian</th>
+        <th>Foto-foto</th>
+      </tr>
+    </thead>
+    <tbody>
+    	$for k in kerusakan :
+    	<tr>
+    		<td>$loop.index</td>
+    		<td>$k.asset.nama</td>
+    		<td>$k.cdate</td>
+    		<td>$k.kategori</td>
+    		<td>$k.uraian</td>
+    		<td></td>
+    	</tr>
+    </tbody>
+  </table>
+  
+</div>
+</div>
