@@ -33,9 +33,7 @@ urls = (
     '/(\w+\.*\-*\w+)/add', 'BdPeriodicAdd',
     '/(\w+\.*\-*\w+)/kegiatan', 'BdKegiatan',
     '/(\w+\.*\-*\w+)/asset', 'BdAsset',
-     '/(\w+\.*\-*\w+)/asset/(\d+)/kerusakan/add', 'BdAssetKerusakan',
-    '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan', #tidak / belum digunakan
-    '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdKerusakanDetail', #tidak / belum digunakan
+    '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan', 
 )
 
 
@@ -95,30 +93,24 @@ class BdKeamanan:
             'tanggal': tg, 'msg': msg})
 
 
-class BdKerusakan: #tidak / belum digunakan
+class BdKerusakan: 
     def GET(self, table_name):
         try:
             pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
         except:
             return web.notfound()
         tgl = datetime.date.today()
-        sql = " select * from kerusakan where table_name = table_name "
-        kerusakan = conn.queryAll(sql)
-        return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
+        kerusakan = Kerusakan.select(Kerusakan.q.table_name==table_name)
+        return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
 
     def POST(self, table_name):
         inp = web.input()
+        asset_id = inp.get('asset_id')
         uraian_kerusakan = inp.get('uraian_kerusakan')
         kategori = inp.get('kategori')
-        kerusakan_db = Kerusakan(table_name = table_name, cuser = session.get('username'), uraian = uraian_kerusakan, kategori = kategori)
-        return web.redirect('kerusakan')
-        #return uraian_kerusakan + " " +kategori
-
-class BdKerusakanDetail: #tidak / belum digunakan
-    def GET(self, table_name, kerusakan_id):
-        kerusakan_id = kerusakan_id
-        #return render.adm.bendungan.kerusakan_detail({'kerusakan_id' : kerusakan_id})
-        return "Detail Kerusakan Dengan ID " + kerusakan_id
+        kerusakan_db = Kerusakan(asset=int(asset_id),table_name = table_name, cuser = session.get('username'), uraian = uraian_kerusakan, kategori = kategori)
+        return web.redirect('')
+        #return "asset_id="+asset_id+" uraian="+uraian_kerusakan + " kategori=" +kategori
 
 class BdAsset:
     def GET(self, table_name):
@@ -128,17 +120,7 @@ class BdAsset:
             return web.notfound()
         tgl = datetime.date.today()
         asset = Asset.select(Asset.q.table_name==table_name)
-        return render.adm.bendungan.asset({'pos': pos, 'tgl': tgl, 'asset' : asset})
-
-class BdAssetKerusakan:
-    def GET(self, table_name, asset_id):
-        try:
-            pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
-        except:
-            return web.notfound()
-        tgl = datetime.date.today()
-        asset = Asset.get(asset_id)
-        return render.adm.bendungan.kerusakan({'pos': pos, 'tgl': tgl, 'asset':asset})
+        return render.adm.bendungan.asset.index({'pos': pos, 'tgl': tgl, 'asset' : asset})
 
 class BdKegiatan:
     def GET(self, table_name):
