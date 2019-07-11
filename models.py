@@ -112,6 +112,8 @@ class Asset(SQLObject):
     perolehan = DateCol() #tgl perolehan asset
     nilai_perolehan = FloatCol(default=None) #nilai rupiah asset
 
+    kerusakan = MultipleJoin('Kerusakan')
+
 class RequestResponse(SQLObject):
     ReqDate = DateCol(dbName='ReqDate')
     ReqTime = TimeCol(dbName='ReqTime')
