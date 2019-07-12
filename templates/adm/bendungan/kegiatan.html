@@ -30,6 +30,10 @@ $var js_foot:
       \$(document).ready(function () {
           var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
           var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
+          \$('.datepicker').datepicker({
+              format: 'yyyy-mm-dd',
+              autoclose: true
+           }); 
 				\$('select[name="kegiatan"]').change(function () {
 					if (\$('input#fotoFile')[0].files && (\$('input#fotoFile')[0].files.length > 0)) {
 						\$('input[name="submit"]').removeClass('disabled');
@@ -50,6 +54,9 @@ $var js_foot:
               var dated = \$(this).datepicker('getDate');
               var wd = dated.getDay() - 1;
               if (wd === -1) { wd = 6 }; 
+              \$(this).html(hars[wd] + ", " +dated.getDate() +' '+ buls[dated.getMonth()] +' '+ dated.getFullYear());
+              var form = \$(this).parents('form:first');
+              \$('input[name=waktu]', form).val(dated.getFullYear()+'/'+(dated.getMonth()+1) +'/'+dated.getDate());
          });
       });
 			let enc_img = '';
@@ -66,7 +73,6 @@ $var js_foot:
 							let img = new Image();
 							img.src = enc_img;
 							document.getElementById('blah').src = enc_img;
-							//\$.post('/adm/bendungan/bd_krisak/kegiatan', {data: enc_img, filename: f.name})
 							console.log('Hasil proses minify') 
 						});
           };
@@ -74,28 +80,31 @@ $var js_foot:
 				reader.readAsDataURL(f);
 			};
 			function go_upload() {
-				\$.post('/adm/bendungan/$pos.table_name/kegiatan', {data: enc_img, filename: file_name}).done(function(result){
-					//alert(result);
-					var a = result;
-					if(a == "oke"){
-						window.location.href = "/adm/bendungan/$pos.table_name/kegiatan";
-					}
-				});
+				let fields = 'uraian_waktu'.split('_');
+				let formData = {data: enc_img, filename: file_name,
+					uraian: \$('input[name="uraian"]').val(),
+					waktu: \$('input[name="waktu"]').val(),
+					petugas: \$('select[name="petugas"]').val()
+				}
+
+				\$.post('/adm/bendungan/bd_krisak/kegiatan', formData,
+					function (e) { console.log(e); location.reload(); }
+				);
 				
 			}
 
 		</script>
 <!-- End -->
-<h1>Kegiatan Petugas $pos.cname <a class="btn btn-outline-primary btn-sm" data-toggle="collapse" href="#form-kegiatan"><span class="glyphicon glyphicon-triangle-right"></span>Tambah Kegiatan</a>
+<h1>Kegiatan Petugas $pos.cname <a class="btn btn-outline-primary btn-sm" data-toggle="collapse" href="#form-kegiatan"><span class="glyphicon glyphicon-triangle-right"></span>Tambah Laporan Kegiatan</a>
 </h1>
 <div class="container collapse" id="form-kegiatan">
 <div class="row">
-	<div class="col-md-6 col-xs-12"><h3 style="margin-left: -10px">Tambah Kegiatan</h4>
+	<div class="col-md-6 col-xs-12"><h3 style="margin-left: -10px">Lapor Kegiatan</h4>
 			<input type="file" name="foto" class="custom-file-input" id="fotoFile">
 		<form method="POST" id="formUpload" action="./foto" enctype="multipart/form-data">
     <div class="form-group">
 		<div class="custom-file">
-			<img id="blah" class="img-fluid" style="width: 100%;" alt=" pra tinjau
+			<img id="blah" class="img-fluid" style="width: 100%;border: solid 1px #ccc" alt=" pra tinjau
       gambar" src="#">
 		</div>
 		<div v-if="imageData.length > 0"><img class="img-fluid" :src="imageData"></div>
@@ -110,7 +119,7 @@ $var js_foot:
 		<div class="form-group">
       <label for="">Petugas Kegiatan</label>
       <div style="margin-left: 10px;" class="custom-control">
-        <select class="custom-select form-control" name="kegiatan">
+        <select class="custom-select form-control" name="petugas">
           <option value="">-</option>
       $for p in petugas:
           <option value="$p">${p.title()}</option>
@@ -122,7 +131,12 @@ $var js_foot:
 		</form>
 		</div>
 	</div>
-	<div class="col-md-6 col-xs-12">Foto</div>
+	<div class="col-md-6 col-xs-12"><h3>Laporan Kegiatan Petugas</h3>
+		<p>Pilih foto, bisa juga langsung dari kamera Handphone</p>
+		<p>Berikan keterangan tentang foto</p>
+		<p>Tanggal aktifitas berlangsung</p>
+		<p>Pilih petugas yang melakukan kegiatan pada foto</p>
+	</div>
 
 	</div>
 </div>
@@ -132,11 +146,20 @@ $var js_foot:
   <table class="table table-bordered table-stripped">
     <thead>
       <tr>
-        <th></th>
-        $for p in petugas:
-           <th>${p.title()}</th>
+        <th>Tanggal</th>
+				$for p in petugas:
+				<th>${p.title()}</th>
       </tr>
     </thead>
+		<tbody>
+      $for k in kegiatan:
+			<tr>
+				<td>$loop.index <a href="kegiatan?sampling=${k.sampling.date()}&amp;paper=true" style="float: right" class="text-right">Print</a></td>
+				<td>$k.petugas</td>
+				<td>$k.sampling</td>
+				<td>$k.uraian</td>
+			</tr>
+		</tbody>
   </table>
 </div>
 </div>
