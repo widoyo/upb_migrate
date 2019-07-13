@@ -42,7 +42,7 @@ $var js_foot:
 		  <div class="form-group row">
 		    <label class="col-sm-2 col-form-label">Uraian Kerusakan</label>
 		    <div class="col-sm-10">
-		      <textarea class="form-control" rows="5" cols="25" name="uraian_kerusakan" id="uraian_kerusakan" placeholder="Uraian Kerusakan"></textarea>
+		      <textarea class="form-control" rows="5" cols="25" name="uraian_kerusakan" id="uraian_kerusakan" placeholder="Uraian Kerusakan" required></textarea>
 		    </div>
 		  </div>
 		  <fieldset class="form-group">
@@ -50,19 +50,19 @@ $var js_foot:
 		      <label class="col-form-label col-sm-2">Kategori</label>
 		      <div class="col-sm-10">
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="kategori" id="kategori_ringan" value="ringan">
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_ringan" value="ringan" required>
 		          <label class="form-check-label">
 		            Ringan (Level kerusakan 10%-20%)
 		          </label>
 		        </div>
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="kategori" id="kategori_sedang" value="sedang">
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_sedang" value="sedang" required>
 		          <label class="form-check-label">
 		            Sedang (Level kerusakan 21%-40%)
 		          </label>
 		        </div>
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="kategori" id="kategori_berat" value="berat">
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_berat" value="berat" required>
 		          <label class="form-check-label">
 		            Berat (Level kerusakan diatas 40%)
 		          </label>
