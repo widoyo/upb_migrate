@@ -109,8 +109,9 @@ class Asset(SQLObject):
     nama = StringCol()
     merk = StringCol(default=None)
     model = StringCol(default=None)
-    perolehan = DateCol() #tgl perolehan asset
+    perolehan = DateCol(default=None) #tgl perolehan asset
     nilai_perolehan = FloatCol(default=None) #nilai rupiah asset
+    bmn = StringCol(length=50,default=None) #barang milik negara
 
     kerusakan = MultipleJoin('Kerusakan')
 

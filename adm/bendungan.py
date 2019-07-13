@@ -122,6 +122,18 @@ class BdAsset:
         asset = Asset.select(Asset.q.table_name==table_name)
         return render.adm.bendungan.asset.index({'pos': pos, 'tgl': tgl, 'asset' : asset})
 
+    def POST(self, table_name):
+        inp = web.input()
+        try:
+            asset = Asset.get(int(inp.get('pk')))
+            asset.set(**{inp.get('name'):inp.get('value')})
+
+        except SQLObjectNotFound:
+            return web.notfound()
+
+        return {"Ok": "true"}
+
+
 class BdKegiatan:
     def GET(self, table_name):
         inp = web.input()

@@ -6,12 +6,33 @@ $code:
     haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
 $var extra_header:
+	<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+	<style type="text/css">
+       .datepicker {z-index: 1002;}
+    </style>
 
 $var js_foot:
-<script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+	<script type="text/javascript" src="/static/js/moment.js"></script>
+	<script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<link rel="stylesheet" href="/static/bootstrap/css/bootstrap-datetimepicker.min.css" />
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+        \$(document).ready(function () {
+
+            \$('.editable').editable({
+                url: '/adm/bendungan/$pos.table_name/asset',
+                mode:'inline'
+            });
+
+        });
+            
+    </script>
 
 <!-- End -->
-<h1>Daftar Asset $pos.cname ($asset.count()) <a href="/adm/bendungan/$pos.table_name/kerusakan" class="btn btn-primary btn-sm">Daftar Kerusakan</a></h1>
+<h1>Asset $pos.cname ($asset.count()) <a href="/adm/bendungan/$pos.table_name/kerusakan" class="btn btn-primary btn-sm">Daftar Kerusakan</a></h1>
 
 <div class="container collapse" id="form-kerusakan">
 	<div class="col-md-6">
@@ -21,7 +42,7 @@ $var js_foot:
 		  <div class="form-group row">
 		    <label class="col-sm-2 col-form-label">Uraian Kerusakan</label>
 		    <div class="col-sm-10">
-		      <textarea class="form-control" rows="5" cols="25" name="uraian_kerusakan" id="uraian_kerusakan" placeholder="Uraian Kerusakan"></textarea>
+		      <textarea class="form-control" rows="5" cols="25" name="uraian_kerusakan" id="uraian_kerusakan" placeholder="Uraian Kerusakan" required></textarea>
 		    </div>
 		  </div>
 		  <fieldset class="form-group">
@@ -29,19 +50,19 @@ $var js_foot:
 		      <label class="col-form-label col-sm-2">Kategori</label>
 		      <div class="col-sm-10">
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="kategori" id="kategori_ringan" value="ringan" checked>
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_ringan" value="ringan" required>
 		          <label class="form-check-label">
 		            Ringan (Level kerusakan 10%-20%)
 		          </label>
 		        </div>
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="kategori" id="kategori_sedang" value="sedang">
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_sedang" value="sedang" required>
 		          <label class="form-check-label">
 		            Sedang (Level kerusakan 21%-40%)
 		          </label>
 		        </div>
 		        <div class="form-check">
-		          <input class="form-check-input" type="radio" name="kategori" id="kategori_berat" value="berat">
+		          <input class="form-check-input" type="radio" name="kategori" id="kategori_berat" value="berat" required>
 		          <label class="form-check-label">
 		            Berat (Level kerusakan diatas 40%)
 		          </label>
@@ -75,7 +96,7 @@ $var js_foot:
 		    <thead>
 		      <tr>
 		      	<th>No</th>
-		        <th>Kategori</th>
+		        <!-- <th>Kategori</th> -->
 		        <th>Nama Asset</th>
 		        <th>Status</th>
 		        <th></th>
@@ -85,8 +106,10 @@ $var js_foot:
 		    	$for a in asset :
 		    	<tr>
 		    		<td>$loop.index</td>
-		    		<td>$a.kategori</td>
-		    		<td>$a.nama</td>
+		    		<!-- <td>$a.kategori</td> -->
+		    		<td><a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="nama">$a.nama</a>
+		    			<div class="text-muted">&nbsp;&nbsp;&nbsp;BMN :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="bmn">$a.bmn</a>,&nbsp;Merk :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="merk">$a.merk</a>,&nbsp;Model :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="model">$a.model</a></div>
+		    		</td>
 		    		<td style="background-color: #5af542;">Baik</td>
 		    		<td><center><button class="btn btn-primary btn-sm" type="button" onclick="form_kerusakan_show($a.id,'$a.nama')">Lapor Rusak</button></center></td>
 		    	</tr>
@@ -110,5 +133,8 @@ $var js_foot:
 	function form_kerusakan_hide(){
 		\$('#form-kerusakan').collapse('hide');
 		\$('#daftar-asset').addClass('show');
+		\$('#uraian_kerusakan').val('');
+		\$('input[name=kategori]').removeAttr('checked');
+		console.log('uraian_kerusakan dan kategori set to empty');
 	}
 </script>
