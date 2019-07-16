@@ -29,7 +29,10 @@ def to_datetime(datetimestring):
 def to_date(datestring):
     """datestring harus berformat yyyy/mm/dd"""
     _date = None
-    (t, b, g) = datestring.split('/')
+    try:
+        (t, b, g) = datestring.split('/')
+    except ValueError:
+        (t, b, g) = datestring.split('-')
     _date = datetime.date(int(t), int(b), int(g))
     return _date
 

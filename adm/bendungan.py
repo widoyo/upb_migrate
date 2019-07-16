@@ -32,6 +32,7 @@ urls = (
     '/(\w+\.*\-*\w+)/rtow/import', 'BdRtowImport',
     '/(\w+\.*\-*\w+)/add', 'BdPeriodicAdd',
     '/(\w+\.*\-*\w+)/kegiatan', 'BdKegiatan',
+    '/(\w+\.*\-*\w+)/kegiatan/(\d+)', 'BdKegiatan',
     '/(\w+\.*\-*\w+)/asset', 'BdAsset',
     '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan',
 )
@@ -66,6 +67,7 @@ def admin_required(func):
 
 globals = {'session': session, 'csrf_token': csrf_token}
 render = web.template.render('templates/', base='base_adm', globals=globals)
+render_plain = web.template.render('templates/', base='', globals=globals)
 
 class BdKeamanan:
     @login_required
@@ -135,20 +137,41 @@ class BdAsset:
 
 
 class BdKegiatan:
-    def GET(self, table_name):
+    def GET(self, table_name, id=None):
         inp = web.input()
-        print inp.get('paper')
-        if inp.get('sampling') and inp.get('paper'):
-            return 'Ke Paper View'
-        tgl = datetime.date.today()
+        tgl = to_date(inp.get('sampling',
+                              datetime.date.today().strftime('%Y-%m-%d')))
         bd_id = BENDUNGAN_DICT.get(table_name)
         pos = AgentBd.get(int(bd_id))
-        kegiatans = [k for k in Kegiatan.select(
-            Kegiatan.q.table_name==table_name) if k.sampling.month ==
-            tgl.month]
+        if id:
+            kegiatan = Kegiatan.get(int(id))
+            return render.adm.bendungan.kegiatan_show(kegiatan=kegiatan)
+        if inp.get('sampling') and inp.get('paper'):
+            sql = "SELECT k.petugas, k.uraian, f.filepath FROM \
+                    kegiatan k, foto f \
+                    WHERE f.obj_type='kegiatan' AND k.id=f.obj_id AND DATE(k.sampling)='%s' \
+                    AND k.table_name='%s'" % (tgl.strftime('%Y-%m-%d'), table_name)
+            rst = [{'p': r[0], 'u': r[1], 'f': r[2]} for r in conn.queryAll(sql)]
+            return render_plain.adm.bendungan.kegiatan_paper(pos, tgl, rst)
+
+        sql = "SELECT k.petugas, DATE(k.sampling), k.uraian, k.id \
+                FROM kegiatan k, foto f \
+                WHERE f.obj_type='kegiatan' AND k.id=f.obj_id \
+                AND k.table_name='%s' AND YEAR(k.sampling)=%s \
+                AND MONTH(k.sampling)=%s \
+                ORDER BY k.sampling DESC" % (table_name, tgl.year, tgl.month)
+        rows = [r for r in conn.queryAll(sql)]
+        tgls = list(set(r[1] for r in rows))
+        print rows 
+        result = dict([(t, {}) for t in tgls])
+        for r in rows:
+            if r[0] in result[r[1]]:
+                result[r[1]][r[0]].append({'uraian': r[2], 'kid': r[3]})
+            else:
+                result[r[1]][r[0]] = [{'uraian': r[2], 'kid': r[3]}]
         return render.adm.bendungan.kegiatan(dict(pos=pos,
                                               petugas=PETUGAS_CHOICES,
-                                              kegiatan=kegiatans, tgl=tgl))
+                                              kegiatan=result, tgl=tgl))
 
     def POST(self, table_name):
         inp = web.input()
