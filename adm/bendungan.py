@@ -11,6 +11,7 @@ import base64
 
 import web
 from sqlobject import OR, AND, SQLObjectNotFound
+from sqlobject.sqlbuilder import *
 
 from models import AgentBd, conn, WadukDaily,TinggiMukaAir, BendungAlert
 from models import NO_VNOTCH, FAIL_VNOTCH, FOTO_PATH, PETUGAS_CHOICES
@@ -109,7 +110,21 @@ class BdKerusakan:
         uraian_kerusakan = inp.get('uraian_kerusakan')
         kategori = inp.get('kategori')
         kerusakan_db = Kerusakan(asset=int(asset_id),table_name = table_name, cuser = session.get('username'), uraian = uraian_kerusakan, kategori = kategori)
-        return web.redirect('')
+
+        filename = FOTO_PATH +table_name + '_kerusakan_' +str(kerusakan_db.id)+ '_' + inp.get('filename').lower()
+
+        if not os.path.isdir(FOTO_PATH):
+            os.mkdir(FOTO_PATH)
+        with open(filename, 'wb') as f:
+            f.write(base64.b64decode(inp.get('data').split(',')[1]))
+
+        foto = Foto(filepath=filename, keterangan=inp.get('uraian_kerusakan'),
+                    obj_type='kerusakan', obj_id=kerusakan_db.id, cuser=session.get('username'))
+
+        kerusakan_db.foto = foto
+      
+        return "ok"
+        #return web.redirect('')
         #return "asset_id="+asset_id+" uraian="+uraian_kerusakan + " kategori=" +kategori
 
 class BdAsset:
@@ -120,16 +135,26 @@ class BdAsset:
             return web.notfound()
         tgl = datetime.date.today()
         asset = Asset.select(Asset.q.table_name==table_name)
-        return render.adm.bendungan.asset.index({'pos': pos, 'tgl': tgl, 'asset' : asset})
+
+        data = open('asset.csv').readlines()
+
+        return render.adm.bendungan.asset.index({'pos': pos, 'tgl': tgl, 'asset' : asset,'data':data})
 
     def POST(self, table_name):
         inp = web.input()
-        try:
-            asset = Asset.get(int(inp.get('pk')))
-            asset.set(**{inp.get('name'):inp.get('value')})
+        asset_id = inp.get('asset_id')
+        if asset_id:
+            delete = Delete('asset',where='id='+asset_id)
+            query = conn.sqlrepr(delete)
+            conn.query(query)
+            return "ok"
+        else:
+            try:
+                asset = Asset.get(int(inp.get('pk')))
+                asset.set(**{inp.get('name'):inp.get('value')})
 
-        except SQLObjectNotFound:
-            return web.notfound()
+            except SQLObjectNotFound:
+                return web.notfound()
 
         return {"Ok": "true"}
 
