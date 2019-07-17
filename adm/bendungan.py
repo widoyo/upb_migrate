@@ -111,14 +111,16 @@ class BdKerusakan:
         kategori = inp.get('kategori')
         kerusakan_db = Kerusakan(asset=int(asset_id),table_name = table_name, cuser = session.get('username'), uraian = uraian_kerusakan, kategori = kategori)
 
-        filename = FOTO_PATH +table_name + '_kerusakan_' +str(kerusakan_db.id)+ '_' + inp.get('filename').lower()
+        filename = table_name + '_kerusakan_' +str(kerusakan_db.id)+ '_' + inp.get('filename').lower()
 
-        if not os.path.isdir(FOTO_PATH):
-            os.mkdir(FOTO_PATH)
-        with open(filename, 'wb') as f:
+        filedir = FOTO_PATH+table_name+'/kerusakan'
+
+        if not os.path.isdir(filedir):
+            os.mkdir(filedir)
+        with open(filedir+'/'+filename, 'wb') as f:
             f.write(base64.b64decode(inp.get('data').split(',')[1]))
 
-        foto = Foto(filepath=filename, keterangan=inp.get('uraian_kerusakan'),
+        foto = Foto(filepath=filedir+'/'+filename, keterangan=inp.get('uraian_kerusakan'),
                     obj_type='kerusakan', obj_id=kerusakan_db.id, cuser=session.get('username'))
 
         kerusakan_db.foto = foto
