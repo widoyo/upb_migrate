@@ -22,6 +22,39 @@ $var extra_header:
 			padding: 5px;
 			border: solid 1px #ddd;
 		}
+		.btn-outline-primary {
+		    color: #007bff;
+		    background-color: transparent;
+		    background-image: none;
+		    border-color: #007bff;
+		}
+		.btn-outline-primary:hover {
+		    color: #fff;
+		    background-color: #007bff;
+		    text-decoration: none;
+		}
+		.btn-outline-success {
+		    color: #18bc9c;
+		    background-color: transparent;
+		    background-image: none;
+		    border-color: #18bc9c;
+		}
+		.btn-outline-success:hover {
+		    color: #fff;
+		    background-color: #18bc9c;
+		    text-decoration: none;
+		}
+		.btn-outline-danger {
+		    color: #e74c3c;
+		    background-color: transparent;
+		    background-image: none;
+		    border-color: #e74c3c;
+		}
+		.btn-outline-danger:hover {
+		    color: #fff;
+		    background-color: #e74c3c;
+		    text-decoration: none;
+		}
 	</style>
 
 	<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
@@ -115,7 +148,7 @@ $var js_foot:
     </script>
 
 <!-- End -->
-<h1>Asset $pos.cname ($asset.count()) <a href="/adm/bendungan/$pos.table_name/kerusakan" class="btn btn-primary btn-sm">Daftar Kerusakan</a>&nbsp;<button class="btn btn-success btn-sm" onclick="form_asset_show()" id="btn-tambah-asset"><span class="glyphicon glyphicon-plus"></span> Tambah Asset</button></h1>
+<h1>Asset $pos.cname ($asset.count()) <a href="/adm/bendungan/$pos.table_name/kerusakan" class="btn btn-outline-primary btn-sm">Daftar Kerusakan</a>&nbsp;<button class="btn btn-outline-success btn-sm" onclick="form_asset_show()" id="btn-tambah-asset"><span class="glyphicon glyphicon-plus"></span> Tambah Asset</button></h1>
 
 <div class="container collapse" id="form-kerusakan">
 	<div class="col-md-6">
@@ -174,16 +207,17 @@ $var js_foot:
 <div class="container collapse" id="form-tambah-asset">
 	<div class="col-md-6">
 		<form method="POST" action="">
+		  <input type="hidden" id="state" name="state" value="tambah">
 		  <div class="form-group row">
 		    <label class="col-sm-4 col-form-label">Nama Asset</label>
 		    <div class="col-sm-8">
-		      <input type="text" class="form-control" id="nama_asset_add" placeholder="Masukkan Nama Asset" required>
+		      <input type="text" class="form-control" id="nama_asset_add" name="nama_asset_add" placeholder="Masukkan Nama Asset" required="">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label class="col-sm-4 col-form-label">Kategori</label>
 		    <div class="col-sm-8">
-		    	<select class="form-control" id="kategori-asset" required>
+		    	<select class="form-control" name="kategori-asset" id="kategori-asset" required="">
 		    		<option value="" selected>Pilih Kategori</option>
 		    		$for i in data:
 		    		<option value="${i.strip().split('_')[0]+'_'+i.strip().split('_')[1]}">${i.strip().split('_')[0]+' > '+i.strip().split('_')[1]}</option>
@@ -193,24 +227,24 @@ $var js_foot:
 		  <div class="form-group row">
 		    <label class="col-sm-4 col-form-label">Merk</label>
 		    <div class="col-sm-8">
-		      <input type="text" class="form-control" id="merk" placeholder="" required>
+		      <input type="text" class="form-control" name="merk" id="merk" placeholder="">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label class="col-sm-4 col-form-label">Model</label>
 		    <div class="col-sm-8">
-		      <input type="text" class="form-control" id="model" placeholder="" required>
+		      <input type="text" class="form-control" name="model" id="model" placeholder="">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label class="col-sm-4 col-form-label">No. BMN</label>
 		    <div class="col-sm-8">
-		      <input type="text" class="form-control" id="bmn" placeholder="" required>
+		      <input type="text" class="form-control" name="bmn" id="bmn" placeholder="">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <div class="col-sm-8">
-		      <input type="button" name="submit" value="Tambahkan" class="btn btn-primary btn-sm" onclick="cek_kategori()">
+		      <input type="submit" name="submit" value="Tambahkan" class="btn btn-primary btn-sm">
 		      <button class="btn btn-danger btn-sm" type="button" onclick="form_asset_hide()">Batal</button>
 		    </div>
 		  </div>
@@ -240,8 +274,8 @@ $var js_foot:
 		    			<div class="text-muted">&nbsp;&nbsp;&nbsp;BMN :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="bmn">$a.bmn</a>,&nbsp;Merk :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="merk">$a.merk</a>,&nbsp;Model :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="model">$a.model</a></div>
 		    		</td>
 		    		<td style="background-color: #5af542;">Baik</td>
-		    		<td><center><button class="btn btn-primary btn-sm" type="button" onclick="form_kerusakan_show($a.id,'$a.nama')">Lapor Rusak</button></center></td>
-		    		<td><center><button class="btn btn-danger btn-sm" type="button" onclick="hapus_asset($a.id,'$a.nama')">Hapus</button></center></td>
+		    		<td><center><button class="btn btn-outline-primary btn-sm" type="button" onclick="form_kerusakan_show($a.id,'$a.nama')">Lapor Rusak</button></center></td>
+		    		<td><center><button class="btn btn-outline-danger btn-sm" type="button" onclick="hapus_asset($a.id,'$a.nama')">Hapus</button></center></td>
 		    	</tr>
 		    </tbody>
 		 </table>
@@ -280,16 +314,6 @@ $var js_foot:
 		\$('#btn-tambah-asset').show();
 	}
 
-	function cek_kategori(){
-		var a = \$( "#kategori-asset").val();
-		if(a==""){
-			\$( "#kategori-asset").focus();
-		}else{
-			alert(a);
-		}
-		
-	}
-
 	function hapus_asset(asset_id,nama_asset){
 		var nama_asset = nama_asset;
 		var asset_id = asset_id;
@@ -297,7 +321,7 @@ $var js_foot:
 		if (result) {
 		    //Logic to delete the item
 		    //alert("deleted");
-		    \$.post('/adm/bendungan/$pos.table_name/asset', {asset_id: asset_id}).done(function(result){
+		    \$.post('/adm/bendungan/$pos.table_name/asset', {asset_id: asset_id,state:'hapus'}).done(function(result){
 		    	var a = result;
 		    	if(a == "ok"){
 		    		alert("Data "+nama_asset+" telah berhasil dihapus");
