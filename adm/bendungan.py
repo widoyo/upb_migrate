@@ -142,12 +142,24 @@ class BdAsset:
 
     def POST(self, table_name):
         inp = web.input()
-        asset_id = inp.get('asset_id')
-        if asset_id:
+        state = inp.get('state')
+        if state == 'hapus':
+            asset_id = inp.get('asset_id')
             delete = Delete('asset',where='id='+asset_id)
             query = conn.sqlrepr(delete)
             conn.query(query)
             return "ok"
+        elif state == 'tambah':
+            nama = inp.get('nama_asset_add')
+            kategori = inp.get('kategori-asset')
+            merk = inp.get('merk')
+            model = inp.get('model')
+            bmn = inp.get('bmn')
+
+            #print(kategori)
+            Asset(table_name=table_name,cuser=session.get('username'),kategori=kategori+'_'+nama,nama=nama,merk=merk,model=model,bmn=bmn)
+            return web.redirect('asset')
+
         else:
             try:
                 asset = Asset.get(int(inp.get('pk')))
