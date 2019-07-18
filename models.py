@@ -82,7 +82,7 @@ PETUGAS_CHOICES = "koordinator_keamanan_pemantauan_operasi_pemeliharaan".split('
 KEGIATAN_CHOICES = ('koordinasi','keamanan','pemantauan','operasi','pemeliharaan')
 
 class Kegiatan(SQLObject):
-    foto = ForeignKey('Foto',default=None)
+    foto = ForeignKey('Foto', default=None)
     table_name = StringCol(length=35) # nama bendungan
     sampling = DateTimeCol()
     petugas = StringCol(length=35) # lihat PERSONIL_CHOICES
@@ -92,6 +92,21 @@ class Kegiatan(SQLObject):
     cdate = DateTimeCol(default=datetime.datetime.utcnow)
     mdate = DateTimeCol(default=None)
 
+class Tanggapan1(SQLObject):
+    kerusakan = ForeignKey('Kerusakan',default=None)
+    uraian = StringCol()
+    lanjut = BoolCol(default=False)
+    kategori = StringCol(length=10) #ringan,sedang,berat
+    cuser = StringCol(length=35)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
+
+class Tanggapan2(SQLObject):
+    tanggapan1 = ForeignKey('Tanggapan1',default=None)
+    uraian = StringCol()
+    nilai = FloatCol(default=None) #dana yang dikeluarkan
+    pelaksanaan = DateCol(default=None)
+    cuser = StringCol(length=35)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
 
 class Kerusakan(SQLObject):
     asset = ForeignKey('Asset')
