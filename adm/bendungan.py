@@ -33,6 +33,7 @@ urls = (
     '/(\w+\.*\-*\w+)/rtow/import', 'BdRtowImport',
     '/(\w+\.*\-*\w+)/add', 'BdPeriodicAdd',
     '/(\w+\.*\-*\w+)/kegiatan', 'BdKegiatan',
+    '/(\w+\.*\-*\w+)/kegiatan/(\d+)', 'BdKegiatan',
     '/(\w+\.*\-*\w+)/asset', 'BdAsset',
     '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan', 
 )
@@ -67,6 +68,7 @@ def admin_required(func):
 
 globals = {'session': session, 'csrf_token': csrf_token}
 render = web.template.render('templates/', base='base_adm', globals=globals)
+render_plain = web.template.render('templates/', base='', globals=globals)
 
 class BdKeamanan:
     @login_required
@@ -124,8 +126,6 @@ class BdKerusakan:
         kerusakan_db.foto = foto
       
         return "ok"
-        #return web.redirect('')
-        #return "asset_id="+asset_id+" uraian="+uraian_kerusakan + " kategori=" +kategori
 
 class BdAsset:
     def GET(self, table_name):
@@ -172,42 +172,59 @@ class BdAsset:
 
 
 class BdKegiatan:
-    def GET(self, table_name):
+    def GET(self, table_name, id=None):
         inp = web.input()
         tgl = datetime.date.today()
+        #tgl = to_date(inp.get('sampling',datetime.date.today().strftime('%Y-%m-%d')))
         bd_id = BENDUNGAN_DICT.get(table_name)
         pos = AgentBd.get(int(bd_id))
-        kegiatans = Kegiatan.select(
-            Kegiatan.q.table_name==table_name)
+        if id:
+            kegiatan = Kegiatan.get(int(id))
+            return render.adm.bendungan.kegiatan_show(kegiatan=kegiatan)
+        if inp.get('sampling') and inp.get('paper'):
+            sql = "SELECT k.petugas, k.uraian, f.filepath FROM \
+                    kegiatan k, foto f \
+                    WHERE f.obj_type='kegiatan' AND k.id=f.obj_id AND DATE(k.sampling)='%s' \
+                    AND k.table_name='%s'" % (tgl.strftime('%Y-%m-%d'), table_name)
+            rst = [{'p': r[0], 'u': r[1], 'f': r[2]} for r in conn.queryAll(sql)]
+            return render_plain.adm.bendungan.kegiatan_paper(pos, tgl, rst)
+        sql = "SELECT k.petugas, DATE(k.sampling), k.uraian, k.id \
+                FROM kegiatan k, foto f \
+                WHERE f.obj_type='kegiatan' AND k.id=f.obj_id \
+                AND k.table_name='%s' AND YEAR(k.sampling)=%s \
+                AND MONTH(k.sampling)=%s \
+                ORDER BY k.sampling DESC" % (table_name, tgl.year, tgl.month)
+        rows = [r for r in conn.queryAll(sql)]
+        tgls = list(set(r[1] for r in rows))
+        print rows 
+        result = dict([(t, {}) for t in tgls])
+        for r in rows:
+            if r[0] in result[r[1]]:
+                result[r[1]][r[0]].append({'uraian': r[2], 'kid': r[3]})
+            else:
+                result[r[1]][r[0]] = [{'uraian': r[2], 'kid': r[3]}]
         return render.adm.bendungan.kegiatan(dict(pos=pos,
                                               petugas=PETUGAS_CHOICES,
-                                              kegiatan=kegiatans, tgl=tgl))
+                                              kegiatan=result, tgl=tgl))
+
 
     def POST(self, table_name):
         inp = web.input()
-        #print inp
-        for k, v in inp.items():
-            print 'Kunci: ', k, 'Nilai: ', v
-        kegiatan = inp.get('kegiatan')
-        with open('/tmp/foto_' + inp.get('filename'), 'wb') as f:
+        keg = Kegiatan(table_name=table_name, 
+                       petugas=inp.get('petugas'), uraian=inp.get('uraian'), 
+                       sampling=to_date(inp.get('waktu')),
+                      cuser=session.username)
+        filename = FOTO_PATH + '/' +table_name + '_kegiatan_' +str(keg.id)+ '_' + inp.get('filename').lower()
+        if not os.path.isdir(FOTO_PATH):
+            os.mkdir(FOTO_PATH)
+        with open(filename, 'wb') as f:
             f.write(base64.b64decode(inp.get('data').split(',')[1]))
-        uraian = inp.get('uraian')
-        # x = web.input(foto={})
-        # our_path = FOTO_PATH + table_name + '/'
-        # if not os.path.isdir(our_path):
-        #     os.mkdir(our_path)
-        # if 'foto' in x:
-        #     filepath = x['foto'].name.replace('\\', '/')
-        #     filename = our_path + filepath.split('/')[-1]
-        #     with open(filename, 'w') as f:
-        #         f.write(x['foto'].file.read())
-            # foto = Foto(filepath=filename, cuser=session.get('username'))
-            # keg = Kegiatan(foto=foto, table_name=table_name, 
-            #                kegiatan=kegiatan, uraian=uraian, 
-            #                sampling=to_date(inp.get('waktu')),
-            #               cuser=session.username)
-        #return web.redirect('/adm/bendungan/%s/foto' % table_name, absolute=True)
-        return "oke"
+
+        foto = Foto(filepath=filename, keterangan=inp.get('uraian'),
+                    obj_type='kegiatan', obj_id=keg.id, cuser=session.get('username'))
+        keg.foto = foto
+        return web.redirect('/adm/bendungan/%s/kegiatan' % table_name, absolute=True)
+        
 
 
 class BdRtowExport:
