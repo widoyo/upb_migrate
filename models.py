@@ -92,9 +92,25 @@ class Kegiatan(SQLObject):
     cdate = DateTimeCol(default=datetime.datetime.utcnow)
     mdate = DateTimeCol(default=None)
 
+class Tanggapan1(SQLObject):
+    kerusakan = ForeignKey('Kerusakan',default=None)
+    uraian = StringCol()
+    lanjut = BoolCol(default=False)
+    kategori = StringCol(length=10) #ringan,sedang,berat
+    cuser = StringCol(length=35)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
+
+class Tanggapan2(SQLObject):
+    tanggapan1 = ForeignKey('Tanggapan1',default=None)
+    uraian = StringCol()
+    nilai = FloatCol(default=None) #dana yang dikeluarkan
+    pelaksanaan = DateCol(default=None)
+    cuser = StringCol(length=35)
+    cdate = DateTimeCol(default=datetime.datetime.utcnow)
 
 class Kerusakan(SQLObject):
     asset = ForeignKey('Asset')
+    foto = ForeignKey('Foto',default=None)
     table_name = StringCol(length=35) # nama bendungan
     cuser = StringCol(length=35)
     cdate = DateTimeCol(default=datetime.datetime.utcnow)

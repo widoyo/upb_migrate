@@ -7,11 +7,10 @@ $code:
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
 $var extra_header:
 $var js_foot:
-<script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
 <!-- End -->
 <h1>Kerusakan Asset Pada $pos.cname</h1>
 
-<div class="container table-responsive">
+<div class="table-responsive">
   <table class="table table-bordered table-stripped table-hover">
     <thead>
       <tr>
@@ -31,7 +30,7 @@ $var js_foot:
     		<td>$k.cdate</td>
     		<td>$k.kategori</td>
     		<td>$k.uraian</td>
-    		<td></td>
+    		<td><center><img src="${'/'+k.foto.filepath}" class="img-fluid p-3" style="width:15em;"></center></td>
     	</tr>
     </tbody>
   </table>

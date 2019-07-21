@@ -2,10 +2,61 @@ $def with (ctx)
 $ asset = ctx.get('asset')
 $ pos = ctx.get('pos')
 $ tg = ctx.get('tgl')
+$ data = ctx.get('data')
 $code:
     haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
 $var extra_header:
+	<style>
+      .foto-thumb {
+        border: solid 1px #ddd;
+        padding: 5px;
+      }
+		.img-fluid {
+			max-width: 100%;
+			height: auto;
+		}
+		.img-preview {
+			max-width: 100%;
+			height: auto;
+			padding: 5px;
+			border: solid 1px #ddd;
+		}
+		.btn-outline-primary {
+		    color: #007bff;
+		    background-color: transparent;
+		    background-image: none;
+		    border-color: #007bff;
+		}
+		.btn-outline-primary:hover {
+		    color: #fff;
+		    background-color: #007bff;
+		    text-decoration: none;
+		}
+		.btn-outline-success {
+		    color: #18bc9c;
+		    background-color: transparent;
+		    background-image: none;
+		    border-color: #18bc9c;
+		}
+		.btn-outline-success:hover {
+		    color: #fff;
+		    background-color: #18bc9c;
+		    text-decoration: none;
+		}
+		.btn-outline-danger {
+		    color: #e74c3c;
+		    background-color: transparent;
+		    background-image: none;
+		    border-color: #e74c3c;
+		}
+		.btn-outline-danger:hover {
+		    color: #fff;
+		    background-color: #e74c3c;
+		    text-decoration: none;
+		}
+	</style>
+
 	<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 	<style type="text/css">
        .datepicker {z-index: 1002;}
@@ -19,6 +70,71 @@ $var js_foot:
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 	<script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+	<script type="text/javascript" src="/static/js/MinifyJpegAsync.js"></script>
+	<script>
+      \$(document).ready(function () {
+          var hars = [$:{','.join(["'" + h + "'" for h in haris])}]
+          var buls = [$:{','.join(["'" + h + "'" for h in bulan])}]
+				\$('select[name="kegiatan"]').change(function () {
+					if (\$('input#fotoFile')[0].files && (\$('input#fotoFile')[0].files.length > 0)) {
+						\$('input[name="submit"]').removeClass('disabled');
+					}
+					console.log(this.value);
+				});
+				\$('#fotoFile').change(function (event){ readURL(event); });
+        \$('.gotomonth').datepicker({
+            format: 'yyyy-mm-dd',
+            startView: "months",
+            minViewMode: "months",
+            autoclose: true
+         }); 
+        \$('.gotomonth').on('changeDate', function() {
+            window.location = '/adm/bendungan/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
+          });
+        \$('.datepicker').on('changeDate', function() {
+              var dated = \$(this).datepicker('getDate');
+              var wd = dated.getDay() - 1;
+              if (wd === -1) { wd = 6 }; 
+         });
+      });
+			let enc_img = '';
+			let file_name = '';
+			function readURL(event) {
+        let f = event.target.files[0];
+				file_name = f.name;
+        let reader = new FileReader();
+
+        reader.onloadend = (function(theFile){
+          return function(e) {
+						MinifyJpegAsync.minify(e.target.result, 1280, function(data) { 
+							enc_img = "data:image/jpeg;base64," + btoa(data);
+							let img = new Image();
+							img.src = enc_img;
+							document.getElementById('blah').src = enc_img;
+							//\$.post('/adm/bendungan/bd_krisak/kegiatan', {data: enc_img, filename: f.name})
+							console.log('Hasil proses minify') 
+						});
+          };
+        })(f);
+				reader.readAsDataURL(f);
+			};
+
+			function go_upload() {
+				var asset_id = \$('#asset_id').val();
+				var uraian_kerusakan = \$('#uraian_kerusakan').val();
+				var kategori = \$( "input[type=radio][name=kategori]:checked" ).val();
+				//alert(asset_id);
+				\$.post('/adm/bendungan/$pos.table_name/kerusakan', {asset_id: asset_id,uraian_kerusakan: uraian_kerusakan, kategori: kategori,data: enc_img, filename: file_name}).done(function(result){
+					//alert(result);
+					var a = result;
+					if(a == "ok"){
+						window.location.href = "/adm/bendungan/$pos.table_name/kerusakan";
+					}
+				});
+			}
+
+	</script>
+
     <script type="text/javascript">
         \$(document).ready(function () {
 
@@ -32,13 +148,21 @@ $var js_foot:
     </script>
 
 <!-- End -->
-<h1>Asset $pos.cname ($asset.count()) <a href="/adm/bendungan/$pos.table_name/kerusakan" class="btn btn-primary btn-sm">Daftar Kerusakan</a></h1>
+<h1>Asset $pos.cname ($asset.count()) <a href="/adm/bendungan/$pos.table_name/kerusakan" class="btn btn-outline-primary btn-sm">Daftar Kerusakan</a>&nbsp;<button class="btn btn-outline-success btn-sm" onclick="form_asset_show()" id="btn-tambah-asset"><span class="glyphicon glyphicon-plus"></span> Tambah Asset</button></h1>
 
 <div class="container collapse" id="form-kerusakan">
 	<div class="col-md-6">
 		<h4>Nama Asset : <em><u id="nama_asset"></u></em></h4>
-		<form action="kerusakan" method="POST">
+		<input type="file" name="foto" class="custom-file-input" id="fotoFile">
+		<form action="kerusakan" method="POST" id="formUpload" enctype="multipart/form-data">
 		  <input type="hidden" id="asset_id" name="asset_id">
+		  <div class="form-group">
+				<div class="custom-file">
+					<img id="blah" class="img-fluid" style="width: 100%;" alt=" pratinjau gambar" src="#">
+				</div>
+				<div v-if="imageData.length > 0"><img class="img-fluid" :src="imageData"></div>
+		  </div>
+
 		  <div class="form-group row">
 		    <label class="col-sm-2 col-form-label">Uraian Kerusakan</label>
 		    <div class="col-sm-10">
@@ -70,27 +194,65 @@ $var js_foot:
 		      </div>
 		    </div>
 		  </fieldset>
-		  <div class="form-group">
-		  	<label>Foto</label>
-	    	<input type="file" class="form-control-file" id="#foto">
-		  </div>
-		  <div class="form-group">
-		  	<img class="img-fluid" src="">
-		  </div>
 		  <div class="form-group row">
 		    <div class="col-sm-10">
-		      <button type="submit" class="btn btn-primary btn-sm">Kirim</button>
+		      <input type="button" name="submit" value="Kirim" onclick="go_upload()" class="btn btn-primary btn-sm">
 		      <button class="btn btn-danger btn-sm" type="button" onclick="form_kerusakan_hide()">Batal</button>
 		    </div>
 		  </div>
 		</form>
 	</div>
+</div>
+
+<div class="container collapse" id="form-tambah-asset">
 	<div class="col-md-6">
-		&nbsp;
+		<form method="POST" action="">
+		  <input type="hidden" id="state" name="state" value="tambah">
+		  <div class="form-group row">
+		    <label class="col-sm-4 col-form-label">Nama Asset</label>
+		    <div class="col-sm-8">
+		      <input type="text" class="form-control" id="nama_asset_add" name="nama_asset_add" placeholder="Masukkan Nama Asset" required="">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label class="col-sm-4 col-form-label">Kategori</label>
+		    <div class="col-sm-8">
+		    	<select class="form-control" name="kategori-asset" id="kategori-asset" required="">
+		    		<option value="" selected>Pilih Kategori</option>
+		    		$for i in data:
+		    		<option value="${i.strip().split('_')[0]+'_'+i.strip().split('_')[1]}">${i.strip().split('_')[0]+' > '+i.strip().split('_')[1]}</option>
+			    </select>
+		    </div> 
+		  </div>
+		  <div class="form-group row">
+		    <label class="col-sm-4 col-form-label">Merk</label>
+		    <div class="col-sm-8">
+		      <input type="text" class="form-control" name="merk" id="merk" placeholder="">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label class="col-sm-4 col-form-label">Model</label>
+		    <div class="col-sm-8">
+		      <input type="text" class="form-control" name="model" id="model" placeholder="">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label class="col-sm-4 col-form-label">No. BMN</label>
+		    <div class="col-sm-8">
+		      <input type="text" class="form-control" name="bmn" id="bmn" placeholder="">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <div class="col-sm-8">
+		      <input type="submit" name="submit" value="Tambahkan" class="btn btn-primary btn-sm">
+		      <button class="btn btn-danger btn-sm" type="button" onclick="form_asset_hide()">Batal</button>
+		    </div>
+		  </div>
+		</form>
 	</div>
 </div>
 
-<div class="container collapse show" id="daftar-asset">
+<div class="collapse show" id="daftar-asset">
 	<div class="table-responsive">
 		<table class="table table-bordered table-stripped">
 		    <thead>
@@ -99,6 +261,7 @@ $var js_foot:
 		        <!-- <th>Kategori</th> -->
 		        <th>Nama Asset</th>
 		        <th>Status</th>
+		        <th></th>
 		        <th></th>
 		      </tr>
 		    </thead>
@@ -111,7 +274,8 @@ $var js_foot:
 		    			<div class="text-muted">&nbsp;&nbsp;&nbsp;BMN :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="bmn">$a.bmn</a>,&nbsp;Merk :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="merk">$a.merk</a>,&nbsp;Model :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="model">$a.model</a></div>
 		    		</td>
 		    		<td style="background-color: #5af542;">Baik</td>
-		    		<td><center><button class="btn btn-primary btn-sm" type="button" onclick="form_kerusakan_show($a.id,'$a.nama')">Lapor Rusak</button></center></td>
+		    		<td><center><button class="btn btn-outline-primary btn-sm" type="button" onclick="form_kerusakan_show($a.id,'$a.nama')">Lapor Rusak</button></center></td>
+		    		<td><center><button class="btn btn-outline-danger btn-sm" type="button" onclick="hapus_asset($a.id,'$a.nama')"><span class="glyphicon glyphicon-trash"></span></button></center></td>
 		    	</tr>
 		    </tbody>
 		 </table>
@@ -136,5 +300,34 @@ $var js_foot:
 		\$('#uraian_kerusakan').val('');
 		\$('input[name=kategori]').removeAttr('checked');
 		console.log('uraian_kerusakan dan kategori set to empty');
+	}
+
+	function form_asset_show(){
+		\$('#form-tambah-asset').collapse('toggle');
+		\$('#daftar-asset').removeClass('show');
+		\$('#btn-tambah-asset').hide();
+	}
+
+	function form_asset_hide(){
+		\$('#form-tambah-asset').collapse('hide');
+		\$('#daftar-asset').addClass('show');
+		\$('#btn-tambah-asset').show();
+	}
+
+	function hapus_asset(asset_id,nama_asset){
+		var nama_asset = nama_asset;
+		var asset_id = asset_id;
+		var result = confirm("Anda yakin ingin menghapus data asset "+nama_asset+" ?");
+		if (result) {
+		    //Logic to delete the item
+		    //alert("deleted");
+		    \$.post('/adm/bendungan/$pos.table_name/asset', {asset_id: asset_id,state:'hapus'}).done(function(result){
+		    	var a = result;
+		    	if(a == "ok"){
+		    		alert("Data "+nama_asset+" telah berhasil dihapus");
+		    		window.location.href = "/adm/bendungan/$pos.table_name/asset";
+		    	}
+		    });
+		}
 	}
 </script>
