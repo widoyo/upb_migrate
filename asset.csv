@@ -1,0 +1,78 @@
+Tubuh Bendungan_Puncak_Lapis Perkerasan
+Tubuh Bendungan_Puncak_Bahu
+Tubuh Bendungan_Puncak_Parapet
+Tubuh Bendungan_Puncak_Saluran Drainase
+Tubuh Bendungan_Puncak_Guard Rail
+Tubuh Bendungan_Puncak_Patok HM/BM
+Tubuh Bendungan_Puncak_Portal Masuk
+Tubuh Bendungan_Puncak_Pagar Pelindung
+Tubuh Bendungan_Puncak_Penerangan
+Tubuh Bendungan_Lereng Hulu_Lapis Pelindung
+Tubuh Bendungan_Lereng Hulu_Batu Rip-rap
+Tubuh Bendungan_Lereng Hulu_Jalan Inspeksi
+Tubuh Bendungan_Lereng Hulu_Saluran Drainase 
+Tubuh Bendungan_Lereng Hulu_Tumbuhan
+Tubuh Bendungan_Lereng Hilir_Lapis Pelindung
+Tubuh Bendungan_Lereng Hilir_Jalan Inspeksi
+Tubuh Bendungan_Lereng Hilir_Toe Drain
+Tubuh Bendungan_Lereng Hilir_Saluran Drainase 
+Tubuh Bendungan_Lereng Hilir_Tumbuhan
+Bangunan Pengambilan_Jembatan Hantar_Abutmen
+Bangunan Pengambilan_Jembatan Hantar_Plat Jembatan
+Bangunan Pengambilan_Jembatan Hantar_Gelagar
+Bangunan Pengambilan_Jembatan Hantar_Hand Rail
+Bangunan Pengambilan_Menara Intake_Dinding
+Bangunan Pengambilan_Menara Intake_Lantai
+Bangunan Pengambilan_Menara Intake_Atap Pelindung
+Bangunan Pengambilan_Menara Intake_Tangga Inspeksi
+Bangunan Pengambilan_Pintu Intake_Stoplog
+Bangunan Pengambilan_Pintu Intake_Trashrack
+Bangunan Pengambilan_Peralatan Hidromekanikal_Panel Otomatis
+Bangunan Pengambilan_Peralatan Hidromekanikal_Penggerak Manual
+Bangunan Pengambilan_Mesin Penggerak_Motor Crane
+Bangunan Pengambilan_Mesin Penggerak_Kabel Sling
+Bangunan Pengambilan_Mesin Penggerak_Panel
+Bangunan Pengambilan_Mesin Penggerak_Genset
+Bangunan Pengambilan_Mesin Penggerak_Genset Cadangan
+Bangunan Pengeluaran_Tunnel / Terowongan_Pipa Pesat
+Bangunan Pengeluaran_Tunnel / Terowongan_Sambungan
+Bangunan Pengeluaran_Katup_Panel Operasi
+Bangunan Pengeluaran_Katup_Katup kupu-kupu
+Bangunan Pengeluaran_Katup_Katup Kerucut
+Bangunan Pengeluaran_Katup_Katup Jarum
+Bangunan Pengeluaran_Mesin Penggerak_Panel
+Bangunan Pengeluaran_Mesin Penggerak_Genset
+Bangunan Pengeluaran_Mesin Penggerak_Genset Cadangan 
+Bangunan Pengeluaran_Bangunan Pelindung_Dinding
+Bangunan Pengeluaran_Bangunan Pelindung_Lantai
+Bangunan Pengeluaran_Bangunan Pelindung_Tangga Inspeksi
+Bangunan Pengeluaran_Bangunan Pelindung_Atap Pelindung
+Bangunan Pelimpah_Lantai Hulu_Lapis Beton
+Bangunan Pelimpah_Mercu Spillway_Lapis Beton
+Bangunan Pelimpah_Saluran Luncur_Lantai Beton
+Bangunan Pelimpah_Saluran Luncur_Lubang Drain
+Bangunan Pelimpah_Dinding / Sayap_Dinding Beton
+Bangunan Pelimpah_Dinding / Sayap_Sambungan Beton
+Bangunan Pelimpah_Peredam Energi_Kolam Olak
+Bangunan Pelimpah_Peredam Energi_Kolam Terjunan
+Bangunan Pelimpah_Peredam Energi_Kolam Loncat
+Bangunan Pelimpah_Jembatan_Hand rail
+Bukit Tumpuan_Tumpuan Kiri Kanan_Lereng
+Bukit Tumpuan_Tumpuan Kiri Kanan_Saluran Drainase
+Bukit Tumpuan_Tumpuan Kiri Kanan_Pagar Pelindung
+Bangunan Pelengkap_Bangunan Pelengkap_Kantor
+Bangunan Pelengkap_Bangunan Pelengkap_Rumah Genset
+Bangunan Pelengkap_Bangunan Pelengkap_Gardu Pandang
+Bangunan Pelengkap_Bangunan Pelengkap_Masjid
+Bangunan Pelengkap_Bangunan Pelengkap_Taman
+Bangunan Pelengkap_Akses Jalan_Akses Jalan Bendungan
+Instrumentasi_Tekanan Air Pori_Stand Pipe
+Instrumentasi_Tekanan Air Pori_Pneumatic
+Instrumentasi_Tekanan Air Pori_Elektrik
+Instrumentasi_Tekanan Air Pori_Vibrating Wire
+Instrumentasi_Pergerakan Tanah_Multilayer Stattlement
+Instrumentasi_Pergerakan Tanah_Patok Geser
+Instrumentasi_Tekanan Air Tanah_Observation Well
+Instrumentasi_Rembesan_V-Notch
+Instrumentasi_Curah Hujan_Electrik
+Instrumentasi_Curah Hujan_Manual
