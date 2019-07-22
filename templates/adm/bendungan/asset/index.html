@@ -8,10 +8,10 @@ $code:
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
 $var extra_header:
 	<style>
-      .foto-thumb {
-        border: solid 1px #ddd;
-        padding: 5px;
-      }
+      . .foto-thumb {
+            border: solid 1px #ddd;
+            padding: 5px;
+        }
 		.img-fluid {
 			max-width: 100%;
 			height: auto;
@@ -219,8 +219,8 @@ $var js_foot:
 		    <div class="col-sm-8">
 		    	<select class="form-control" name="kategori-asset" id="kategori-asset" required="">
 		    		<option value="" selected>Pilih Kategori</option>
-		    		$for i in data:
-		    		<option value="${i.strip().split('_')[0]+'_'+i.strip().split('_')[1]}">${i.strip().split('_')[0]+' > '+i.strip().split('_')[1]}</option>
+		    		$for i in data
+		    		<option value="${i.replace(' > ','_')}">$i</option>
 			    </select>
 		    </div> 
 		  </div>
@@ -292,6 +292,7 @@ $var js_foot:
 		\$('#nama_asset').html(asset);
 		\$('#daftar-asset').removeClass('show');
 		\$("#asset_id").attr("value", id);
+		\$('#btn-tambah-asset').hide();
 	}
 
 	function form_kerusakan_hide(){
@@ -300,6 +301,7 @@ $var js_foot:
 		\$('#uraian_kerusakan').val('');
 		\$('input[name=kategori]').removeAttr('checked');
 		console.log('uraian_kerusakan dan kategori set to empty');
+		\$('#btn-tambah-asset').show();
 	}
 
 	function form_asset_show(){
