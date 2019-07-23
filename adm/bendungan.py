@@ -16,7 +16,7 @@ from sqlobject.sqlbuilder import *
 from models import AgentBd, conn, WadukDaily,TinggiMukaAir, BendungAlert
 from models import NO_VNOTCH, FAIL_VNOTCH, FOTO_PATH, PETUGAS_CHOICES
 from models import Kegiatan, Foto, BENDUNGAN_DICT
-from models import Kerusakan, Asset
+from models import Kerusakan, Asset, Tanggapan1, Tanggapan2
 
 from helper import to_date, json_serializer
 from keamanan import app_keamanan
@@ -35,7 +35,10 @@ urls = (
     '/(\w+\.*\-*\w+)/kegiatan', 'BdKegiatan',
     '/(\w+\.*\-*\w+)/kegiatan/(\d+)', 'BdKegiatan',
     '/(\w+\.*\-*\w+)/asset', 'BdAsset',
-    '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan', 
+    '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan',
+    '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdKerusakan',
+    '//asset','BdAdminKerusakan',
+    '//tanggapan1','BdTanggapan1',
 )
 
 
@@ -97,14 +100,18 @@ class BdKeamanan:
 
 
 class BdKerusakan: 
-    def GET(self, table_name):
-        try:
-            pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
-        except:
-            return web.notfound()
-        tgl = datetime.date.today()
-        kerusakan = Kerusakan.select(Kerusakan.q.table_name==table_name)
-        return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
+    def GET(self, table_name, id=None):
+        kerusakan_id = id
+        if kerusakan_id:
+            return "Detail kerusakan dengan ID "+id
+        else:
+            try:
+                pos = AgentBd.get(BENDUNGAN_DICT.get(table_name))
+            except:
+                return web.notfound()
+            tgl = datetime.date.today()
+            kerusakan = Kerusakan.select(Kerusakan.q.table_name==table_name)
+            return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
 
     def POST(self, table_name):
         inp = web.input()
@@ -127,6 +134,32 @@ class BdKerusakan:
       
         return "ok"
 
+
+class BdAdminKerusakan:
+    @login_required
+    @admin_required
+    def GET(self):
+        tgl = datetime.date.today()
+        kerusakan = Kerusakan.select()
+        return render.adm.bendungan.kerusakan.admin({'tgl': tgl, 'kerusakan' : kerusakan})
+
+
+class BdTanggapan1:
+    @login_required
+    @admin_required
+    def POST(self):
+        inp = web.input()
+        kerusakan_id = inp.get('kerusakan_id')
+        kategori = inp.get('kategori')
+        uraian = inp.get('uraian')
+        lanjut = inp.get('lanjut')
+        if lanjut == '0':
+            lanjut = False
+        elif lanjut == '1':
+            lanjut = True
+        Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,lanjut=lanjut,kategori=kategori,cuser=session.get('username'))
+        return "ok"
+
 class BdAsset:
     def GET(self, table_name):
         try:
@@ -137,8 +170,18 @@ class BdAsset:
         asset = Asset.select(Asset.q.table_name==table_name)
 
         data = open('asset.csv').readlines()
+        flist = []
+        for item in data:
+            l = item.strip().split("_")
+            s = str(l[0]+" > "+l[1])
+            flist.append(s)
 
-        return render.adm.bendungan.asset.index({'pos': pos, 'tgl': tgl, 'asset' : asset,'data':data})
+        fflist = []
+        for kategori in flist:
+            if kategori not in fflist:
+                fflist.append(kategori)
+
+        return render.adm.bendungan.asset.index({'pos': pos, 'tgl': tgl, 'asset' : asset,'data':fflist})
 
     def POST(self, table_name):
         inp = web.input()
@@ -155,8 +198,6 @@ class BdAsset:
             merk = inp.get('merk')
             model = inp.get('model')
             bmn = inp.get('bmn')
-
-            #print(kategori)
             Asset(table_name=table_name,cuser=session.get('username'),kategori=kategori+'_'+nama,nama=nama,merk=merk,model=model,bmn=bmn)
             return web.redirect('asset')
 
@@ -174,8 +215,8 @@ class BdAsset:
 class BdKegiatan:
     def GET(self, table_name, id=None):
         inp = web.input()
-        tgl = datetime.date.today()
-        #tgl = to_date(inp.get('sampling',datetime.date.today().strftime('%Y-%m-%d')))
+        tgl = to_date(inp.get('sampling',
+                              datetime.date.today().strftime('%Y-%m-%d')))
         bd_id = BENDUNGAN_DICT.get(table_name)
         pos = AgentBd.get(int(bd_id))
         if id:
@@ -188,6 +229,7 @@ class BdKegiatan:
                     AND k.table_name='%s'" % (tgl.strftime('%Y-%m-%d'), table_name)
             rst = [{'p': r[0], 'u': r[1], 'f': r[2]} for r in conn.queryAll(sql)]
             return render_plain.adm.bendungan.kegiatan_paper(pos, tgl, rst)
+
         sql = "SELECT k.petugas, DATE(k.sampling), k.uraian, k.id \
                 FROM kegiatan k, foto f \
                 WHERE f.obj_type='kegiatan' AND k.id=f.obj_id \
@@ -207,7 +249,6 @@ class BdKegiatan:
                                               petugas=PETUGAS_CHOICES,
                                               kegiatan=result, tgl=tgl))
 
-
     def POST(self, table_name):
         inp = web.input()
         keg = Kegiatan(table_name=table_name, 
@@ -219,7 +260,6 @@ class BdKegiatan:
             os.mkdir(FOTO_PATH)
         with open(filename, 'wb') as f:
             f.write(base64.b64decode(inp.get('data').split(',')[1]))
-
         foto = Foto(filepath=filename, keterangan=inp.get('uraian'),
                     obj_type='kegiatan', obj_id=keg.id, cuser=session.get('username'))
         keg.foto = foto
