@@ -1,0 +1,33 @@
+$def with (ctx)
+$ kerusakan = ctx.get('kerusakan')
+$ tg = ctx.get('tgl')
+$code:
+    haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
+    bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
+$var extra_header:
+$var js_foot:
+<!-- End -->
+<h1>Daftar Kerusakan Asset Semua Bendungan</h1>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-stripped table-hover">
+    <thead>
+      <tr>
+      	<th></th>
+      	<th>Nama Bendungan</th>
+        <th>Dilaporkan
+        <th>Uraian Kerusakan</th>
+    </thead>
+    <tbody>
+    	$for k in kerusakan:
+    	<tr>
+    		<td>$loop.index</td>
+    		<td><a href="/adm/bendungan/$k.table_name/kerusakan">$k.table_name</a></td>
+        <td>$k.cdate</td>
+    		<td><li><a href="/adm/bendungan/$k.table_name/kerusakan/$k.id">$k.uraian</a></li></td>
+    	</tr>
+    </tbody>
+  </table>
+  
+</div>
+</div>
