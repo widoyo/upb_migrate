@@ -6,11 +6,61 @@ $code:
     haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
 $var extra_header:
+<style type="text/css">
+  .card-img-top {
+    width: 100%;
+    border-top-left-radius: calc(.25rem - 1px);
+    border-top-right-radius: calc(.25rem - 1px);
+  }
+  .card {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(255, 0, 0, 0.8);
+    border-radius: .25rem;
+  }
+  .card-body {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+  }
+  .card-text:last-child {
+    margin: 10.5px;
+  }
+  .card-footer {
+    padding: .75rem 1.25rem;
+    background-color: rgba(0,0,0,.03);
+    border-top: 1px solid rgba(255, 0, 0, 0.8);
+  }
+  p {
+    margin: 1rem;
+  }
+  .card-header {
+    padding: .75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0,0,0,.03);
+    border-bottom: 1px solid rgba(255, 0, 0, 0.8);
+  }
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
 $var js_foot:
 <!-- End -->
 <h1>Kerusakan Asset Pada $pos.cname</h1>
 
-<div class="table-responsive">
+<!-- <div class="table-responsive">
   <table class="table table-bordered table-stripped table-hover">
     <thead>
       <tr>
@@ -35,5 +85,156 @@ $var js_foot:
     </tbody>
   </table>
   
+</div> -->
+
+<div>
+  <div class="row">
+    $for k in kerusakan:
+    <div class="col-md-6" style="margin-bottom: 2rem;">
+       <div class="card">
+        <div class="card-header bg-transparent border-success text-center"><span class="glyphicon glyphicon-asterisk"></span> $k.asset.nama</div>
+        <div class="card-body">
+          <!-- <h5 class="card-title">Card title that wraps to a new line</h5> -->
+          <p class="card-text text-center">$k.uraian</p>
+          <img class="img-thumbnail" src="${'/'+k.foto.filepath}" alt="Card image cap" style="width: 6rem;height: 6rem;">
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="card-text">Keterangan :</p>
+              <p><span class="glyphicon glyphicon-map-marker"></span> $k.table_name</p>
+              <p><span class="glyphicon glyphicon-time"></span> $k.cdate</p>
+            </div>
+            $if not session.table_name:
+                $if session.is_admin == 3:
+                    <div class="col-md-6">
+                      <p class="card-text">&nbsp;</p>
+                      <div class="text-center">
+                        <button class="btn btn-primary btn-sm ml-2" onclick="modal('$k.asset.nama','$k.foto.filepath','$k.uraian','$k.cdate','$k.table_name','$k.id')">Tanggapi</button>  
+                      </div>
+                    </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detail Kerusakan Asset <span id="asset"></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/adm/bendungan/tanggapan1" method="post">
+          <input type="hidden" id="kerusakan_id" name="kerusakan_id">
+          <div class="form-group">
+            <img class="img-fluid" src="" id="foto-kerusakan-tanggapan">
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Deskripsi Foto:</label>
+            <textarea rows="3" cols="25" class="form-control" disabled="" value="" id="deskripsi"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Waktu Lapor:</label>
+            <input type="text" class="form-control" disabled="" value="" id="waktu">
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Lokasi:</label>
+            <input type="text" class="form-control" disabled="" value="" id="lokasi">
+          </div>
+          <fieldset class="form-group">
+            <div class="row">
+              <label class="col-form-label col-sm-2">Kategori Menurut UPB:</label>
+              <div class="col-sm-10">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="kategori" id="kategori_ringan" value="ringan" required>
+                  <label class="form-check-label">
+                    Ringan (Level kerusakan 10%-20%)
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="kategori" id="kategori_sedang" value="sedang" required>
+                  <label class="form-check-label">
+                    Sedang (Level kerusakan 21%-40%)
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="kategori" id="kategori_berat" value="berat" required>
+                  <label class="form-check-label">
+                    Berat (Level kerusakan diatas 40%)
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+          <div class="form-group">
+            <label class="col-form-label">Uraian Tanggapan:</label>
+            <textarea rows="3" cols="25" class="form-control" id="uraian-tanggapan1" required=""></textarea>
+          </div>
+          <fieldset class="form-group">
+            <div class="row">
+              <label class="col-form-label col-sm-2">Lanjutkan Laporan Kerusakan ?</label>
+              <div class="col-sm-10">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="lanjut" id="lanjut_ya" value="1" required>
+                  <label class="form-check-label">
+                    Ya
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="lanjut" id="lanjut_tidak" value="0" required>
+                  <label class="form-check-label">
+                    Tidak
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="tanggapan1()">Kirim</button>
+      </div>
+    </div>
+  </div>
 </div>
 </div>
+</div>
+
+<script type="text/javascript">
+  function modal(a,b,c,d,e,f){
+    var a = a;
+    var b = b;
+    var c = c;
+    var d = d;
+    var e = e;
+    var f = f;
+    //alert(f);
+    \$('#exampleModal').modal('show');
+    \$('#asset').html(a);
+    \$('#foto-kerusakan-tanggapan').attr('src','/'+b);
+    \$('#deskripsi').val(c);
+    \$('#waktu').val(d);
+    \$('#lokasi').val(e);
+    \$('#kerusakan_id').attr('value',f);
+  }
+
+  function tanggapan1(){
+    var kerusakan_id = \$("#kerusakan_id").val();
+    var kategori = \$( "input[type=radio][name=kategori]:checked" ).val();
+    var uraian = \$("#uraian-tanggapan1").val();
+    var lanjut = \$( "input[type=radio][name=lanjut]:checked" ).val();
+    \$.post('/adm/bendungan//tanggapan1', {kerusakan_id:kerusakan_id,kategori:kategori,uraian:uraian,lanjut:lanjut}).done(function(result){
+      var a = result;
+      if(a == "ok"){
+        alert("Data Berhasil Disimpan");
+        window.location.href = "/adm/bendungan//asset";
+      }
+    });
+  }
+</script>
