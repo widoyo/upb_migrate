@@ -224,7 +224,8 @@ class BdKegiatan:
         foto = Foto(filepath=filename, keterangan=inp.get('uraian'),
                     obj_type='kegiatan', obj_id=keg.id, cuser=session.get('username'))
         keg.foto = foto
-        return web.redirect('/adm/bendungan/%s/kegiatan' % table_name, absolute=True)
+        web.header('Content-Type', 'application/json')
+        return json.dumps({"Ok": "true"})
 
 
 class BdRtowExport:

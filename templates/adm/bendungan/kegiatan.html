@@ -88,8 +88,8 @@ $var js_foot:
 					petugas: \$('select[name="petugas"]').val()
 				}
 
-				\$.post('/adm/bendungan/bd_krisak/kegiatan', formData,
-					function (e) { console.log(e); location.reload(); }
+				\$.post('/adm/bendungan/$pos.table_name/kegiatan', formData)
+					.done(function (e) { console.log(e); location.reload(); }
 				);
 				
 			}
