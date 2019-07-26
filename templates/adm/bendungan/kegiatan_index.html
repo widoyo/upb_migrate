@@ -1,0 +1,17 @@
+$def with(ctx)
+$var title: Foto-foto Kegiatan
+<h1>Foto Kegiatan</h1>
+<table class="table table-responsive table-bordered table-striped">
+	<tbody>
+		<thead>
+			<tr>
+				<th>Bendungan</th>
+
+			</tr>
+		</thead>
+		$for b in ctx:
+		  <tr>
+				<td>$b</td>
+			</tr>
+	</tbody>
+</table>
