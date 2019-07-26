@@ -159,7 +159,7 @@ $var js_foot:
             <td>
               $if v.get(p):
                 $for keg in v.get(p):
-                  <li><a href="kegiatan/${keg.get('kid')}">${keg.get('uraian')}</a></li>
+                  <li>${keg.get('uraian')}</li>
               $else:
                 <i>tidak ada</i>
 				    </td>

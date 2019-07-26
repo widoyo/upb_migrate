@@ -47,14 +47,16 @@ $def with (content)
           <ul class="nav navbar-nav navbar-center">
             $if not session.table_name:
                 <li class="active"><a href="/adm/user">User<span class="sr-only">(current)</span></a></li>
-                $if session.is_admin == 3:
-                    <li><a href="/adm/bendungan">Bendungan</a></li>
-                    <li><a href="/adm/bendungan/teknis">Data Teknis</a></li>
-                    <li><a href="/adm/bendungan/rotw">RTOW</a></li>
-            <li class="nav-item"><a href="/adm/bendungan/${session.table_name}" class="nav-link"><span class="h4">Operasi</span><div><small class="text-muted">TMA, Vol, Debit</small></div></a></li>
-						<li class="nav-item"><a href="/adm/bendungan/${session.table_name}/keamanan" class="nav-link"><span class="h4">Keamanan</span><div><small class="text-muted">VNotch, Piezometer</small></div></a></li>
-						<li class="nav-item"><a href="/adm/bendungan/${session.table_name}/kegiatan" class="nav-link"><span class="h4">Kegiatan</span><div><small class="text-muted">Foto kegiatan</small></div></a></li>
-						<li class="nav-item"><a href="/adm/bendungan/${session.table_name}/asset" class="nav-link"><span class="h4">Asset</span><div><small class="text-muted">Asset Bendungan</small></div></a></li>
+                <li><a href="/adm/bendungan">Bendungan</a></li>
+                <li><a href="/adm/bendungan/teknis">Data Teknis</a></li>
+                <li><a href="/adm/bendungan/rotw">RTOW</a></li>
+                <li><a href="/adm/bendungan/kegiatan">Foto Kegiatan</a></li>
+                <li><a href="/adm/bendungan/asset">Asset</a></li>
+            $else:
+                <li class="nav-item"><a href="/adm/bendungan/${session.table_name}" class="nav-link"><span class="h4">Operasi</span><div><small class="text-muted">TMA, Vol, Debit</small></div></a></li>
+						    <li class="nav-item"><a href="/adm/bendungan/${session.table_name}/keamanan" class="nav-link"><span class="h4">Keamanan</span><div><small class="text-muted">VNotch, Piezometer</small></div></a></li>
+						    <li class="nav-item"><a href="/adm/bendungan/${session.table_name}/kegiatan" class="nav-link"><span class="h4">Kegiatan</span><div><small class="text-muted">Foto kegiatan</small></div></a></li>
+						    <li class="nav-item"><a href="/adm/bendungan/${session.table_name}/asset" class="nav-link"><span class="h4">Asset</span><div><small class="text-muted">Asset Bendungan</small></div></a></li>
             <!-- -->
           </ul>
           <ul class="nav navbar-nav navbar-right">

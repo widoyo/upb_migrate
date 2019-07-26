@@ -27,6 +27,7 @@ urls = (
     '/teknis', 'BdIndexTeknis',
     '/rotw', 'BdIndexRotw',
     '/rotw/csv', 'BdRtowImport',
+    '/kegiatan', 'BdKegiatanIndex',
     '/(\w+\.*\-*\w+)/keamanan', 'BdKeamanan',
     '/(\w+\.*\-*\w+)', 'BdShow',
     '/(\w+\.*\-*\w+)/rtow/export', 'BdRtowExport',
@@ -169,8 +170,14 @@ class BdAsset:
 
             except SQLObjectNotFound:
                 return web.notfound()
+        web.header('Content-Type', 'application/json')
+        return json.dumps({"Ok": "true"})
 
-        return {"Ok": "true"}
+
+class BdKegiatanIndex:
+    def GET(self):
+        bdgs = [k for k,v in BENDUNGAN_DICT.items()]
+        return render.adm.bendungan.kegiatan_index(bdgs)
 
 
 class BdKegiatan:
@@ -199,7 +206,6 @@ class BdKegiatan:
                 ORDER BY k.sampling DESC" % (table_name, tgl.year, tgl.month)
         rows = [r for r in conn.queryAll(sql)]
         tgls = list(set(r[1] for r in rows))
-        print rows 
         result = dict([(t, {}) for t in tgls])
         for r in rows:
             if r[0] in result[r[1]]:
