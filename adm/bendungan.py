@@ -27,6 +27,7 @@ urls = (
     '/teknis', 'BdIndexTeknis',
     '/rotw', 'BdIndexRotw',
     '/rotw/csv', 'BdRtowImport',
+    '/kegiatan', 'BdKegiatanIndex',
     '/(\w+\.*\-*\w+)/keamanan', 'BdKeamanan',
     '/(\w+\.*\-*\w+)', 'BdShow',
     '/(\w+\.*\-*\w+)/rtow/export', 'BdRtowExport',
@@ -208,8 +209,13 @@ class BdAsset:
 
             except SQLObjectNotFound:
                 return web.notfound()
+        web.header('Content-Type', 'application/json')
+        return json.dumps({"Ok": "true"})
 
-        return {"Ok": "true"}
+class BdKegiatanIndex:
+    def GET(self):
+        bdgs = [k for k,v in BENDUNGAN_DICT.items()]
+        return render.adm.bendungan.kegiatan_index(bdgs)
 
 
 class BdKegiatan:
@@ -263,8 +269,8 @@ class BdKegiatan:
         foto = Foto(filepath=filename, keterangan=inp.get('uraian'),
                     obj_type='kegiatan', obj_id=keg.id, cuser=session.get('username'))
         keg.foto = foto
-        return web.redirect('/adm/bendungan/%s/kegiatan' % table_name, absolute=True)
-        
+        web.header('Content-Type', 'application/json')
+        return json.dumps({"Ok": "true"})
 
 
 class BdRtowExport:

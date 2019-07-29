@@ -6,3 +6,4 @@ env
 oauth2
 .*.swp
 static/img/foto
+local_settings.py
