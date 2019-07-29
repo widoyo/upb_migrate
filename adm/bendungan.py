@@ -28,6 +28,7 @@ urls = (
     '/rotw', 'BdIndexRotw',
     '/rotw/csv', 'BdRtowImport',
     '/kegiatan', 'BdKegiatanIndex',
+    '/asset','BdAdminKerusakan',
     '/(\w+\.*\-*\w+)/keamanan', 'BdKeamanan',
     '/(\w+\.*\-*\w+)', 'BdShow',
     '/(\w+\.*\-*\w+)/rtow/export', 'BdRtowExport',
@@ -38,8 +39,8 @@ urls = (
     '/(\w+\.*\-*\w+)/asset', 'BdAsset',
     '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan',
     '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdKerusakan',
-    '//asset','BdAdminKerusakan',
     '//tanggapan1','BdTanggapan1',
+    '//tanggapan2','BdTanggapan2',
 )
 
 
@@ -72,6 +73,7 @@ def admin_required(func):
 
 globals = {'session': session, 'csrf_token': csrf_token}
 render = web.template.render('templates/', base='base_adm', globals=globals)
+render_peltek = web.template.render('templates/', base='base_peltek', globals=globals)
 render_plain = web.template.render('templates/', base='', globals=globals)
 
 class BdKeamanan:
@@ -160,6 +162,29 @@ class BdTanggapan1:
             lanjut = True
         Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,lanjut=lanjut,kategori=kategori,cuser=session.get('username'))
         return "ok"
+
+class BdTanggapan2:
+    @login_required
+    @admin_required
+    def GET(self):
+        tgl = datetime.date.today()
+        tanggapan1 = Tanggapan1.select(Tanggapan1.q.lanjut == True)
+        return render_peltek.adm.bendungan.kerusakan.tanggapan2({'tgl': tgl,'tanggapan1':tanggapan1})
+
+    def POST(self):
+        inp = web.input()
+        t1_id = inp.get('tanggapan1_id')
+        uraian = inp.get('uraian-tanggapan2')
+        if inp.get('nilai'):
+            nilai = inp.get('nilai')
+        else:
+            nilai = None
+        if inp.get('tgl-laksana'):
+            tgl_laksana = inp.get('tgl-laksana')
+        else:
+            tgl_laksana = None
+        Tanggapan2(tanggapan1=int(t1_id),uraian=uraian,nilai=nilai,pelaksanaan=tgl_laksana,cuser=session.get('username'))
+        return web.redirect('')
 
 class BdAsset:
     def GET(self, table_name):

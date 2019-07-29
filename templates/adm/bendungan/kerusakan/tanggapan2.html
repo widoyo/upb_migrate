@@ -1,0 +1,96 @@
+$def with (ctx)
+$ tanggapan1 = ctx.get('tanggapan1')
+$ tg = ctx.get('tgl')
+$code:
+    haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
+    bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
+$var extra_header:
+<style type="text/css">
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
+$var js_foot:
+<!-- End -->
+<h1>Daftar Laporan Kerusakan Asset Ke PelTek</h1>
+<div class="table-responsive">
+  <table class="table table-bordered table-stripped table-hover">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Foto</th>
+        <th>Kategori Rusak (UPB)</th>
+        <th>Lokasi</th>
+        <th>Dilaporkan Petugas</th>
+        <th>Ditanggapi UPB</th>
+        <th>Tanggapan UPB</th>
+        <th>Tindakan PELTEK</th>
+    </thead>
+    <tbody>
+      $for t in tanggapan1:
+      <tr>
+        <td>$loop.index</td>
+        <td><img src="${'/'+t.kerusakan.foto.filepath}" style="width: 20rem;"></td>
+        <td>$t.kategori</td>
+        <td>$t.kerusakan.table_name</td>
+        <td>$t.kerusakan.cdate</td>
+        <td>$t.cdate</td>
+        <td>$t.uraian</td>
+        <td><center><button class="btn btn-primary btn-sm ml-2" onclick="modal('$t.id','$t.kerusakan.foto.filepath','$t.kerusakan.uraian')">Tanggapi</button></center></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Detail Laporan Kerusakan</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+          <img class="img-fluid" src="" id="foto-kerusakan-tanggapan">
+      </div>
+      <div class="form-group">
+        <label class="col-form-label">Deskripsi Foto:</label>
+        <textarea rows="3" cols="25" class="form-control" disabled="" value="" id="deskripsi" style="resize: vertical;"></textarea>
+      </div>
+      <form action="/adm/bendungan//tanggapan2" method="post">
+        <input type="hidden" id="tanggapan1_id" name="tanggapan1_id">
+        <div class="form-group">
+          <label class="col-form-label">Uraian Tanggapan:</label>
+          <textarea rows="3" cols="25" class="form-control" id="uraian-tanggapan2" name="uraian-tanggapan2" required=""></textarea>
+        </div>
+        <div class="form-group">
+          <label class="col-form-label">Nilai:</label>
+          <input type="text" class="form-control" value="" id="nilai" name="nilai" placeholder="Boleh tidak di isi">
+        </div>
+        <div class="form-group">
+          <label class="col-form-label">Tanggal Pelaksanaan:</label>
+          <input type="text" class="form-control" value="" id="tgl-laksana" name="tgl-laksana" placeholder="Boleh tidak di isi">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary" value="Kirim">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<script type="text/javascript">
+  function modal(a,b,c){
+    \$('#exampleModal').modal('show');
+    \$('#tanggapan1_id').val(a);
+    \$('#foto-kerusakan-tanggapan').attr('src','/'+b);
+    \$('#deskripsi').val(c);
+    \$('#tanggapan1_id').val(a);
+  }
+</script>
+

@@ -92,7 +92,15 @@ $var js_foot:
     $for k in kerusakan:
     <div class="col-md-6" style="margin-bottom: 2rem;">
        <div class="card">
-        <div class="card-header bg-transparent border-success text-center"><span class="glyphicon glyphicon-asterisk"></span> $k.asset.nama</div>
+        <div class="card-header bg-transparent border-success text-center">  
+          $if k.kategori == 'ringan':
+              <span class="glyphicon glyphicon-asterisk" style="color:green;"></span>
+          $elif k.kategori == 'sedang':
+              <span class="glyphicon glyphicon-asterisk" style="color:yellow;"></span>
+          $elif k.kategori == 'berat':
+              <span class="glyphicon glyphicon-asterisk" style="color:red;"></span>
+          $k.asset.nama
+        </div>
         <div class="card-body">
           <!-- <h5 class="card-title">Card title that wraps to a new line</h5> -->
           <p class="card-text text-center">$k.uraian</p>

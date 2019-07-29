@@ -255,11 +255,13 @@ class Login:
         if not auth(i.username, i.password):
             session.autherror = '1'
             return web.seeother('/login?next=%s' % web.ctx.env.get('PATH_INFO'))
-        dest = 'adm_ch_tma_bendungan_kualitasair'.split('_')
+        dest = 'adm_ch_tma_bendungan_kualitasair_tanggapan2'.split('_')
 
         redirect = '/' + dest[0]
         if session.table_name:
             redirect += '/' + dest[session.is_admin] + '/' + session.table_name
+        elif session.is_admin == 4:
+            redirect += '/' + dest[3] + '//tanggapan2'
         else:
             redirect += '/' + dest[session.is_admin]
         print 'redirect:', redirect
