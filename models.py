@@ -69,6 +69,7 @@ class Embung(SQLObject):
 
 
 class Foto(SQLObject):
+    kerusakan = ForeignKey('Kerusakan',default=None)
     filepath = StringCol(length=100)
     keterangan = StringCol(length=255, notNone=False)
     obj_type = StringCol(length=20) # nama class
@@ -110,12 +111,14 @@ class Tanggapan2(SQLObject):
 
 class Kerusakan(SQLObject):
     asset = ForeignKey('Asset')
-    foto = ForeignKey('Foto',default=None)
     table_name = StringCol(length=35) # nama bendungan
     cuser = StringCol(length=35)
     cdate = DateTimeCol(default=datetime.datetime.utcnow)
     uraian = StringCol()
     kategori = StringCol(length=10) #ringan,sedang,berat
+
+    tanggapan1 = MultipleJoin('Tanggapan1')
+    foto = MultipleJoin('Foto')
 
 class Asset(SQLObject):
     table_name = StringCol(length=35) # nama bendungan

@@ -25,7 +25,7 @@ $var extra_header:
     word-wrap: break-word;
     background-color: #fff;
     background-clip: border-box;
-    border: 1px solid rgba(255, 0, 0, 0.8);
+/*    border: 1px solid rgba(255, 0, 0, 0.8);*/
     border-radius: .25rem;
   }
   .card-body {
@@ -40,7 +40,7 @@ $var extra_header:
   .card-footer {
     padding: .75rem 1.25rem;
     background-color: rgba(0,0,0,.03);
-    border-top: 1px solid rgba(255, 0, 0, 0.8);
+/*    border-top: 1px solid rgba(255, 0, 0, 0.8);*/
   }
   p {
     margin: 1rem;
@@ -48,81 +48,135 @@ $var extra_header:
   .card-header {
     padding: .75rem 1.25rem;
     margin-bottom: 0;
-    background-color: rgba(0,0,0,.03);
-    border-bottom: 1px solid rgba(255, 0, 0, 0.8);
+/*    background-color: rgba(0,0,0,.03);
+    border-bottom: 1px solid rgba(255, 0, 0, 0.8);*/
   }
   .img-fluid {
     max-width: 100%;
     height: auto;
   }
+  .tanggapan, input {
+    border-width: 2px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+  .tanggapan {
+    width: 60%;
+    height: 45px;
+    padding: 10px 15px;
+    background-color: #fff;
+    border: 1px solid #dce4ec;
+    border-radius: 4px;
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  }
+  .tanggapan, output {
+    display: block;
+    font-size: 15px;
+    line-height: 1.42857143;
+    color: #2c3e50;
+  }
+
+}
 </style>
 $var js_foot:
+    <script src="/static/js/MinifyJpegAsync.js"></script>
+    <script>
+          \$(document).ready(function () {
+            \$('select[name="kegiatan"]').change(function () {
+              if (\$('input#fotoFile')[0].files && (\$('input#fotoFile')[0].files.length > 0)) {
+                \$('input[name="submit"]').removeClass('disabled');
+              }
+              console.log(this.value);
+            });
+            \$('#fotoFile').change(function (event){ readURL(event); });
+          });
+          let enc_img = '';
+          let file_name = '';
+          function readURL(event) {
+            let f = event.target.files[0];
+            file_name = f.name;
+            let reader = new FileReader();
+
+            reader.onloadend = (function(theFile){
+              return function(e) {
+                MinifyJpegAsync.minify(e.target.result, 1280, function(data) { 
+                  enc_img = "data:image/jpeg;base64," + btoa(data);
+                  let img = new Image();
+                  img.src = enc_img;
+                  document.getElementById('blah').src = enc_img;
+                  //\$.post('/adm/bendungan/bd_krisak/kegiatan', {data: enc_img, filename: f.name})
+                  console.log('Hasil proses minify') 
+                });
+              };
+            })(f);
+            reader.readAsDataURL(f);
+          };
+
+          function go_upload() {
+            if(\$('#blah').attr('src') == '#'){
+              alert('pilih foto dulu');
+            }else{
+              var kerusakan_id = \$('#k_id').val();
+              var deskripsi_foto = \$('#deskripsi-foto').val();
+              \$.post('/adm/bendungan/$pos.table_name/kerusakan', {state:'tambah_foto',kerusakan_id: kerusakan_id,deskripsi_foto: deskripsi_foto,data: enc_img, filename: file_name}).done(function(result){
+                //alert(result);
+                var a = result;
+                if(a == "ok"){
+                  window.location.href = "/adm/bendungan/$pos.table_name/kerusakan";
+                }
+              });
+            }
+          
+          }
+
+    </script>
 <!-- End -->
 <h1>Kerusakan Asset Pada $pos.cname</h1>
-
-<!-- <div class="table-responsive">
-  <table class="table table-bordered table-stripped table-hover">
-    <thead>
-      <tr>
-      	<th></th>
-      	<th>Nama Asset</th>
-        <th>Dilaporkan</th>
-        <th>Level</th>
-        <th>Uraian</th>
-        <th>Foto-foto</th>
-      </tr>
-    </thead>
-    <tbody>
-    	$for k in kerusakan :
-    	<tr>
-    		<td>$loop.index</td>
-    		<td>$k.asset.nama</td>
-    		<td>$k.cdate</td>
-    		<td>$k.kategori</td>
-    		<td>$k.uraian</td>
-    		<td><center><img src="${'/'+k.foto.filepath}" class="img-fluid p-3" style="width:15em;"></center></td>
-    	</tr>
-    </tbody>
-  </table>
-  
-</div> -->
 
 <div>
   <div class="row">
     $for k in kerusakan:
     <div class="col-md-6" style="margin-bottom: 2rem;">
-       <div class="card">
+        $if k.kategori == 'berat':
+            <div class="card" style="border: 1px solid red">
+        $elif k.kategori == 'sedang':
+            <div class="card" style="border: 1px solid yellow">
+        $elif k.kategori == 'ringan':
+            <div class="card" style="border: 1px solid green">
+
         <div class="card-header bg-transparent border-success text-center">  
-          $if k.kategori == 'ringan':
-              <span class="glyphicon glyphicon-asterisk" style="color:green;"></span>
-          $elif k.kategori == 'sedang':
-              <span class="glyphicon glyphicon-asterisk" style="color:yellow;"></span>
-          $elif k.kategori == 'berat':
-              <span class="glyphicon glyphicon-asterisk" style="color:red;"></span>
-          $k.asset.nama
+          <strong><span class="text-muted">$k.asset.nama</span></strong>
         </div>
+
         <div class="card-body">
           <!-- <h5 class="card-title">Card title that wraps to a new line</h5> -->
-          <p class="card-text text-center">$k.uraian</p>
-          <img class="img-thumbnail" src="${'/'+k.foto.filepath}" alt="Card image cap" style="width: 6rem;height: 6rem;">
-        </div>
-        <div class="card-footer">
-          <div class="row">
-            <div class="col-md-6">
-              <p class="card-text">Keterangan :</p>
-              <p><span class="glyphicon glyphicon-map-marker"></span> $k.table_name</p>
-              <p><span class="glyphicon glyphicon-time"></span> $k.cdate</p>
-            </div>
-            $if not session.table_name:
-                $if session.is_admin == 3:
-                    <div class="col-md-6">
-                      <p class="card-text">&nbsp;</p>
-                      <div class="text-center">
-                        <button class="btn btn-primary btn-sm ml-2" onclick="modal('$k.asset.nama','$k.foto.filepath','$k.uraian','$k.cdate','$k.table_name','$k.id')">Tanggapi</button>  
-                      </div>
-                    </div>  
+          <div>
+            <p class="card-text" style="font-size: 0.8em;">Uraian Kerusakan :</p>
           </div>
+          <p class="card-text" style="font-size: 1.5em;">$k.uraian</p>
+          <p class="card-text text-muted" style="font-size: 0.8em;margin-left: 1.5em;">$k.cuser, $k.cdate</p>
+          $if not session.table_name:
+              $if session.is_admin == 3:
+                  <button class="btn btn-primary btn-sm" style="margin-left: 18px;" onclick="modal('$k.asset.nama','$k.uraian','$k.cdate','$k.table_name','$k.id')">Tanggapi</button>
+                  <!-- <input type="text" class="tanggapan" placeholder="Apa yang ingin anda katakan?" style="margin-left: 18px;"> -->
+          <br>
+          $for t1 in k.get(k.id).tanggapan1:
+              <div style="margin-left: 1em;">
+                <p class="card-text ml-2" style="font-size: 0.8em;">Tanggapan UPB :</p>
+                <p class="card-text" style="font-size: 1em;">$t1.uraian</p>
+                <p class="card-text text-muted" style="font-size: 0.8em;margin-left: 1.5em">$t1.cuser, $t1.cdate</p>
+              </div>
         </div>
+
+        <div class="card-footer">
+          $for f in k.get(k.id).foto:
+              <a href="#" onclick="fotomodal($f.id)"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a>
+          $if session.table_name:
+              <button class="btn-outline-primary btn-sm" onclick="tambahfoto($k.id)"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -211,6 +265,66 @@ $var js_foot:
     </div>
   </div>
 </div>
+
+
+  <div class="modal fade" id="fotomodal" tabindex="-1" role="dialog" aria-labelledby="fotomodalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center">Foto Kerusakan Asset</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <img class="img-fluid" src="" id="foto-modal-show">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="tambahfotomodal" tabindex="-1" role="dialog" aria-labelledby="tambahfotomodalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center">Tambah Foto Kerusakan</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        <input type="file" name="foto" class="custom-file-input" id="fotoFile">
+          <form method="POST" id="formUpload" enctype="multipart/form-data">
+            <input type="hidden" id="k_id" name="k_id">
+            <div class="form-group">
+              <div class="custom-file">
+                <img id="blah" class="img-fluid" style="width: 100%;" alt=" pratinjau gambar" src="#">
+              </div>
+              <div v-if="imageData.length > 0"><img class="img-fluid" :src="imageData"></div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Deskripsi Foto</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="text" id="deskripsi-foto" name="deskripsi-foto" required="">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <input type="button" name="submit" value="Kirim" onclick="go_upload()" class="btn btn-primary btn-sm">
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal" onclick="srcnull()">Batal</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </div>
 </div>
 
@@ -232,6 +346,24 @@ $var js_foot:
     \$('#kerusakan_id').attr('value',f);
   }
 
+  function fotomodal(fid){
+    //var a = \$('#foto').attr('src');
+    var a = \$('#foto_kers_'+fid).attr('src');
+    \$('#fotomodal').modal('show');
+    \$('#foto-modal-show').attr('src',a);
+  }
+
+  function tambahfoto(kid){
+    \$('#tambahfotomodal').modal('show');
+    //alert(kid);
+    \$('#k_id').attr('value',kid);
+  }
+
+  function srcnull(){
+    \$('#fotoFile').val('');
+    \$('#blah').attr('src','#');
+  }
+
   function tanggapan1(){
     var kerusakan_id = \$("#kerusakan_id").val();
     var kategori = \$( "input[type=radio][name=kategori]:checked" ).val();
@@ -241,7 +373,7 @@ $var js_foot:
       var a = result;
       if(a == "ok"){
         alert("Data Berhasil Disimpan");
-        window.location.href = "/adm/bendungan//asset";
+        window.location.href = "/adm/bendungan/asset";
       }
     });
   }

@@ -118,24 +118,37 @@ class BdKerusakan:
 
     def POST(self, table_name):
         inp = web.input()
-        asset_id = inp.get('asset_id')
-        uraian_kerusakan = inp.get('uraian_kerusakan')
-        kategori = inp.get('kategori')
-        kerusakan_db = Kerusakan(asset=int(asset_id),table_name = table_name, cuser = session.get('username'), uraian = uraian_kerusakan, kategori = kategori)
+        state = inp.get('state')
+        if state == 'tambah_foto':
+            kerusakan_id = inp.get('kerusakan_id')
+            filename = FOTO_PATH +table_name + '_kerusakan_' +str(kerusakan_id)+ '_' + inp.get('filename').lower()
+            if not os.path.isdir(FOTO_PATH):
+                os.mkdir(FOTO_PATH)
+            with open(filename, 'wb') as f:
+                f.write(base64.b64decode(inp.get('data').split(',')[1]))
 
-        filename = FOTO_PATH +table_name + '_kerusakan_' +str(kerusakan_db.id)+ '_' + inp.get('filename').lower()
+            foto = Foto(kerusakan=int(kerusakan_id),filepath=filename, keterangan=inp.get('deskripsi_foto'),
+                    obj_type='kerusakan', obj_id=int(kerusakan_id), cuser=session.get('username'))
 
-        if not os.path.isdir(FOTO_PATH):
-            os.mkdir(FOTO_PATH)
-        with open(filename, 'wb') as f:
-            f.write(base64.b64decode(inp.get('data').split(',')[1]))
+            return "ok"
+        else:
+            asset_id = inp.get('asset_id')
+            deskripsi_foto = inp.get('deskripsi_foto')
+            uraian_kerusakan = inp.get('uraian_kerusakan')
+            kategori = inp.get('kategori')
+            kerusakan_db = Kerusakan(asset=int(asset_id),table_name = table_name, cuser = session.get('username'), uraian = uraian_kerusakan, kategori = kategori)
 
-        foto = Foto(filepath=filename, keterangan=inp.get('uraian_kerusakan'),
-                    obj_type='kerusakan', obj_id=kerusakan_db.id, cuser=session.get('username'))
+            filename = FOTO_PATH +table_name + '_kerusakan_' +str(kerusakan_db.id)+ '_' + inp.get('filename').lower()
 
-        kerusakan_db.foto = foto
-      
-        return "ok"
+            if not os.path.isdir(FOTO_PATH):
+                os.mkdir(FOTO_PATH)
+            with open(filename, 'wb') as f:
+                f.write(base64.b64decode(inp.get('data').split(',')[1]))
+
+            foto = Foto(kerusakan=kerusakan_db.id,filepath=filename, keterangan=deskripsi_foto,
+                        obj_type='kerusakan', obj_id=kerusakan_db.id, cuser=session.get('username'))
+          
+            return "ok"
 
 
 class BdAdminKerusakan:
