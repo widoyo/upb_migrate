@@ -114,7 +114,11 @@ class BdKerusakan:
                 return web.notfound()
             tgl = datetime.date.today()
             kerusakan = Kerusakan.select(Kerusakan.q.table_name==table_name)
-            return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
+            if session.is_admin == 3:
+                return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
+            elif session.is_admin == 4:
+                return render_peltek.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
+
 
     def POST(self, table_name):
         inp = web.input()
@@ -165,24 +169,36 @@ class BdTanggapan1:
     @admin_required
     def POST(self):
         inp = web.input()
-        kerusakan_id = inp.get('kerusakan_id')
-        kategori = inp.get('kategori')
-        uraian = inp.get('uraian')
-        lanjut = inp.get('lanjut')
-        if lanjut == '0':
+        if inp.get('state')=='0':
+            kategori = inp.get('kategori')
+            if inp.get('lanjut') == '0':
+                lanjut = False
+            elif inp.get('lanjut') == '1':
+                lanjut = True
+        elif inp.get('state')=='1':
+            kategori = ""
             lanjut = False
-        elif lanjut == '1':
-            lanjut = True
-        Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,lanjut=lanjut,kategori=kategori,cuser=session.get('username'))
+
+        kerusakan_id = inp.get('kerusakan_id')
+        uraian = inp.get('uraian')
+        # lanjut = inp.get('lanjut')
+        # if lanjut == '0':
+        #     lanjut = False
+        # elif lanjut == '1':
+        #     lanjut = True
+        Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,kategori=kategori,lanjut=lanjut,cuser=session.get('username'))
         return "ok"
 
 class BdTanggapan2:
     @login_required
     @admin_required
     def GET(self):
+        # tgl = datetime.date.today()
+        # tanggapan1 = Tanggapan1.select(Tanggapan1.q.lanjut == True)
+        # return render_peltek.adm.bendungan.kerusakan.tanggapan2({'tgl': tgl,'tanggapan1':tanggapan1})
         tgl = datetime.date.today()
-        tanggapan1 = Tanggapan1.select(Tanggapan1.q.lanjut == True)
-        return render_peltek.adm.bendungan.kerusakan.tanggapan2({'tgl': tgl,'tanggapan1':tanggapan1})
+        kerusakan = Kerusakan.select()
+        return render_peltek.adm.bendungan.kerusakan.admin({'tgl': tgl, 'kerusakan' : kerusakan})
 
     def POST(self):
         inp = web.input()
