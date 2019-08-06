@@ -102,7 +102,7 @@ class Tanggapan1(SQLObject):
     cdate = DateTimeCol(default=datetime.datetime.utcnow)
 
 class Tanggapan2(SQLObject):
-    tanggapan1 = ForeignKey('Tanggapan1',default=None)
+    kerusakan = ForeignKey('Kerusakan',default=None)
     uraian = StringCol()
     nilai = FloatCol(default=None) #dana yang dikeluarkan
     pelaksanaan = DateCol(default=None)
@@ -118,6 +118,7 @@ class Kerusakan(SQLObject):
     kategori = StringCol(length=10) #ringan,sedang,berat
 
     tanggapan1 = MultipleJoin('Tanggapan1')
+    tanggapan2 = MultipleJoin('Tanggapan2')
     foto = MultipleJoin('Foto')
 
 class Asset(SQLObject):

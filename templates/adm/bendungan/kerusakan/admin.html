@@ -23,8 +23,8 @@ $var js_foot:
     	<tr>
     		<td>$loop.index</td>
     		<td><a href="/adm/bendungan/$k.table_name/kerusakan">$k.table_name</a></td>
-        <td>$k.cdate</td>
-    		<td><li><a href="/adm/bendungan/$k.table_name/kerusakan/$k.id">$k.uraian</a></li></td>
+        <td>${k.cdate.strftime('%d %b %Y Jam %H:%M:%S')}</td>
+    		<td><li>$k.uraian</li></td>
     	</tr>
     </tbody>
   </table>

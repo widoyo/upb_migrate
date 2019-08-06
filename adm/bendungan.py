@@ -4,6 +4,7 @@ import sys
 import datetime
 import calendar
 import json
+import locale
 sys.path.append('../')
 from memory_profiler import profile
 
@@ -181,11 +182,6 @@ class BdTanggapan1:
 
         kerusakan_id = inp.get('kerusakan_id')
         uraian = inp.get('uraian')
-        # lanjut = inp.get('lanjut')
-        # if lanjut == '0':
-        #     lanjut = False
-        # elif lanjut == '1':
-        #     lanjut = True
         Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,kategori=kategori,lanjut=lanjut,cuser=session.get('username'))
         return "ok"
 
@@ -202,17 +198,19 @@ class BdTanggapan2:
 
     def POST(self):
         inp = web.input()
-        t1_id = inp.get('tanggapan1_id')
+        kerusakan_id = inp.get('t2_kid')
         uraian = inp.get('uraian-tanggapan2')
         if inp.get('nilai'):
-            nilai = inp.get('nilai')
+            n1 = inp.get('nilai').replace('Rp. ','')
+            n2 = n1.replace('.','')
+            nilai = n2
         else:
             nilai = None
         if inp.get('tgl-laksana'):
             tgl_laksana = inp.get('tgl-laksana')
         else:
             tgl_laksana = None
-        Tanggapan2(tanggapan1=int(t1_id),uraian=uraian,nilai=nilai,pelaksanaan=tgl_laksana,cuser=session.get('username'))
+        Tanggapan2(kerusakan=int(kerusakan_id),uraian=uraian,nilai=int(nilai),pelaksanaan=tgl_laksana,cuser=session.get('username'))
         return web.redirect('')
 
 class BdAsset:

@@ -6,81 +6,83 @@ $code:
     haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
 $var extra_header:
-<style type="text/css">
-  .card-img-top {
-    width: 100%;
-    border-top-left-radius: calc(.25rem - 1px);
-    border-top-right-radius: calc(.25rem - 1px);
-  }
-  .card {
-    position: relative;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #fff;
-    background-clip: border-box;
-/*    border: 1px solid rgba(255, 0, 0, 0.8);*/
-    border-radius: .25rem;
-  }
-  .card-body {
-    -webkit-box-flex: 1;
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
-    padding: 1.25rem;
-  }
-  .card-text:last-child {
-    margin: 10.5px;
-  }
-  .card-footer {
-    padding: .75rem 1.25rem;
-    background-color: rgba(0,0,0,.03);
-/*    border-top: 1px solid rgba(255, 0, 0, 0.8);*/
-  }
-  p {
-    margin: 1rem;
-  }
-  .card-header {
-    padding: .75rem 1.25rem;
-    margin-bottom: 0;
-/*    background-color: rgba(0,0,0,.03);
-    border-bottom: 1px solid rgba(255, 0, 0, 0.8);*/
-  }
-  .img-fluid {
-    max-width: 100%;
-    height: auto;
-  }
-  .tanggapan, input {
-    border-width: 2px;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  .tanggapan {
-    width: 60%;
-    height: 45px;
-    padding: 10px 15px;
-    background-color: #fff;
-    border: 1px solid #dce4ec;
-    border-radius: 4px;
-    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-  }
-  .tanggapan, output {
-    display: block;
-    font-size: 15px;
-    line-height: 1.42857143;
-    color: #2c3e50;
-  }
+    <style type="text/css">
+      .card-img-top {
+        width: 100%;
+        border-top-left-radius: calc(.25rem - 1px);
+        border-top-right-radius: calc(.25rem - 1px);
+      }
+      .card {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+    /*    border: 1px solid rgba(255, 0, 0, 0.8);*/
+        border-radius: .25rem;
+      }
+      .card-body {
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1.25rem;
+      }
+      .card-text:last-child {
+        margin: 10.5px;
+      }
+      .card-footer {
+        padding: .75rem 1.25rem;
+        background-color: rgba(0,0,0,.03);
+    /*    border-top: 1px solid rgba(255, 0, 0, 0.8);*/
+      }
+      p {
+        margin: 1rem;
+      }
+      .card-header {
+        padding: .75rem 1.25rem;
+        margin-bottom: 0;
+    /*    background-color: rgba(0,0,0,.03);
+        border-bottom: 1px solid rgba(255, 0, 0, 0.8);*/
+      }
+      .img-fluid {
+        max-width: 100%;
+        height: auto;
+      }
+      .tanggapan, input {
+        border-width: 2px;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
+      .tanggapan {
+        width: 60%;
+        height: 45px;
+        padding: 10px 15px;
+        background-color: #fff;
+        border: 1px solid #dce4ec;
+        border-radius: 4px;
+        -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+      }
+      .tanggapan, output {
+        display: block;
+        font-size: 15px;
+        line-height: 1.42857143;
+        color: #2c3e50;
+      }
 
-}
-</style>
+    }
+    </style>
 $var js_foot:
+    <script src="/static/js/rupiah.js"></script>
+    <script src="/static/js/bootstrap-datepicker.js"></script>
     <script src="/static/js/MinifyJpegAsync.js"></script>
     <script>
           \$(document).ready(function () {
@@ -92,6 +94,10 @@ $var js_foot:
             });
             \$('#fotoFile').change(function (event){ readURL(event); });
           });
+          \$('.datepicker').datepicker({
+              format: 'yyyy-mm-dd',
+              autoclose: true
+           }); 
           let enc_img = '';
           let file_name = '';
           function readURL(event) {
@@ -134,10 +140,66 @@ $var js_foot:
     </script>
 <!-- End -->
 <h1>Kerusakan Asset Pada $pos.cname</h1>
-
 <div>
   <div class="row">
     $for k in kerusakan:
+    <div class="modal fade" id="t2modal_$k.id" tabindex="-1" role="dialog" aria-labelledby="t2modalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-center">Detail Taggapan Peltek</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <tbody>
+                $for t2 in k.get(k.id).tanggapan2:
+                <tr>
+                  <td class="font-weight-bold">Uraian Tanggapan</td>
+                  <td>:</td>
+                  <td>$t2.uraian</td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">Nilai</td>
+                  <td>:</td>
+                  <td>$t2.nilai</td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">Tanggal Pelaksanaan</td>
+                  <td>:</td>
+                  <td>$t2.pelaksanaan.strftime("%d %b %Y")</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="fcmodal_$k.id" tabindex="-1" role="dialog" aria-labelledby="fcmodalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-center">Foto Kerusakan Asset</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="carouselExampleControls" class="carousel">
+              <div class="carousel-inner">
+                $for f in k.get(k.id).foto:
+                    <div class="carousel-item">
+                      <img class="img-fluid" src="${'/'+f.filepath}">
+                    </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="col-md-6" style="margin-bottom: 2rem;">
         $if k.kategori == 'berat':
             <div class="card" style="border: 1px solid red">
@@ -146,66 +208,91 @@ $var js_foot:
         $elif k.kategori == 'ringan':
             <div class="card" style="border: 1px solid green">
 
-        <div class="card-header bg-transparent border-success text-center">  
-          <strong><span class="text-muted">$k.asset.nama</span></strong>
-        </div>
-
         <div class="card-body">
-          <div>
-            <p class="card-text" style="font-size: 0.8em;">Uraian Kerusakan :</p>
-          </div>
-          <p class="card-text" style="font-size: 1.5em;">$k.uraian</p>
-          <p class="card-text text-muted" style="font-size: 0.8em;margin-left: 1.5em;">$k.cuser, $k.cdate</p>
+          <strong><p class="card-text">Nama Asset : $k.asset.nama</p></strong>
+          <p class="card-text" style="font-size: 0.8em;">Uraian Kerusakan :</p>
+          <p class="card-text" style="font-size: 1.5em;">
+          $k.uraian</p>
+          <p class="card-text" style="margin-left: 1.5em;">$k.cuser, ${k.cdate.strftime('%d %b %Y, %H:%M:%S')}</p>
+          $if session.table_name and len(k.get(k.id).tanggapan1)==0:
+              <strong>
+                <p class="text-center" style="font-size: 2rem;">Belum ada tanggapan dari UPB</p>
+              </strong>
+          $elif session.table_name and len(k.get(k.id).tanggapan1)!=0:
+              $if k.get(k.id).tanggapan1[0].lanjut == False:
+                  <strong>
+                    <p class="text-center" style="font-size: 2rem;">Laporan Kerusakan ini tidak dilanjutkan oleh UPB</p>
+                  </strong>
           $if not session.table_name:
               <div style="margin-left: 18px;">
                 <form class="form-inline">
                   $if len(k.get(k.id).tanggapan1)==0:
-                       <input type="hidden" id="kerusakan_id_$k.id" name="kerusakan_id_$k.id" value="$k.id">
-                       <div class="form-group">
-                         <input type="text" class="form-control" id="uraian-tanggapan1_$k.id" placeholder="Tanggapan Anda..">
-                       </div>
-                       <div class="form-group">
-                         <select class="form-control" id="kategori" required="">
-                          <option value="">Kategori</option>
-                          <option value="ringan">Ringan</option>
-                          <option value="sedang">Sedang</option>
-                          <option value="berat">Berat</option>
-                        </select>
-                       </div>
-                       <div class="form-group">
-                         <select class="form-control" id="lanjut" required="">
-                          <option value="">Lanjut</option>
-                          <option value="1">Ya</option>
-                          <option value="0">Tidak</option>
-                        </select>
-                       </div>
-                       $if session.is_admin == 3:
-                          <button type="button" onclick="tanggapan1($k.id,0)" class="btn btn-primary">Kirim</button>
+                      $if session.is_admin == 3:
+                           <input type="hidden" id="kerusakan_id_$k.id" name="kerusakan_id_$k.id" value="$k.id">
+                           <div class="form-group">
+                             <input type="text" class="form-control" id="uraian-tanggapan1_$k.id" placeholder="Tanggapan Anda..">
+                           </div>
+                           <div class="form-group">
+                             <select class="form-control" id="kategori" required="">
+                              <option value="">Kategori</option>
+                              <option value="ringan">Ringan</option>
+                              <option value="sedang">Sedang</option>
+                              <option value="berat">Berat</option>
+                            </select>
+                           </div>
+                           <div class="form-group">
+                             <select class="form-control" id="lanjut" required="">
+                              <option value="">Lanjut</option>
+                              <option value="1">Ya</option>
+                              <option value="0">Tidak</option>
+                            </select>
+                           </div>
+                           <button type="button" onclick="tanggapan1($k.id,0)" class="btn btn-primary">Kirim</button>
                        $elif session.is_admin == 4:
-                          <button type="button" onclick="alert('selamat ali')" class="btn btn-success">Kirim</button>
+                          <strong>
+                            <p class="text-center" style="font-size: 2rem;">Belum ada tanggapan dari UPB</p>
+                          </strong>
                   $else:
                       <input type="hidden" id="kerusakan_id_$k.id" name="kerusakan_id_$k.id" value="$k.id">
-                       <div class="form-group">
-                         <input type="text" class="form-control" id="uraian-tanggapan1_$k.id" placeholder="Tanggapan Anda..">
-                       </div>
-                       $if session.is_admin == 3:
-                          <button type="button" onclick="tanggapan1($k.id,1)" class="btn btn-primary">Kirim</button>
-                       $elif session.is_admin == 4:
-                          <button type="button" onclick="alert('selamat ali')" class="btn btn-success">Kirim</button>
+                      $if session.is_admin == 3:
+                          $if len(k.get(k.id).tanggapan2) == 0:
+                               <div class="form-group">
+                                 <input type="text" class="form-control" id="uraian-tanggapan1_$k.id" placeholder="Tanggapan Anda..">
+                               </div>
+                               <button type="button" onclick="tanggapan1($k.id,1)" class="btn btn-primary">Kirim</button>
+                          $else:
+                              <strong>
+                                <p class="text-center" style="font-size: 2rem;">Laporan ini telah ditanggapi Oleh Pelaksana Teknis</p>
+                              </strong>
+                              <p class="text-center"><a href="" data-toggle="modal" data-target="#t2modal_$k.id">Detail</a></p>
+                      $elif session.is_admin == 4:
+                          $if len(k.get(k.id).tanggapan2) == 0: 
+                              $if k.get(k.id).tanggapan1[0].lanjut == False:
+                                  <strong>
+                                    <p class="text-center" style="font-size: 2rem;">Laporan Kerusakan ini tidak dilanjutkan oleh UPB</p>
+                                  </strong>
+                              $elif k.get(k.id).tanggapan1[0].lanjut == True:
+                                  <button type="button" onclick="tanggapan2modal($k.id)" class="btn btn-success btn-sm">Tanggapi</button>
+                          $elif len(k.get(k.id).tanggapan2) != 0:
+                              <strong>
+                                <p class="text-center" style="font-size: 2rem;">Terima Kasih Telah Menanggapi Laporan Ini</p>
+                              </strong>
+                              <p class="text-center"><a href="" data-toggle="modal" data-target="#t2modal_$k.id">Detail</a></p>
                 </form>
               </div>
           <br>
           $for t1 in k.get(k.id).tanggapan1:
               <div style="margin-left: 1em;">
-                <p class="card-text" style="font-size: 0.8em;font-style: italic;">Tanggapan UPB :</p>
+                <p class="card-text" style="font-size: 0.8em;font-style: italic;">Tanggapan UPB ($t1.cuser):</p>
                 <p class="card-text" style="font-size: 1em;">$t1.uraian</p>
-                <p class="card-text text-muted" style="font-size: 0.8em;margin-left: 1.5em">$t1.cuser, $t1.cdate</p>
+                <p class="card-text" style="margin-left: 1.5em">${t1.cdate.strftime('%d %b %Y, %H:%M:%S')}</p>
               </div>
         </div>
 
         <div class="card-footer">
           $for f in k.get(k.id).foto:
-              <a href="#" onclick="fotomodal($f.id,'$f.keterangan')"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a>
+              <!-- <a href="#" onclick="fotomodal($f.id,'$f.keterangan')"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a> -->
+              <a href="#" onclick="fc($k.id)"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a>
           $if session.table_name:
               <button class="btn-outline-primary btn-sm" onclick="tambahfoto($k.id)"><span class="glyphicon glyphicon-plus"></span></button>
         </div>
@@ -214,109 +301,39 @@ $var js_foot:
     </div>
   </div>
 
-<!--   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="tanggapan2Modal" tabindex="-1" role="dialog" aria-labelledby="tanggapan2ModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Detail Kerusakan Asset <span id="asset"></span></h5>
+        <h5 class="modal-title" id="exampleModalLabel">Form Input Tanggapan Pelaksana Teknis</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form action="/adm/bendungan/tanggapan1" method="post">
-          <input type="hidden" id="kerusakan_id" name="kerusakan_id">
-          <div class="form-group">
-            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-              <div class="carousel-inner">
-                <div class="carousel-item">
-                  <img class="img-fluid" src="">
-                </div>
-              </div>
-              <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-              </a>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-form-label">Deskripsi Foto:</label>
-            <textarea rows="3" cols="25" class="form-control" disabled="" value="" id="deskripsi"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="col-form-label">Waktu Lapor:</label>
-            <input type="text" class="form-control" disabled="" value="" id="waktu">
-          </div>
-          <div class="form-group">
-            <label class="col-form-label">Lokasi:</label>
-            <input type="text" class="form-control" disabled="" value="" id="lokasi">
-          </div>
-          <fieldset class="form-group">
-            <div class="row">
-              <label class="col-form-label col-sm-2">Kategori Menurut UPB:</label>
-              <div class="col-sm-10">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="kategori" id="kategori_ringan" value="ringan" required>
-                  <label class="form-check-label">
-                    Ringan (Level kerusakan 10%-20%)
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="kategori" id="kategori_sedang" value="sedang" required>
-                  <label class="form-check-label">
-                    Sedang (Level kerusakan 21%-40%)
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="kategori" id="kategori_berat" value="berat" required>
-                  <label class="form-check-label">
-                    Berat (Level kerusakan diatas 40%)
-                  </label>
-                </div>
-              </div>
-            </div>
-          </fieldset>
+        <form action="/adm/bendungan//tanggapan2" method="post">
+          <input type="hidden" id="t2_kid" name="t2_kid">
           <div class="form-group">
             <label class="col-form-label">Uraian Tanggapan:</label>
-            <textarea rows="3" cols="25" class="form-control" id="uraian-tanggapan1" required=""></textarea>
+            <textarea rows="3" cols="25" class="form-control" id="uraian-tanggapan2" name="uraian-tanggapan2" required=""></textarea>
           </div>
-          <fieldset class="form-group">
-            <div class="row">
-              <label class="col-form-label col-sm-2">Lanjutkan Laporan Kerusakan ?</label>
-              <div class="col-sm-10">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="lanjut" id="lanjut_ya" value="1" required>
-                  <label class="form-check-label">
-                    Ya
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="lanjut" id="lanjut_tidak" value="0" required>
-                  <label class="form-check-label">
-                    Tidak
-                  </label>
-                </div>
-              </div>
-            </div>
-          </fieldset>
+          <div class="form-group">
+            <label class="col-form-label">Nilai:</label>
+            <input type="text" class="form-control" value="" id="nilai" name="nilai" placeholder="Boleh tidak di isi">
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Tanggal Pelaksanaan:</label>
+            <input type="text" class="form-control datepicker" value="" id="tgl-laksana" name="tgl-laksana" placeholder="Boleh tidak di isi">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input type="submit" class="btn btn-primary" value="Kirim">
+          </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        $if not session.table_name:
-            $if session.is_admin == 3:
-                <button type="button" class="btn btn-primary" onclick="tanggapan1()">Kirim</button>
-            $elif session.is_admin == 4:
-                <button type="button" class="btn btn-success" onclick="tanggapan2()">Kirim</button>
       </div>
     </div>
   </div>
-</div> -->
-
+  </div>
 
   <div class="modal fade" id="fotomodal" tabindex="-1" role="dialog" aria-labelledby="fotomodalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -383,6 +400,11 @@ $var js_foot:
 </div>
 
 <script type="text/javascript">
+  function tanggapan2modal(kid){
+    \$('#tanggapan2Modal').modal('show');
+    \$('#t2_kid').val(kid);
+  }
+
   function modal(a,b,c,d,e){
     var a = a;
     var b = b;
@@ -392,7 +414,6 @@ $var js_foot:
     \$('#exampleModal').modal('show');
     \$('#asset').html(a);
     \$('#kid_slide').html(e);
-    // \$('#foto-kerusakan-tanggapan').attr('src','/'+b);
     \$('#deskripsi').val(b);
     \$('#waktu').val(c);
     \$('#lokasi').val(d);
@@ -400,11 +421,14 @@ $var js_foot:
   }
 
   function fotomodal(fid,fket){
-    //var a = \$('#foto').attr('src');
     var a = \$('#foto_kers_'+fid).attr('src');
     \$('#fotomodal').modal('show');
     \$('#foto-modal-show').attr('src',a);
     \$('#f_keterangan').html(fket);
+  }
+
+  function fc(kid){
+    \$('#fcmodal_'+kid).modal('show');
   }
 
   function tambahfoto(kid){
@@ -458,24 +482,6 @@ $var js_foot:
       }
     }
     
-
-  }
-
-  function tanggapan1_1(kid){
-    var kerusakan_id = \$("#kerusakan_id_"+kid).val();
-    var uraian = \$("#uraian-tanggapan1_"+kid).val();
-    if(uraian == ""){
-      alert("uraian tanggapan harap di isi..");
-      \$( "#uraian-tanggapan1_"+kid ).focus();
-    }else{
-      \$.post('/adm/bendungan//tanggapan1', {kerusakan_id:kerusakan_id,uraian:uraian,state:'1'}).done(function(result){
-        var a = result;
-        if(a == "ok"){
-          alert("Data Berhasil Disimpan");
-          window.location.reload();
-        }
-      });
-    }
 
   }
 </script>
