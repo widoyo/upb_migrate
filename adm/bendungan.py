@@ -250,8 +250,13 @@ class BdAsset:
             kategori = inp.get('kategori-asset')
             merk = inp.get('merk')
             model = inp.get('model')
+            tgl_perolehan = inp.get('tgl_perolehan')
+            if inp.get('nilai'):
+                n1 = inp.get('nilai').replace('Rp. ','')
+                n2 = n1.replace('.','')
+                nilai = n2
             bmn = inp.get('bmn')
-            Asset(table_name=table_name,cuser=session.get('username'),kategori=kategori+'_'+nama,nama=nama,merk=merk,model=model,bmn=bmn)
+            Asset(table_name=table_name,cuser=session.get('username'),kategori=kategori+'_'+nama,nama=nama,merk=merk,model=model,perolehan=tgl_perolehan,nilai_perolehan=int(nilai),bmn=bmn)
             return web.redirect('asset')
 
         else:

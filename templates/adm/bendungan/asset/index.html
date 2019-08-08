@@ -69,6 +69,7 @@ $var js_foot:
 	<link rel="stylesheet" href="/static/bootstrap/css/bootstrap-datetimepicker.min.css" />
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+	<script src="/static/js/rupiah.js"></script>
 	<script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
 	<script type="text/javascript" src="/static/js/MinifyJpegAsync.js"></script>
 	<script>
@@ -91,10 +92,9 @@ $var js_foot:
         \$('.gotomonth').on('changeDate', function() {
             window.location = '/adm/bendungan/$pos.table_name?sampling=' + \$(this).datepicker('getFormattedDate');
           });
-        \$('.datepicker').on('changeDate', function() {
-              var dated = \$(this).datepicker('getDate');
-              var wd = dated.getDay() - 1;
-              if (wd === -1) { wd = 6 }; 
+        \$('.datepicker').datepicker({
+              format: 'yyyy-mm-dd',
+              autoclose: true
          });
       });
 			let enc_img = '';
@@ -241,6 +241,18 @@ $var js_foot:
 		    <label class="col-sm-4 col-form-label">Model</label>
 		    <div class="col-sm-8">
 		      <input type="text" class="form-control" name="model" id="model" placeholder="">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label class="col-sm-4 col-form-label">Tanggal Perolehan</label>
+		    <div class="col-sm-8">
+		      <input type="text" class="form-control datepicker" name="tgl_perolehan" id="tgl_perolehan" placeholder="">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label class="col-sm-4 col-form-label">Nilai Perolehan</label>
+		    <div class="col-sm-8">
+		      <input type="text" class="form-control" name="nilai" id="nilai" placeholder="">
 		    </div>
 		  </div>
 		  <div class="form-group row">
