@@ -12,17 +12,28 @@ $var extra_header:
         border: solid 1px #ddd;
         padding: 5px;
       }
-			.img-fluid {
-				max-width: 100%;
-				height: auto;
-			}
-			.img-preview {
-				max-width: 100%;
-				height: auto;
-				padding: 5px;
-				border: solid 1px #ddd;
-			}
+		.img-fluid {
+			max-width: 100%;
+			height: auto;
+		}
+		.img-preview {
+			max-width: 100%;
+			height: auto;
+			padding: 5px;
+			border: solid 1px #ddd;
+		}
       .datepicker-months .month { padding: 10px;}
+      .btn-outline-primary {
+		    color: #007bff;
+		    background-color: transparent;
+		    background-image: none;
+		    border-color: #007bff;
+		}
+		.btn-outline-primary:hover {
+		    color: #fff;
+		    background-color: #007bff;
+		    text-decoration: none;
+		}
 		</style>
 $var js_foot:
     <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
@@ -96,7 +107,7 @@ $var js_foot:
 
 		</script>
 <!-- End -->
-<h1>Kegiatan Petugas $pos.cname <a class="btn btn-outline-primary btn-sm" data-toggle="collapse" href="#form-kegiatan"><span class="glyphicon glyphicon-plus"></span>Tambah Laporan Kegiatan</a>
+<h1>Kegiatan Petugas $pos.cname <button class="btn btn-outline-primary btn-sm" id="btn-keg" data-toggle="collapse" href="#form-kegiatan"><span class="glyphicon glyphicon-plus"></span>Tambah Laporan Kegiatan</button>
 </h1>
 <div class="container collapse" id="form-kegiatan">
 <div class="row">
@@ -128,6 +139,7 @@ $var js_foot:
     </div><!-- form-group -->
 		<div class="form-group">
 	<input type="button" name="submit" value="upload" onclick="go_upload()" class="btn btn-primary">
+	<input type="button" name="batal" value="Batal" onclick="srcnull()" class="btn btn-danger">
 		</form>
 		</div>
 	</div>
@@ -159,7 +171,7 @@ $var js_foot:
             <td>
               $if v.get(p):
                 $for keg in v.get(p):
-                  <li>${keg.get('uraian')}</li>
+                  <li><a href="kegiatan/${keg.get('kid')}">${keg.get('uraian')}</a></li>
               $else:
                 <i>tidak ada</i>
 				    </td>
@@ -168,3 +180,13 @@ $var js_foot:
   </table>
 </div>
 </div>
+
+<script>
+function srcnull(){
+	\$('#fotoFile').val('');
+	\$('#blah').attr('src','/static/img/null.jpg');
+	\$('input[name="uraian"]').val('');
+	\$('select[name="petugas"]').val("").change();
+	\$('#form-kegiatan').collapse('hide');
+}
+</script>

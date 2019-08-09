@@ -2,6 +2,44 @@ $def with (bendungan, sampling, rows)
 <html>
 <head>
 <style>
+    @media print{
+      #no-print{
+        display: none;
+      }
+    }
+    .btn {
+        border-width: 2px;
+    }
+    .btn-group-sm>.btn, .btn-sm {
+        padding: 6px 9px;
+        font-size: 13px;
+        line-height: 1.5;
+        border-radius: 3px;
+    }
+    .btn-danger {
+        color: #fff;
+        background-color: #e74c3c;
+        border-color: #e74c3c;
+    }
+    .btn {
+        display: inline-block;
+        margin-bottom: 0;
+        font-weight: 400;
+        text-align: center;
+        vertical-align: middle;
+        touch-action: manipulation;
+        cursor: pointer;
+        border: 1px solid transparent;
+        white-space: nowrap;
+        padding: 10px 15px;
+        font-size: 15px;
+        line-height: 1.42857143;
+        border-radius: 4px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
     html { font-family: helvetica;}
     .logo { float: left; padding: 0px; }
     .header { padding: 0px;margin-top: 0px; }
@@ -19,8 +57,8 @@ $def with (bendungan, sampling, rows)
     .mengetahui { width: 33%; float: left; font-size: 12px;}
 </style>
 </head>
-<body class="A4">
-<section class="sheet padding-10mm">
+<body>
+<section>
 <div class="container">
     <div class="logo">
     <img src="/static/images/logo_pu.png" height=80 width=80 alt="Logo PUPR">
@@ -37,8 +75,11 @@ $def with (bendungan, sampling, rows)
       <table class="table table-bordered boldtable">
       $for keg in rows:
           <tr>
-          <td><img src="/${keg.get('f')}" style="width: 50%; height: auto">
-            <div style="vertical-align: top">${keg.get('u')}, ${keg.get('p')}</div></td>
+          <td>
+            <button id="no-print" class="btn btn-danger btn-sm" style="float: right;" onclick="del_ft(${keg.get('kid')},${keg.get('fid')});">Hapus</button>
+            <img src="/${keg.get('f')}" style="width: 50%; height: auto;">
+            <div style="vertical-align: top">${keg.get('u')}, ${keg.get('p')}</div>
+          </td>
           </tr>
       </table>
 			<p style="font-size: 11px;"></p>
@@ -51,5 +92,26 @@ $def with (bendungan, sampling, rows)
          NIP. 19680604 199502 1 001</div>
     </div>
     </section>
+
+    <script>
+      function del_ft(kid,fid){
+        //alert(f);
+        var kegiatan_id = kid;
+        var foto_id = fid;
+        var result = confirm("Anda yakin ingin menghapus data ini?");
+        if (result) {
+            \$.post('/adm/bendungan/$bendungan.table_name/kegiatan', {kegiatan_id:kegiatan_id, foto_id:foto_id, state:'hapus'}).done(function(result){
+              var a = result;
+              if(a == "ok"){
+                alert("Berhasil dihapus");
+                window.location.reload();
+              }
+            });
+        }
+
+      }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
     </body>
     </html>

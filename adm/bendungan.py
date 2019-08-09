@@ -4,7 +4,6 @@ import sys
 import datetime
 import calendar
 import json
-import locale
 sys.path.append('../')
 from memory_profiler import profile
 
@@ -286,11 +285,11 @@ class BdKegiatan:
             kegiatan = Kegiatan.get(int(id))
             return render.adm.bendungan.kegiatan_show(kegiatan=kegiatan)
         if inp.get('sampling') and inp.get('paper'):
-            sql = "SELECT k.petugas, k.uraian, f.filepath FROM \
+            sql = "SELECT k.id, k.petugas, k.uraian, f.id, f.filepath FROM \
                     kegiatan k, foto f \
                     WHERE f.obj_type='kegiatan' AND k.id=f.obj_id AND DATE(k.sampling)='%s' \
                     AND k.table_name='%s'" % (tgl.strftime('%Y-%m-%d'), table_name)
-            rst = [{'p': r[0], 'u': r[1], 'f': r[2]} for r in conn.queryAll(sql)]
+            rst = [{'kid':r[0], 'p': r[1], 'u': r[2], 'fid':r[3],'f': r[4]} for r in conn.queryAll(sql)]
             return render_plain.adm.bendungan.kegiatan_paper(pos, tgl, rst)
 
         sql = "SELECT k.petugas, DATE(k.sampling), k.uraian, k.id \
@@ -314,20 +313,33 @@ class BdKegiatan:
 
     def POST(self, table_name):
         inp = web.input()
-        keg = Kegiatan(table_name=table_name, 
-                       petugas=inp.get('petugas'), uraian=inp.get('uraian'), 
-                       sampling=to_date(inp.get('waktu')),
-                      cuser=session.username)
-        filename = FOTO_PATH + '/' +table_name + '_kegiatan_' +str(keg.id)+ '_' + inp.get('filename').lower()
-        if not os.path.isdir(FOTO_PATH):
-            os.mkdir(FOTO_PATH)
-        with open(filename, 'wb') as f:
-            f.write(base64.b64decode(inp.get('data').split(',')[1]))
-        foto = Foto(filepath=filename, keterangan=inp.get('uraian'),
-                    obj_type='kegiatan', obj_id=keg.id, cuser=session.get('username'))
-        keg.foto = foto
-        web.header('Content-Type', 'application/json')
-        return json.dumps({"Ok": "true"})
+        if inp.get('state') == 'hapus':
+            kegiatan_id = inp.get('kegiatan_id')
+            foto_id = inp.get('foto_id')
+
+            deletekeg = Delete('kegiatan',where='id='+kegiatan_id)
+            query1 = conn.sqlrepr(deletekeg)
+            conn.query(query1)
+
+            deleteft = Delete('foto',where='id='+foto_id)
+            query2 = conn.sqlrepr(deleteft)
+            conn.query(query2)
+            return "ok"
+        else:
+            keg = Kegiatan(table_name=table_name, 
+                           petugas=inp.get('petugas'), uraian=inp.get('uraian'), 
+                           sampling=to_date(inp.get('waktu')),
+                          cuser=session.username)
+            filename = FOTO_PATH + '/' +table_name + '_kegiatan_' +str(keg.id)+ '_' + inp.get('filename').lower()
+            if not os.path.isdir(FOTO_PATH):
+                os.mkdir(FOTO_PATH)
+            with open(filename, 'wb') as f:
+                f.write(base64.b64decode(inp.get('data').split(',')[1]))
+            foto = Foto(filepath=filename, keterangan=inp.get('uraian'),
+                        obj_type='kegiatan', obj_id=keg.id, cuser=session.get('username'))
+            keg.foto = foto
+            web.header('Content-Type', 'application/json')
+            return json.dumps({"Ok": "true"})
 
 
 class BdRtowExport:
