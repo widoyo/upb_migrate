@@ -76,7 +76,8 @@ $def with (bendungan, sampling, rows)
       $for keg in rows:
           <tr>
           <td>
-            <button id="no-print" class="btn btn-danger btn-sm" style="float: right;" onclick="del_ft(${keg.get('kid')},${keg.get('fid')});">Hapus</button>
+            $if session.table_name:
+                <button id="no-print" class="btn btn-danger btn-sm" style="float: right;" onclick="del_ft(${keg.get('kid')},${keg.get('fid')});">Hapus</button>
             <img src="/${keg.get('f')}" style="width: 50%; height: auto;">
             <div style="vertical-align: top">${keg.get('u')}, ${keg.get('p')}</div>
           </td>
