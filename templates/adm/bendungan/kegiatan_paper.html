@@ -77,7 +77,7 @@ $def with (bendungan, sampling, rows)
           <tr>
           <td>
             $if session.table_name:
-                <button id="no-print" class="btn btn-danger btn-sm" style="float: right;" onclick="del_ft(${keg.get('kid')},${keg.get('fid')});">Hapus</button>
+                <button id="no-print" class="btn btn-danger btn-sm" style="float: right;" onclick="del_ft(${keg.get('kid')},${keg.get('fid')},'${keg.get('f')}');">Hapus</button>
             <img src="/${keg.get('f')}" style="width: 50%; height: auto;">
             <div style="vertical-align: top">${keg.get('u')}, ${keg.get('p')}</div>
           </td>
@@ -95,13 +95,14 @@ $def with (bendungan, sampling, rows)
     </section>
 
     <script>
-      function del_ft(kid,fid){
+      function del_ft(kid,fid,filename){
         //alert(f);
         var kegiatan_id = kid;
         var foto_id = fid;
+        var filename = filename;
         var result = confirm("Anda yakin ingin menghapus data ini?");
         if (result) {
-            \$.post('/adm/bendungan/$bendungan.table_name/kegiatan', {kegiatan_id:kegiatan_id, foto_id:foto_id, state:'hapus'}).done(function(result){
+            \$.post('/adm/bendungan/$bendungan.table_name/kegiatan', {kegiatan_id:kegiatan_id, foto_id:foto_id, state:'hapus', filename:filename}).done(function(result){
               var a = result;
               if(a == "ok"){
                 alert("Berhasil dihapus");

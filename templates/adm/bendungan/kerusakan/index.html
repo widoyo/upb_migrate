@@ -223,6 +223,15 @@ $var js_foot:
                   <strong>
                     <p class="text-center" style="font-size: 2rem;">Laporan Kerusakan ini tidak dilanjutkan oleh UPB</p>
                   </strong>
+              $elif k.get(k.id).tanggapan1[0].lanjut == True:
+                  $if len(k.get(k.id).tanggapan2) != 0:
+                      <strong>
+                        <p class="text-center" style="font-size: 2rem;">Laporan ini telah ditanggapi Oleh Pelaksana Teknis</p>
+                      </strong>
+                  $elif len(k.get(k.id).tanggapan2) == 0:
+                      <strong>
+                        <p class="text-center" style="font-size: 2rem;">Laporan ini telah ditanggapi Oleh UPB, Menunggu Tanggapan Pelaksana Teknis</p>
+                      </strong>
           $if not session.table_name:
               <div style="margin-left: 18px;">
                 <form class="form-inline">
@@ -284,15 +293,18 @@ $var js_foot:
           $for t1 in k.get(k.id).tanggapan1:
               <div style="margin-left: 1em;">
                 <p class="card-text" style="font-size: 0.8em;font-style: italic;">Tanggapan UPB ($t1.cuser):</p>
-                <p class="card-text" style="font-size: 1em;">$t1.uraian</p>
+                <p class="card-text" style="font-size: 1em;">$t1.uraian
+                  $if not session.table_name and session.is_admin == 3:
+                      <span class="glyphicon glyphicon-edit" style="margin-left:0.3em;" onclick="alert('edit tanggapan1')"></span>
+                </p>
                 <p class="card-text" style="margin-left: 1.5em">${t1.cdate.strftime('%d %b %Y, %H:%M:%S')}</p>
               </div>
         </div>
 
         <div class="card-footer">
           $for f in k.get(k.id).foto:
-              <!-- <a href="#" onclick="fotomodal($f.id,'$f.keterangan')"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a> -->
-              <a href="#" onclick="fc($k.id)"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a>
+              <a href="#" onclick="fotomodal($f.id,'$f.keterangan')"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a>
+              <!-- <a href="#" onclick="fc($k.id)"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a> -->
           $if session.table_name:
               <button class="btn-outline-primary btn-sm" onclick="tambahfoto($k.id)"><span class="glyphicon glyphicon-plus"></span></button>
         </div>
@@ -323,7 +335,7 @@ $var js_foot:
           </div>
           <div class="form-group">
             <label class="col-form-label">Tanggal Pelaksanaan:</label>
-            <input type="text" class="form-control datepicker" value="" id="tgl-laksana" name="tgl-laksana" placeholder="Boleh tidak di isi">
+            <input type="text" class="form-control datepicker" value="" id="tgl-laksana" name="tgl-laksana" placeholder="Boleh tidak di isi" autocomplete="off">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

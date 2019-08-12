@@ -316,6 +316,7 @@ class BdKegiatan:
         if inp.get('state') == 'hapus':
             kegiatan_id = inp.get('kegiatan_id')
             foto_id = inp.get('foto_id')
+            filename = inp.get('filename')
 
             deletekeg = Delete('kegiatan',where='id='+kegiatan_id)
             query1 = conn.sqlrepr(deletekeg)
@@ -324,13 +325,17 @@ class BdKegiatan:
             deleteft = Delete('foto',where='id='+foto_id)
             query2 = conn.sqlrepr(deleteft)
             conn.query(query2)
+
+            if os.path.exists(filename):
+                os.remove(filename)
+                
             return "ok"
         else:
             keg = Kegiatan(table_name=table_name, 
                            petugas=inp.get('petugas'), uraian=inp.get('uraian'), 
                            sampling=to_date(inp.get('waktu')),
                           cuser=session.username)
-            filename = FOTO_PATH + '/' +table_name + '_kegiatan_' +str(keg.id)+ '_' + inp.get('filename').lower()
+            filename = FOTO_PATH + table_name + '_kegiatan_' +str(keg.id)+ '_' + inp.get('filename').lower()
             if not os.path.isdir(FOTO_PATH):
                 os.mkdir(FOTO_PATH)
             with open(filename, 'wb') as f:
