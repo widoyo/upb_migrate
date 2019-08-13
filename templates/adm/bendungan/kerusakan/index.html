@@ -7,6 +7,9 @@ $code:
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
 $var extra_header:
     <style type="text/css">
+      body.modal-open {
+          position: absolute !important;
+      }
       .card-img-top {
         width: 100%;
         border-top-left-radius: calc(.25rem - 1px);
@@ -212,7 +215,10 @@ $var js_foot:
           <strong><p class="card-text">Nama Asset : $k.asset.nama</p></strong>
           <p class="card-text" style="font-size: 0.8em;">Uraian Kerusakan :</p>
           <p class="card-text" style="font-size: 1.5em;">
-          $k.uraian</p>
+          $k.uraian
+          $if session.table_name:
+              <span class="glyphicon glyphicon-edit" style="margin-left:0.3em;" onclick="edit_uraian_kerusakan($k.id,'$k.uraian')"></span>
+          </p>
           <p class="card-text" style="margin-left: 1.5em;">$k.cuser, ${k.cdate.strftime('%d %b %Y, %H:%M:%S')}</p>
           $if session.table_name and len(k.get(k.id).tanggapan1)==0:
               <strong>
@@ -303,7 +309,7 @@ $var js_foot:
 
         <div class="card-footer">
           $for f in k.get(k.id).foto:
-              <a href="#" onclick="fotomodal($f.id,'$f.keterangan')"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a>
+              <a href="#" onclick="fotomodal($f.id,'$f.keterangan');return false;"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a>
               <!-- <a href="#" onclick="fc($k.id)"><img class="img-thumbnail" src="${'/'+f.filepath}" id="foto_kers_$f.id" alt="Card image cap" style="width: 6rem;height: 6rem;"></a> -->
           $if session.table_name:
               <button class="btn-outline-primary btn-sm" onclick="tambahfoto($k.id)"><span class="glyphicon glyphicon-plus"></span></button>
@@ -407,6 +413,37 @@ $var js_foot:
     </div>
   </div>
 
+  <div class="modal fade" id="edit_uraian_petugas_modal" tabindex="-1" role="dialog" aria-labelledby="edit_uraian_petugas_modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center">Edit Uraian Kerusakan</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST">
+            <input type="hidden" id="eup_kid" name="eup_kid">
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Uraian Kerusakan</label>
+              <div class="col-sm-10">
+                <textarea class="form-control" type="text" id="uraian" name="uraian" required="" style="resize: vertical;"></textarea>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <input type="button" name="submit" value="Kirim" onclick="send_edit();" class="btn btn-primary btn-sm">
+                <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Batal</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </div>
 </div>
@@ -417,19 +454,24 @@ $var js_foot:
     \$('#t2_kid').val(kid);
   }
 
-  function modal(a,b,c,d,e){
-    var a = a;
-    var b = b;
-    var c = c;
-    var d = d;
-    var e = e;
-    \$('#exampleModal').modal('show');
-    \$('#asset').html(a);
-    \$('#kid_slide').html(e);
-    \$('#deskripsi').val(b);
-    \$('#waktu').val(c);
-    \$('#lokasi').val(d);
-    \$('#kerusakan_id').attr('value',e);
+  function send_edit(){
+    var kerusakan_id = \$('#eup_kid').val();
+    var uraian = \$('#uraian').val();
+    \$.post('/adm/bendungan/$pos.table_name/kerusakan', {kerusakan_id:kerusakan_id,uraian:uraian,state:'update'}).done(function(result){
+          var a = result;
+          if(a == "ok"){
+            alert("Data Berhasil Update");
+            window.location.reload();
+          }
+    });
+  }
+
+  function edit_uraian_kerusakan(kid,uraian){
+    var kerusakan_id = kid;
+    var uraian = uraian;
+    \$('#edit_uraian_petugas_modal').modal('show');
+    \$('#eup_kid').val(kerusakan_id);
+    \$('#uraian').val(uraian);
   }
 
   function fotomodal(fid,fket){

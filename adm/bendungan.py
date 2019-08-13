@@ -135,6 +135,14 @@ class BdKerusakan:
                     obj_type='kerusakan', obj_id=int(kerusakan_id), cuser=session.get('username'))
 
             return "ok"
+        elif state == 'update':
+            kerusakan_id = inp.get('kerusakan_id')
+            uraian = inp.get('uraian')
+            update = Update('kerusakan', values={'uraian': uraian}, where='id='+kerusakan_id)
+            query = conn.sqlrepr(update)
+            conn.query(query)
+
+            return "ok"
         else:
             asset_id = inp.get('asset_id')
             deskripsi_foto = inp.get('deskripsi_foto')
