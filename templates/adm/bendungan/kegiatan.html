@@ -92,16 +92,26 @@ $var js_foot:
 				reader.readAsDataURL(f);
 			};
 			function go_upload() {
-				let fields = 'uraian_waktu'.split('_');
-				let formData = {data: enc_img, filename: file_name,
-					uraian: \$('input[name="uraian"]').val(),
-					waktu: \$('input[name="waktu"]').val(),
-					petugas: \$('select[name="petugas"]').val()
-				}
+				if(\$('select[name="petugas"]').val() == ''){
+					alert('Pilih petugas');
+					\$('select[name="petugas"]').focus();
+				}else if(\$('#blah').attr('src') == '/static/img/null.jpg'){
+					alert('Pilih foto terlebih dahulu');
+				}else if(\$('input[name="uraian"]').val() == ''){
+					alert('Harap masukkan keterangan foto kegiatan');
+					\$('input[name="uraian"]').focus();
+				}else{
+					let fields = 'uraian_waktu'.split('_');
+					let formData = {data: enc_img, filename: file_name,
+						uraian: \$('input[name="uraian"]').val(),
+						waktu: \$('input[name="waktu"]').val(),
+						petugas: \$('select[name="petugas"]').val()
+					}
 
-				\$.post('/adm/bendungan/bd_krisak/kegiatan', formData,
-					function (e) { console.log(e); location.reload(); }
-				);
+					\$.post('/adm/bendungan/bd_krisak/kegiatan', formData,
+						function (e) { console.log(e); location.reload(); }
+					);
+				}
 				
 			}
 
@@ -155,7 +165,7 @@ $var js_foot:
 </div>
 <div class="container">
   <h3>Bulan <i class="fa fa-calendar"></i> <span class="gotomonth" style="color: #18bc9c">${tg.strftime('%b %Y')}</span></h3>
-  <div class="table-responsive">
+  
   	<table class="table table-bordered table-stripped">
     <thead>
       <tr>
@@ -179,7 +189,6 @@ $var js_foot:
         </tr>
 		</tbody>
   	</table>
-  </div>
 </div>
 </div>
 
