@@ -155,7 +155,8 @@ $var js_foot:
 </div>
 <div class="container">
   <h3>Bulan <i class="fa fa-calendar"></i> <span class="gotomonth" style="color: #18bc9c">${tg.strftime('%b %Y')}</span></h3>
-  <table class="table table-bordered table-stripped">
+  <div class="table-responsive">
+  	<table class="table table-bordered table-stripped">
     <thead>
       <tr>
         <th>Tanggal</th>
@@ -171,13 +172,14 @@ $var js_foot:
             <td>
               $if v.get(p):
                 $for keg in v.get(p):
-                  <li><a href="kegiatan/${keg.get('kid')}">${keg.get('uraian')}</a></li>
+                  <li><a href="#">${keg.get('uraian')}</a></li>
               $else:
                 <i>tidak ada</i>
 				    </td>
         </tr>
 		</tbody>
-  </table>
+  	</table>
+  </div>
 </div>
 </div>
 
