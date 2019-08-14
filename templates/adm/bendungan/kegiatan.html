@@ -1,5 +1,6 @@
 $def with (ctx)
 $ kegiatan = ctx.get('kegiatan')
+$ urutan_kegiatan = ctx.get('urutan_kegiatan')
 $ pos = ctx.get('pos')
 $ petugas = ctx.get('petugas')
 $ tg = ctx.get('tgl')
@@ -108,7 +109,7 @@ $var js_foot:
 						petugas: \$('select[name="petugas"]').val()
 					}
 
-					\$.post('/adm/bendungan/bd_krisak/kegiatan', formData,
+            \$.post('/adm/bendungan/${pos.table_name}/kegiatan', formData,
 						function (e) { console.log(e); location.reload(); }
 					);
 				}
@@ -175,14 +176,16 @@ $var js_foot:
       </tr>
     </thead>
 		<tbody>
-      $for k, v in kegiatan.items():
+      $for k in urutan_kegiatan:
 			  <tr>
-          <td>${k.day}<a href="kegiatan?sampling=${k}&amp;paper=true" style="float: right" class="text-right">Print</a></td>
+          <td>${k.day}<a href="kegiatan?sampling=${k}&amp;paper=true"
+              style="float: right" class="text-right" title="print"><i class="fa
+                fa-print"</i></a></td>
           $for p in petugas:
             <td>
-              $if v.get(p):
-                $for keg in v.get(p):
-                  <li><a href="#">${keg.get('uraian')}</a></li>
+              $if kegiatan[k].get(p):
+                $for keg in kegiatan[k].get(p):
+                  <li>${keg.get('uraian')}</li>
               $else:
                 <i>tidak ada</i>
 				    </td>

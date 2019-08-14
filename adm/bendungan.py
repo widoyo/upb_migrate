@@ -305,7 +305,7 @@ class BdKegiatan:
                 WHERE f.obj_type='kegiatan' AND k.id=f.obj_id \
                 AND k.table_name='%s' AND YEAR(k.sampling)=%s \
                 AND MONTH(k.sampling)=%s \
-                ORDER BY k.sampling DESC" % (table_name, tgl.year, tgl.month)
+                ORDER BY DATE(k.sampling) DESC" % (table_name, tgl.year, tgl.month)
         rows = [r for r in conn.queryAll(sql)]
         tgls = list(set(r[1] for r in rows))
         print rows 
@@ -315,9 +315,9 @@ class BdKegiatan:
                 result[r[1]][r[0]].append({'uraian': r[2], 'kid': r[3]})
             else:
                 result[r[1]][r[0]] = [{'uraian': r[2], 'kid': r[3]}]
-        return render.adm.bendungan.kegiatan(dict(pos=pos,
-                                              petugas=PETUGAS_CHOICES,
-                                              kegiatan=result, tgl=tgl))
+        return render.adm.bendungan.kegiatan(
+            dict(pos=pos, urutan_kegiatan=sorted(result, reverse=True), 
+                 petugas=PETUGAS_CHOICES, kegiatan=result, tgl=tgl))
 
     def POST(self, table_name):
         inp = web.input()

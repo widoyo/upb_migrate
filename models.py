@@ -69,7 +69,6 @@ class Embung(SQLObject):
 
 
 class Foto(SQLObject):
-    kerusakan = ForeignKey('Kerusakan',default=None)
     filepath = StringCol(length=100)
     keterangan = StringCol(length=255, notNone=False)
     obj_type = StringCol(length=20) # nama class
