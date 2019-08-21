@@ -5,6 +5,21 @@ $ today = ctx.get('today')
 $var extra_header:
     <script src="/static/js/underscore-min.js"></script>
     <style>
+    #berkedip {
+    animation: blink-animation 1s steps(5, start) infinite;
+    -webkit-animation: blink-animation 1s steps(5, start) infinite;
+    }
+    @keyframes blink-animation {
+    to {
+    visibility: hidden;
+    }
+    @-webkit-keyframes blink-animation {
+    to {
+    visibility: hidden;
+    }
+    }
+    </style>
+    <style>
     table { margin-bottom: 0px !important; }
     #sidebar, #slide {
         color: white;
@@ -22,6 +37,9 @@ $var extra_header:
             <h1><a href="/bendungan"><span style="color: white; text-shadow: 2px 2px 5px #666;">Ringkasan 33 Bendungan<br/>Status: ${today.strftime('%d %b %Y')} Pola: Batas Bawah</span></a></h1>
         </div>
     </div>
+    $if session.get('username'):
+        <a href="/logout" class="btn btn-block btn-danger" style="margin-top:2px;margin-bottom: 2px;"><span id="berkedip">Admin is On, Logout</span></a>
+
     <div class="container">
         <div class="row">
             <div class="s-box col-md-5">
