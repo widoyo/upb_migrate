@@ -114,10 +114,13 @@ class BdKerusakan:
                 return web.notfound()
             tgl = datetime.date.today()
             kerusakan = Kerusakan.select(Kerusakan.q.table_name==table_name)
+            kf = Kerusakan
             if session.is_admin == 3:
-                return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
+                return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan,'kf':kf})
+            elif session.is_admin == 3 and not session.table_name:
+                return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan,'kf':kf})
             elif session.is_admin == 4:
-                return render_peltek.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan})
+                return render_peltek.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan,'kf':kf})
 
 
     def POST(self, table_name):
@@ -131,7 +134,7 @@ class BdKerusakan:
             with open(filename, 'wb') as f:
                 f.write(base64.b64decode(inp.get('data').split(',')[1]))
 
-            foto = Foto(kerusakan=int(kerusakan_id),filepath=filename, keterangan=inp.get('deskripsi_foto'),
+            foto = Foto(filepath=filename, keterangan=inp.get('deskripsi_foto'),
                     obj_type='kerusakan', obj_id=int(kerusakan_id), cuser=session.get('username'))
 
             return "ok"
@@ -143,7 +146,7 @@ class BdKerusakan:
             conn.query(query)
 
             return "ok"
-        else:
+        elif inp.get('asset_id'):
             asset_id = inp.get('asset_id')
             deskripsi_foto = inp.get('deskripsi_foto')
             uraian_kerusakan = inp.get('uraian_kerusakan')
@@ -157,10 +160,19 @@ class BdKerusakan:
             with open(filename, 'wb') as f:
                 f.write(base64.b64decode(inp.get('data').split(',')[1]))
 
-            foto = Foto(kerusakan=kerusakan_db.id,filepath=filename, keterangan=deskripsi_foto,
+            foto = Foto(filepath=filename, keterangan=deskripsi_foto,
                         obj_type='kerusakan', obj_id=kerusakan_db.id, cuser=session.get('username'))
           
             return "ok"
+        else:
+            try:
+                tanggapan2 = Tanggapan2.get(int(inp.get('pk')))
+                tanggapan2.set(**{inp.get('name'):inp.get('value')})
+
+            except SQLObjectNotFound:
+                return web.notfound()
+        web.header('Content-Type', 'application/json')
+        return json.dumps({"Ok": "true"})
 
 
 class BdAdminKerusakan:
@@ -183,14 +195,24 @@ class BdTanggapan1:
                 lanjut = False
             elif inp.get('lanjut') == '1':
                 lanjut = True
+            kerusakan_id = inp.get('kerusakan_id')
+            uraian = inp.get('uraian')
+            Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,kategori=kategori,lanjut=lanjut,cuser=session.get('username'))
+            return "ok"
         elif inp.get('state')=='1':
             kategori = ""
             lanjut = False
-
-        kerusakan_id = inp.get('kerusakan_id')
-        uraian = inp.get('uraian')
-        Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,kategori=kategori,lanjut=lanjut,cuser=session.get('username'))
-        return "ok"
+            kerusakan_id = inp.get('kerusakan_id')
+            uraian = inp.get('uraian')
+            Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,kategori=kategori,lanjut=lanjut,cuser=session.get('username'))
+            return "ok"
+        elif inp.get('state') == 'update':
+            tanggapan1_id = inp.get('tanggapan1_id')
+            uraian = inp.get('uraian')
+            update = Update('tanggapan1', values={'uraian': uraian}, where='id='+tanggapan1_id)
+            query = conn.sqlrepr(update)
+            conn.query(query)
+            return "ok"
 
 class BdTanggapan2:
     @login_required
@@ -298,6 +320,7 @@ class BdKegiatan:
                     WHERE f.obj_type='kegiatan' AND k.id=f.obj_id AND DATE(k.sampling)='%s' \
                     AND k.table_name='%s'" % (tgl.strftime('%Y-%m-%d'), table_name)
             rst = [{'kid':r[0], 'p': r[1], 'u': r[2], 'fid':r[3],'f': r[4]} for r in conn.queryAll(sql)]
+            print rst
             return render_plain.adm.bendungan.kegiatan_paper(pos, tgl, rst)
 
         sql = "SELECT k.petugas, DATE(k.sampling), k.uraian, k.id \
@@ -308,7 +331,6 @@ class BdKegiatan:
                 ORDER BY DATE(k.sampling) DESC" % (table_name, tgl.year, tgl.month)
         rows = [r for r in conn.queryAll(sql)]
         tgls = list(set(r[1] for r in rows))
-        print rows 
         result = dict([(t, {}) for t in tgls])
         for r in rows:
             if r[0] in result[r[1]]:

@@ -118,7 +118,10 @@ class Kerusakan(SQLObject):
 
     tanggapan1 = MultipleJoin('Tanggapan1')
     tanggapan2 = MultipleJoin('Tanggapan2')
-    foto = MultipleJoin('Foto')
+
+    def fotos(self):
+        fotos = Foto.select(AND(Foto.q.obj_type=='kerusakan', Foto.q.obj_id==self.id))
+        return fotos
 
 class Asset(SQLObject):
     table_name = StringCol(length=35) # nama bendungan
