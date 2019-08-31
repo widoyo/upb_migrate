@@ -170,7 +170,7 @@ $var js_foot:
                 <tr>
                   <td class="font-weight-bold">Uraian Tanggapan</td>
                   <td>:</td>
-                  <td><a href="#" class="editable" data-type="text" data-pk="$t2.id" data-name="uraian">$t2.uraian</a></td>
+                  <td>$t2.uraian</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">Nilai</td>
@@ -337,7 +337,7 @@ $var js_foot:
         </button>
       </div>
       <div class="modal-body">
-        <form action="/adm/bendungan//tanggapan2" method="post">
+        <form action="/adm/bendungan/tanggapan2" method="post">
           <input type="hidden" id="t2_kid" name="t2_kid">
           <div class="form-group">
             <label class="col-form-label">Uraian Tanggapan:</label>
@@ -523,7 +523,7 @@ $var js_foot:
   function send_edit_t1(){
     var tanggapan1_id = \$('#e_t1id').val();
     var uraian = \$('#uraian_t1').val();
-    \$.post('/adm/bendungan//tanggapan1', {tanggapan1_id:tanggapan1_id,uraian:uraian,state:'update'}).done(function(result){
+    \$.post('/adm/bendungan/tanggapan1', {tanggapan1_id:tanggapan1_id,uraian:uraian,state:'update'}).done(function(result){
           var a = result;
           if(a == "ok"){
             alert("Data Berhasil Update");
@@ -570,7 +570,7 @@ $var js_foot:
         alert("kelanjutan laporan harap di isi..");
         \$( "#lanjut" ).focus();
       }else{
-        \$.post('/adm/bendungan//tanggapan1', {kerusakan_id:kerusakan_id,kategori:kategori,lanjut:lanjut,uraian:uraian,state:'0'}).done(function(result){
+        \$.post('/adm/bendungan/tanggapan1', {kerusakan_id:kerusakan_id,kategori:kategori,lanjut:lanjut,uraian:uraian,state:'0'}).done(function(result){
           var a = result;
           if(a == "ok"){
             alert("Data Berhasil Disimpan");
@@ -585,7 +585,7 @@ $var js_foot:
         alert("uraian tanggapan harap di isi..");
         \$( "#uraian-tanggapan1_"+kid ).focus();
       }else{
-        \$.post('/adm/bendungan//tanggapan1', {kerusakan_id:kerusakan_id,uraian:uraian,state:'1'}).done(function(result){
+        \$.post('/adm/bendungan/tanggapan1', {kerusakan_id:kerusakan_id,uraian:uraian,state:'1'}).done(function(result){
           var a = result;
           if(a == "ok"){
             alert("Data Berhasil Disimpan");

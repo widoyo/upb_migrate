@@ -123,15 +123,32 @@ $var js_foot:
 				var asset_id = \$('#asset_id').val();
 				var deskripsi_foto = \$('#deskripsi-foto').val();
 				var uraian_kerusakan = \$('#uraian_kerusakan').val();
-				var kategori = \$( "input[type=radio][name=kategori]:checked" ).val();
+				var kategori = \$("input[type=radio][name=kategori]:checked").val();
 				//alert(asset_id);
-				\$.post('/adm/bendungan/$pos.table_name/kerusakan', {asset_id: asset_id,deskripsi_foto : deskripsi_foto,uraian_kerusakan: uraian_kerusakan, kategori: kategori,data: enc_img, filename: file_name}).done(function(result){
-					//alert(result);
-					var a = result;
-					if(a == "ok"){
-						window.location.href = "/adm/bendungan/$pos.table_name/kerusakan";
-					}
-				});
+				if(\$('#blah').attr('src') == '#'){
+					alert('Pilih foto kerusakan terlebih dahulu');
+					\$('#blah').focus();
+				}
+				else if(deskripsi_foto == ''){
+					alert('Masukkan keterangan foto');
+					\$('#deskripsi-foto').focus();
+				}else if(uraian_kerusakan == ''){
+					alert('Masukkan uraian tentang kerusakan');
+					\$('#uraian_kerusakan').focus();
+				}else if(kategori == undefined){
+					alert('Pilih kategori kerusakan');
+					\$("#kategori-asset").focus();
+				}else{
+					\$.post('/adm/bendungan/$pos.table_name/kerusakan', {asset_id: asset_id,deskripsi_foto : deskripsi_foto,uraian_kerusakan: uraian_kerusakan, kategori: kategori,data: enc_img, filename: file_name}).done(function(result){
+						//alert(result);
+						var a = result;
+						if(a == "ok"){
+							window.location.href = "/adm/bendungan/$pos.table_name/kerusakan";
+						}
+					});
+				}
+
+				
 			}
 
 	</script>

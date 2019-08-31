@@ -29,6 +29,8 @@ urls = (
     '/rotw/csv', 'BdRtowImport',
     '/kegiatan', 'BdKegiatanIndex',
     '/asset','BdAdminKerusakan',
+    '/tanggapan1','BdTanggapan1',
+    '/tanggapan2','BdTanggapan2',
     '/(\w+\.*\-*\w+)/keamanan', 'BdKeamanan',
     '/(\w+\.*\-*\w+)', 'BdShow',
     '/(\w+\.*\-*\w+)/rtow/export', 'BdRtowExport',
@@ -39,8 +41,6 @@ urls = (
     '/(\w+\.*\-*\w+)/asset', 'BdAsset',
     '/(\w+\.*\-*\w+)/kerusakan', 'BdKerusakan',
     '/(\w+\.*\-*\w+)/kerusakan/(\d+)', 'BdKerusakan',
-    '//tanggapan1','BdTanggapan1',
-    '//tanggapan2','BdTanggapan2',
 )
 
 
@@ -115,11 +115,11 @@ class BdKerusakan:
             tgl = datetime.date.today()
             kerusakan = Kerusakan.select(Kerusakan.q.table_name==table_name)
             kf = Kerusakan
-            if session.is_admin == 3:
+            if session.is_admin == 3: #user petugas bendungan
                 return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan,'kf':kf})
-            elif session.is_admin == 3 and not session.table_name:
+            elif session.is_admin == 3 and not session.table_name: #user upb
                 return render.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan,'kf':kf})
-            elif session.is_admin == 4:
+            elif session.is_admin == 4: #user peltek
                 return render_peltek.adm.bendungan.kerusakan.index({'pos': pos, 'tgl': tgl, 'kerusakan' : kerusakan,'kf':kf})
 
 

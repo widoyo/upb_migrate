@@ -261,7 +261,7 @@ class Login:
         if session.table_name:
             redirect += '/' + dest[session.is_admin] + '/' + session.table_name
         elif session.is_admin == 4:
-            redirect += '/' + dest[3] + '//tanggapan2'
+            redirect += '/' + dest[3] + '/tanggapan2'
         else:
             redirect += '/' + dest[session.is_admin]
         print 'redirect:', redirect
