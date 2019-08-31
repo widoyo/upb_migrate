@@ -134,6 +134,10 @@ $var js_foot:
           function go_upload() {
             if(\$('#blah').attr('src') == '#'){
               alert('pilih foto dulu');
+            }
+            else if(\$('#deskripsi-foto').val() == ''){
+              alert('harap di isi deskripsi foto kerusakan');
+              \$('#deskripsi-foto').focus();
             }else{
               var kerusakan_id = \$('#k_id').val();
               var deskripsi_foto = \$('#deskripsi-foto').val();
@@ -405,7 +409,7 @@ $var js_foot:
             <div class="form-group row">
               <label class="col-sm-2 col-form-label">Deskripsi Foto</label>
               <div class="col-sm-10">
-                <input class="form-control" type="text" id="deskripsi-foto" name="deskripsi-foto" required="">
+                <input class="form-control" type="text" id="deskripsi-foto" name="deskripsi-foto" placeholder="misal : foto tampak depan, foto tampak ... dsb" required="">
               </div>
             </div>
 
