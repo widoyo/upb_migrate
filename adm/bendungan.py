@@ -207,12 +207,14 @@ class BdTanggapan1:
             Tanggapan1(kerusakan=int(kerusakan_id),uraian=uraian,kategori=kategori,lanjut=lanjut,cuser=session.get('username'))
             return "ok"
         elif inp.get('state') == 'update':
+            table_name = inp.get('table_name')
             tanggapan1_id = inp.get('tanggapan1_id')
             uraian = inp.get('uraian')
             update = Update('tanggapan1', values={'uraian': uraian}, where='id='+tanggapan1_id)
             query = conn.sqlrepr(update)
             conn.query(query)
-            return "ok"
+            # return "ok"
+            return web.redirect(table_name+'/kerusakan?'+str(datetime.datetime.now()))
 
 class BdTanggapan2:
     @login_required
@@ -250,6 +252,12 @@ class BdAsset:
             return web.notfound()
         tgl = datetime.date.today()
         asset = Asset.select(Asset.q.table_name==table_name)
+        kerusakan = Kerusakan.select(Kerusakan.q.table_name==table_name)
+
+        rusak_list = []
+        for k in kerusakan:
+            rusak_list.append(k.asset.id)
+
 
         data = open('asset.csv').readlines()
         flist = []
@@ -263,7 +271,7 @@ class BdAsset:
             if kategori not in fflist:
                 fflist.append(kategori)
 
-        return render.adm.bendungan.asset.index({'pos': pos, 'tgl': tgl, 'asset' : asset,'data':fflist})
+        return render.adm.bendungan.asset.index({'pos': pos, 'tgl': tgl, 'asset' : asset,'data':fflist,'rusak_list':rusak_list})
 
     def POST(self, table_name):
         inp = web.input()

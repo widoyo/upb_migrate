@@ -3,6 +3,7 @@ $ asset = ctx.get('asset')
 $ pos = ctx.get('pos')
 $ tg = ctx.get('tgl')
 $ data = ctx.get('data')
+$ rusak_list = ctx.get('rusak_list')
 $code:
     haris = [h.title() for h in "sen_sel_rab_kam_jum_sab_min".split('_')]
     bulan = [b.title() for b in "jan_feb_mar_apr_mei_jun_jul_ags_sep_okt_nop_des".split('_')]
@@ -170,6 +171,8 @@ $var js_foot:
 
 <div class="container collapse" id="form-kerusakan">
 	<div class="col-md-6">
+		<center><h3>Form Input Lapor Kerusakan</h3></center>
+		 <hr style="border-bottom: 1px solid black">
 		<h4>Nama Asset : <em><u id="nama_asset"></u></em></h4>
 		<input type="file" name="foto" class="custom-file-input" id="fotoFile">
 		<form action="kerusakan" method="POST" id="formUpload" enctype="multipart/form-data">
@@ -181,7 +184,7 @@ $var js_foot:
 				<div v-if="imageData.length > 0"><img class="img-fluid" :src="imageData"></div>
 		  </div>
 		  <div class="form-group row">
-		    <label class="col-sm-2 col-form-label">Deskripsi Foto</label>
+		    <label class="col-sm-2 col-form-label">Deskripsi Foto Kerusakan</label>
 		    <div class="col-sm-10">
 		      <input class="form-control" name="deskripsi-foto" id="deskripsi-foto" placeholder="Contoh : Foto Tampak Depan" required>
 		    </div>
@@ -231,6 +234,8 @@ $var js_foot:
 <div class="container collapse" id="form-tambah-asset">
 	<div class="col-md-6">
 		<form method="POST" action="">
+		  <center><h4>Form Input Tambah Asset</h4></center>
+		  <hr style="border-bottom: 1px solid black">
 		  <input type="hidden" id="state" name="state" value="tambah">
 		  <div class="form-group row">
 		    <label class="col-sm-4 col-form-label">Nama Asset</label>
@@ -309,9 +314,14 @@ $var js_foot:
 		    		<td><a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="nama">$a.nama</a>
 		    			<div class="text-muted">&nbsp;&nbsp;&nbsp;BMN :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="bmn">$a.bmn</a>,&nbsp;Merk :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="merk">$a.merk</a>,&nbsp;Model :<a href="#" class="editable" data-type="text" data-pk="$a.id" data-name="model">$a.model</a></div>
 		    		</td>
-		    		<td style="background-color: #5af542;">Baik</td>
-		    		<td><center><button class="btn btn-outline-primary btn-sm" type="button" onclick="form_kerusakan_show($a.id,'$a.nama')">Lapor Rusak</button></center></td>
-		    		<td><center><button class="btn btn-outline-danger btn-sm" type="button" onclick="hapus_asset($a.id,'$a.nama')"><span class="glyphicon glyphicon-trash"></span></button></center></td>
+		    		$if a.id in rusak_list:
+    					<td style="background-color: red;">Rusak</td>
+    					<td><center><button disabled class="btn btn-outline-primary btn-sm" type="button" onclick="form_kerusakan_show($a.id,'$a.nama')">Lapor Rusak</button></center></td>
+	    				<td><center><button disabled class="btn btn-outline-danger btn-sm" type="button" onclick="hapus_asset($a.id,'$a.nama')"><span class="glyphicon glyphicon-trash"></span></button></center></td>
+    				$else:
+    					<td style="background-color: #5af542;">Baik</td>
+	    				<td><center><button class="btn btn-outline-primary btn-sm" type="button" onclick="form_kerusakan_show($a.id,'$a.nama')">Lapor Rusak</button></center></td>
+	    				<td><center><button class="btn btn-outline-danger btn-sm" type="button" onclick="hapus_asset($a.id,'$a.nama')"><span class="glyphicon glyphicon-trash"></span></button></center></td>
 		    	</tr>
 		    </tbody>
 		 </table>
