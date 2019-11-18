@@ -17,6 +17,7 @@ from models import AgentBd, conn, WadukDaily,TinggiMukaAir, BendungAlert
 from models import NO_VNOTCH, FAIL_VNOTCH, FOTO_PATH, PETUGAS_CHOICES
 from models import Kegiatan, Foto, BENDUNGAN_DICT
 from models import Kerusakan, Asset, Tanggapan1, Tanggapan2
+from models import CurahHujanTerkini
 
 from helper import to_date, json_serializer
 from keamanan import app_keamanan
@@ -78,7 +79,6 @@ render_plain = web.template.render('templates/', base='', globals=globals)
 
 class BdKeamanan:
     @login_required
-    @profile
     def GET(self, table_name):
         inp = web.input()
         ordering = '-waktu'
@@ -574,7 +574,6 @@ class BdUpdate:
 
 class BdShow:
     @login_required
-    @profile
     def GET(self, table_name):
         inp = web.input()
         csv = inp.get('csv')
