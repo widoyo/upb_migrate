@@ -1,0 +1,3 @@
+*.pyc
+sessions
+local_settings.py

@@ -785,6 +785,8 @@ class BdIndexRotw:
                 periode += datetime.timedelta(days=jhar[i])
         if tanggal.year > 2018:
             jhar = [30, 31, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31]
+            if not tanggal.year % 4: # jika tahun kabisat
+                jhar[3] = 29
             rr = []
             for i in range(12):
                 rr.append(periode.replace(day=15))
