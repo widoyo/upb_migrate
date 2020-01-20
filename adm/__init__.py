@@ -4,7 +4,6 @@ import datetime
 import calendar
 import json
 sys.path.append('../')
-from memory_profiler import profile
 
 #from collections import OrderedDict
 
@@ -150,7 +149,6 @@ class ChShow:
 
 class TmaShow:
     @login_required
-    @profile
     def GET(self, table_name):
         pos = [a for a in AgentTma.select(OR(AgentTma.q.AgentType==2, AgentTma.q.AgentType==0)) if a.table_name == table_name][0]
         webinput = web.input(sampling=str(datetime.date.today()))

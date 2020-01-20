@@ -5,7 +5,6 @@ import datetime
 import calendar
 import json
 sys.path.append('../')
-from memory_profiler import profile
 
 import base64
 
