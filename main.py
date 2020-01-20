@@ -27,6 +27,7 @@ from map import app_map
 from adm import app_adm  # Data Management
 from sensor import app_sensor
 from dmd import app_dmd
+from galeri import app_galeri
 
 web.config.debug = False
 
@@ -44,6 +45,7 @@ urls = (
     '/logout', 'Logout',
     '/dmd', app_dmd,
     '/live', 'LivePrimabot',
+    '/galeri', app_galeri
 )
 
 
