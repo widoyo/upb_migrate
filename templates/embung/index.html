@@ -1,0 +1,151 @@
+$def with(context)
+$ bpas = context.get('bpas')
+$ abs = context.get('abs')
+$var p_embung: active
+
+$var extra_header:
+    <link rel="stylesheet" href="/static/datatables.min.css">
+    <link rel="stylesheet" href="/static/dataTables.bootstrap.min.css">
+		<style>
+		.nav-tabs>li>a {
+			font-size: x-large;
+		}
+		.nav-tabs {
+			border-bottom: 1px solid #888;
+		}
+		.nav-tabs > li.active > a, .nav-tabs > li.active > a:active, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover{
+			background-color: white !important;
+			border: 1px solid #888888;
+			border-bottom-color: transparent;
+		}
+		.table-bordered { border: 2px solid #888; }
+		.dataTables_wrapper { font-size: 1.3em; }
+		table.dataTable { font-size: 1.3em; }
+		.summary, .summary_ab { float: left; }
+		.s_item { padding-right: 10px;}
+		</style>
+
+$var js_foot:
+    <script type="text/javascript" src="/static/datatables.min.js"></script>
+    <script type="text/javascript" src="/static/dataTables.bootstrap.min.js"></script>
+	  <script>
+			jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
+				return this.flatten().reduce( function ( a, b ) {
+					if ( typeof a === 'string' ) {
+						a = a.replace(/[^\d.-]/g, '') * 1;
+					}
+					if ( typeof b === 'string' ) {
+						b = b.replace(/[^\d.-]/g, '') * 1;
+					}
+
+				return a + b;
+				}, 0 );
+			} );
+			\$(document).ready(function() {
+				var numberFormat = function (obj) {
+					return parseInt(obj).toLocaleString('id-ID');
+				};
+				var dt_bpa = \$('#bpa').DataTable({
+					"order": [[3, 'desc']],
+					"paging": false,
+					"dom": '<"summary">f',
+					"language": {
+						"decimal": ",",
+						"thousands": "."
+					}
+				});
+				\$('div.summary').html('Banyak: <b id="s_banyak" class="s_item">${bpas.count()}</b> Tampungan: <b class="s_item"><span  id="s_tampungan">-</span> M<sup>3</sup></b>Irigasi: <b class="s_item"><span id="s_irigasi"></span> Ha</b>');
+				var dt_ab = \$('#ab').DataTable({
+					"order": [[3, 'desc']],
+					"dom": '<"summary_ab">f',
+					"paging": false,
+					"language": {
+						"decimal": ",",
+						"thousands": "."
+					}
+				});
+				\$('div.summary_ab').html('Banyak: <b id="s_banyak_ab" class="s_item">${abs.count()}</b> Tampungan: <b class="s_item"><span  id="s_tampungan_ab">-</span> M<sup>3</sup></b>Air Baku: <b class="s_item"><span id="s_airbaku"></span> KK</b>');
+				dt_bpa.on('draw', function () { 
+					var tampungan = dt_bpa.column(3, {filter: 'applied'}).data().sum();
+					\$('#s_tampungan').text(numberFormat(tampungan));
+					\$('#s_banyak').text(dt_bpa.rows({filter: 'applied'}).data().length)
+					\$('#s_irigasi').text(numberFormat(dt_bpa.column(4, {filter: 'applied'}).data().sum()));
+				
+				});
+				dt_ab.on('draw', function () { 
+					\$('#s_banyak_ab').text(dt_ab.rows({filter: 'applied'}).data().length)
+					\$('#s_tampungan_ab').text(numberFormat(dt_ab.column(3, {filter: 'applied'}).data().sum()));
+					\$('#s_airbaku').text(numberFormat(dt_ab.column(4, {filter: 'applied'}).data().sum()));
+				});
+				\$('#s_tampungan').text(dt_bpa.column(3, {filter: 'applied'}).data().sum());
+				\$('#s_irigasi').text(numberFormat(dt_bpa.column(4, {filter: 'applied'}).data().sum()));
+				\$('#s_tampungan').text(numberFormat(\$('#s_tampungan').text()));
+				\$('#s_tampungan_ab').text(numberFormat(dt_ab.column(3, {filter: 'applied'}).data().sum()));
+				\$('#s_airbaku').text(numberFormat(dt_ab.column(4, {filter: 'applied'}).data().sum()));
+			});
+	  </script>
+<div class="container">
+	<h1>Embung</h1>
+	<ul class=" nav nav-tabs" role="tablist">
+		<li role="presentation" class="active">
+			<a href="#tab_bpa" aria-controls="tab_bpa" role="tab" data-toggle="tab">Penampung Air <span class="badge">${bpas.count()}</span></a></li>
+		<li role="presentation">
+			<a href="#tab_ab" aria-controls="tab_ba" role="tab" data-toggle="tab">Air Baku <span class="badge">${abs.count()}</span></a></li>
+	</ul>
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="tab_bpa">
+			<div class="">
+				<div class="clearfix" style="margin-top: 20px;"></div>
+	<table id="bpa" class="table table-bordered ">
+		<thead>
+			<tr>
+				<th>No</th>
+				<th>Nama</th>
+				<th>Kec, Kab</th>
+				<th>Tampungan</th>
+				<th>Irigasi</th>
+			</tr>
+		</thead>
+		<tbody>
+		$for e in bpas:
+		  <tr>
+				<td>$loop.index</td>
+				<td>$e.nama</td>
+				<td>$e.kec, <b>$e.kab</b></td>
+				<td class="text-right">$e.tampungan</td>
+				<td class="text-right">$e.irigasi</td>
+			</tr>
+		</tbody>
+	</table>
+			</div>
+		</div><!-- end content BPA -->
+		<div role="tabpanel" class="tab-pane " id="tab_ab">
+			<div class="">
+				<div class="clearfix" style="margin-top: 20px;"></div>
+	<table id="ab" class="table table-bordered ">
+		<thead>
+			<tr>
+				<th>No</th>
+				<th>Nama</th>
+				<th>Kec, Kab</th>
+				<th>Tampungan</th>
+				<th>Air Baku</th>
+			</tr>
+		</thead>
+		<tbody>
+		$for e in abs:
+		  <tr>
+				<td>$loop.index</td>
+				<td>$e.nama</td>
+				<td>$e.kec, <b>$e.kab</b></td>
+				<td class="text-right">$e.tampungan</td>
+				<td class="text-right">$e.air_baku</td>
+			</tr>
+		</tbody>
+	</table>
+			</div>
+		</div><!-- content air Baku-->
+	</div>
+</div>
+    
+</div>

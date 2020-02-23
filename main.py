@@ -28,6 +28,7 @@ from adm import app_adm  # Data Management
 from sensor import app_sensor
 from dmd import app_dmd
 from galeri import app_galeri
+from embung import app_embung
 
 web.config.debug = False
 
@@ -45,7 +46,8 @@ urls = (
     '/logout', 'Logout',
     '/dmd', app_dmd,
     '/live', 'LivePrimabot',
-    '/galeri', app_galeri
+    '/galeri', app_galeri,
+    '/embung', app_embung
 )
 
 

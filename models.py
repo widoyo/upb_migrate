@@ -59,7 +59,7 @@ class Embung(SQLObject):
     tampungan = FloatCol(notNone=False) # dalam Meter Kubik
     debit = FloatCol(notNone=False) # dalam Liter / detik
     pipa_transmisi = FloatCol(notNone=False) # dalam Meter
-    saluran_traansmisi = FloatCol(notNone=False) # dalam Meter
+    saluran_transmisi = FloatCol(notNone=False) # dalam Meter
     air_baku = IntCol(notNone=False) # Banyaknya KK terlayani
     irigasi = FloatCol(notNone=False) # dalam Hektar
     cuser = StringCol(length=35)
