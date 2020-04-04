@@ -8,13 +8,14 @@
 import datetime
 import web
 from sqlobject import AND, OR
-from models import Agent, KLIMATOLOGI, WILAYAH, conn
+from models import Agent, KLIMATOLOGI, WILAYAH, conn, Embung
 from models import HIDROLOGI
 
 urls = (
     '/curahhujan', 'MapCurahhujan',
     '/tma', 'MapTma',
-    '/bendungan', 'MapBendungan'
+    '/bendungan', 'MapBendungan',
+    '/embung', 'MapEmbung'
 )
 
 app_map = web.application(urls, locals())
@@ -24,6 +25,239 @@ session = web.session.Session(app_map, web.session.DiskStore('sessions'),
 globals = {'session': session}
 render = web.template.render('templates/', base='base', globals=globals)
 
+
+class MapEmbung:
+    def GET(self):
+        embungs = Embung.select(Embung.q.ll != None)
+        all_pos = [{'id': a.Id, 'name': a.nama, 'll': a.ll} for a in embungs]
+        js_foot = """
+        <script type="text/template" id="pos_infowindow">
+          <div class="item infowindow" id="pos_<%= index %>">
+            <span class="pos"><%= name %> </span>
+            <span class="meter">
+            </span>
+          </div>
+        </script>
+        <script>
+        function init_map() {
+            var my_options = {
+                center: new google.maps.LatLng(-7.49592,111.568909),
+                zoom: 9,
+                styles: [
+    {
+        "featureType": "all",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "weight": "2.00"
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "color": "#9c9c9c"
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "labels.text",
+        "stylers": [
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#f2f2f2"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.man_made",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "all",
+        "stylers": [
+            {
+                "saturation": -100
+            },
+            {
+                "lightness": 45
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#eeeeee"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#7b7b7b"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "simplified"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#46bcec"
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#88b6f2" /* "#c8d7d4" */
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#000000"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "color": "#ffffff"
+            }
+        ]
+    }
+],
+          mapTypeId: google.maps.MapTypeId.TERRAIN };
+            var map = new google.maps.Map(document.getElementById('map'), my_options);
+            var lamong_line = new google.maps.KmlLayer(
+                {url: 'http://hidrologi.bbws-bsolo.net/static/lamong.kml?v=1',
+                preserveViewport: true, map: map});
+            var pantura_line = new google.maps.KmlLayer(
+                {url: 'http://hidrologi.bbws-bsolo.net/static/pantura.kml',
+                preserveViewport: true, map: map});
+            var hilir_line = new google.maps.KmlLayer(
+                {url: 'http://hidrologi.bbws-bsolo.net/static/hilir.kml',
+                preserveViewport: true, map: map});
+            var madiun_line = new google.maps.KmlLayer(
+                {url: 'http://hidrologi.bbws-bsolo.net/static/madiun.kml',
+                preserveViewport: true, map: map});
+            var hulu_line = new google.maps.KmlLayer(
+                {url: 'http://hidrologi.bbws-bsolo.net/static/hulu.kml',
+                preserveViewport: true, map: map});
+          var allPos = """ + str(all_pos) + """;
+          var markers = {};
+          var infoWindow = new google.maps.InfoWindow;
+          _.each(allPos, function(pos) {
+            var lat = parseFloat(pos.ll.split(',')[0]);
+            var lng = parseFloat(pos.ll.split(',')[1]);
+            var point = new google.maps.LatLng(lat, lng);
+            var marker = new google.maps.Marker({
+                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                map: map,
+                position: point
+            });
+            markers[pos.id] = marker;
+            bind_info_window(marker, map, infoWindow, "<a href='/tma/"+pos.id+"' style='font-weight: bold;font-size: 16px;'>"+ pos.name + "</a>");
+          });
+        };
+        function bind_info_window(marker, map, infowindow, html) {
+            google.maps.event.addListener(marker, 'click', function() {
+                infowindow.setContent(html);
+                infowindow.open(map, marker);
+            })
+        };
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmnJGdC-ZhVd98H3mwMRv2GU2dlv1D7IA&callback=init_map"></script>
+        <script type="text/javascript">
+        </script>
+        """
+        return render.map.bendungan({'poses': agents, 'js_foot': js_foot})
 
 class MapBendungan:
     def GET(self):

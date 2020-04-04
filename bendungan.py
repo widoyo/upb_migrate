@@ -14,9 +14,12 @@ from sqlobject import SQLObjectNotFound, AND, OR
 from models import Agent, WILAYAH, WadukDaily, NO_VNOTCH, FAIL_VNOTCH
 
 from helper import Struct, to_date
+from kegiatan import app_kegiatan
+
 
 urls = (
     '$', 'Index',
+    '/kegiatan', app_kegiatan, 
     '/summary$', 'Summary',
     '/(\d+)', 'Elevasi',  # TMA Satu Pos pd Hari ini
     '/(\d+)/tma', 'ShowTma',  # Trend TMA Satu Pos

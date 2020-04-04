@@ -1,0 +1,51 @@
+$def with(ctx)
+$ kegiatan = ctx.get('kegiatan')
+$ sampling = ctx.get('sampling')
+$var p_bendungan: active
+$var js_foot:
+    <script type="text/javascript" src="/static/js/bootstrap-datepicker.js"></script>
+    <script>
+      var bd_names = [];
+      \$('.bd_name').each(function(i, e) { bd_names.push(e.innerText); });
+      \$('.datepicker').datepicker({ format: 'yyyy-mm-dd', autoclose: true });
+      \$('#num_bd').html(bd_names.length);
+      \$('.datepicker').on('changeDate', function() {
+        window.location = '/bendungan/kegiatan?sampling='+ \$(this).datepicker('getFormattedDate');
+      });
+    </script>
+<div class="container">
+  <h2>Kegiatan Petugas Bendungan <span class="text-muted datepicker"><i class="fa
+        fa-calendar"></i> ${sampling.strftime('%d %b %y')}</span>
+    <span class="badge" id="num_bd" title="Petugas Bendungan yang telah
+      Melaporkan"><span></h2>
+  $code:
+    bd = ""
+    bd_name = ""
+  $for k in kegiatan:
+    $if bd != k.table_name:
+      $code:
+        bd = k.table_name
+        bd_name = bd
+    $else:
+      $code:
+        bd_name = ""
+    $if bd_name:
+      <h3 style="margin-top: 50px;" class="bd_name"><i class="fa fa-map-marker
+          text-primary"></i> ${bd_name[3:].title()}</h3>
+      <hr>
+    <div class="row" style="padding-top: 10px;">
+      <div class="col-md-1">&nbsp;</div>
+      <div class="col-md-2">
+        <i class="fa fa-user"></i> <b>${k.petugas.title()}</b><br><span
+           class="text-muted" style="padding-left:
+           10px;">${k.cdate.strftime('%c')}</span>
+      </div>
+      <div class="col-md-9">$k.uraian</div>
+    </div>
+  $if 0 == kegiatan.count():
+    <div class="panel panel-danger" style="margin-top: 40px;">
+      <div class="panel-body">
+    <center><h3 class="text-muted">Tidak ada laporan kegiatan pada tanggal ${sampling.strftime('%d %b %y')}</h3></center>
+      </div>
+    </div>
+</div>
