@@ -1431,6 +1431,27 @@ class WadukDaily(SQLObject):
         table = 'waduk_daily'
 
 
+class RencanaOperasi(SQLObject):
+    '''Rencana Operasi Waduk
+    waktu;po_tma;po_vol;po_outflow_q;po_inflow_q;po_bona;po_bonb;vol_bona;vol_bonb
+    
+    '''
+    pos = ForeignKey('Agent')
+    waktu = DateTimeCol()
+    po_outflow_q = FloatCol(default=None)
+    po_inflow_q = FloatCol(default=None)
+    po_tma = FloatCol(default=None)
+    po_vol = FloatCol(default=None)
+    po_bona = FloatCol(default=None)
+    po_bonb = FloatCol(default=None)
+    vol_bona = FloatCol(default=0)
+    vol_bonb = FloatCol(default=0)
+
+    class sqlmeta:
+        table = 'rencanaoperasi'
+        defaultOrder = ('pos,waktu')
+
+
 class BendungAlert(SQLObject):
     '''TMA / Kondisi banjir Waduk'''
     bendungan = ForeignKey('Agent', dbName='bendungan_id')

@@ -33,7 +33,10 @@ def to_date(datestring):
         (t, b, g) = datestring.split('/')
     except ValueError:
         (t, b, g) = datestring.split('-')
-    _date = datetime.date(int(t), int(b), int(g))
+    try:
+        _date = datetime.date(int(t), int(b), int(g))
+    except ValueError:
+        _date = datetime.date(int(g), int(b), int(t))
     return _date
 
 

@@ -433,25 +433,39 @@ def import_rtow(file_input):
 
 
     '''
+    # deteksi pemisah data TAB, ;,','
+    seps = '\t_;_,_|'.split('_')
     lines = open(file_input).readlines()
-    nama_bendungan = lines[0].strip()
+    header = lines[1].strip()
+    sep = None
+    for s in seps:
+        if len(header.split(s)) > 5:
+            sep = s
+            cols = header.split(s)
+            numcol = len(cols)
+            break
+    if not sep:
+        msg = 'Tidak ditemukan pemisah kolom yang valid. (' + '_'.join(seps)
+        ret = dict(ok=False, msg=msg)
+        return ret
+
+    try:
+        nama_bendungan = lines[0].strip().split(sep)[0]
+    except IndexError:
+        nama_bendungan = lines[0].strip()
     bd_names = dict([(a.table_name, a.AgentId) for a in AgentBd.select(AgentBd.q.AgentType==3)])
     if nama_bendungan not in bd_names.keys():
         ret = dict(ok=False, msg=','.join(bd_names))
         return ret
-    if len(lines) != 26:
-        ret = dict(ok=False, msg='Data harus dari Nop - Okt / 24 baris')
-        return ret
-    cols = lines[1].strip().split('\t')
     data = []
-    for i in range(24):
+    for i in range(len(lines)-2):
         i += 2
-        line = lines[i].split('\t')
-        waktu = datetime.datetime.strptime(line[0], '%Y-%m-%d').date()
+        line = lines[i].strip().split(sep)
+        waktu = to_date(line[0])
         val = dict(waktu=waktu, posID=bd_names.get(nama_bendungan))
         for j in (1,2,3,4,5,6,7,8):
             try:
-                val[cols[j]] = float(line[j].strip())
+                val[cols[j]] = float(line[j].replace(',', '.'))
             except ValueError:
                 val[cols[j]] = None
         data.append(val)
@@ -465,18 +479,10 @@ def export_rtow(bd_id, periode=datetime.date.today()):
         periode = datetime.date(periode.year - 1, 11, 1) # 1 Nop tahun lalu
     else:
         periode = datetime.date(periode.year, 11, 1)
-    jhar = [30, 31, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31]
-    rr = []
-    for i in range(12):
-        rr.append(periode.replace(day=1))
-        rr.append(periode.replace(day=16))
-        periode += datetime.timedelta(days=jhar[i])
-    sql = "SELECT waktu, po_tma, po_vol, po_outflow_q, po_inflow_q, po_bona, po_bonb, vol_bona, vol_bonb \
-            FROM waduk_daily \
-            WHERE pos_id=%s AND waktu IN (%s) \
-            ORDER BY pos_id, waktu" % (bd_id, ','.join(["'"+str(i)+"'" for i in rr]))
-    rows = conn.queryAll(sql)
+    end_periode = periode + datetime.timedelta(days=366)
     header = "waktu,po_tma,po_vol,po_outflow_q,po_inflow_q,po_bona,po_bonb,vol_bona,vol_bonb".split(',')
+    sql = "SELECT {0} FROM renncanaoperasi WHERE waktu BETWEEN '{1}' AND '{2}'".format(','.join(header), periode, end_periode)
+    rows = conn.queryAll(sql)
     return [header] + list(rows)
 
 
